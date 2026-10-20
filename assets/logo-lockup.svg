@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 64" width="352" height="64" role="img" aria-labelledby="guardian-lockup-title">
+  <title id="guardian-lockup-title">GUARDIAN</title>
+  <!--
+    GUARDIAN horizontal lockup: mark (64 units) + gap (32 units, half the mark height) + wordmark.
+    Wordmark: Geist 500, uppercase, letter-spacing 0.16em, cap height centered on the mark's box center (y=32).
+    The wordmark is live text: Geist loads from Google Fonts when this file is opened as a document;
+    as an <img> the fallback stack renders (Inter / Helvetica Neue / Arial), so in index.html rebuild the
+    lockup inline as SVG mark + HTML text rather than embedding this file.
+    Color: currentColor only (paper on ink, ink on paper). Never the red pen.
+    Nav use: scale so the mark is 20px tall -> wordmark 13px, gap 10px.
+  -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@500&amp;display=swap');
+    .wordmark { font-family: Geist, 'Geist Sans', Inter, 'Helvetica Neue', Arial, sans-serif; font-weight: 500; font-size: 40px; letter-spacing: 6.4px; fill: currentColor; }
+  </style>
+  <g fill="none">
+    <path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" stroke="currentColor" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/>
+    <rect x="48" y="8" width="8" height="8" fill="currentColor"/>
+  </g>
+  <text class="wordmark" x="96" y="46.2">GUARDIAN</text>
+</svg>

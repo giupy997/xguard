@@ -1,0 +1,1254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GUARDIAN — Brand guidelines</title>
+<meta name="description" content="The GUARDIAN brand guidelines: the idea, the Open G mark, lockups, misuse, color, typography, voice, components and assets. The Red Pen, set in its own system.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230A0A0B'/%3E%3Cpath d='M32 16H20A4 4 0 0 0 16 20V44A4 4 0 0 0 20 48H44A4 4 0 0 0 48 44V36H32' fill='none' stroke='%23EDEBE6' stroke-width='8' stroke-linecap='butt' stroke-linejoin='miter'/%3E%3Crect x='40' y='12' width='8' height='8' fill='%23EDEBE6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..500&family=Geist:wght@400..500&family=Geist+Mono:wght@400&display=swap">
+<style>
+/* ============================================================================
+   GUARDIAN design tokens — "The Red Pen" (final, 2026-10-20)
+   Paste this block unchanged at the top of the inline <style> in index.html.
+   Contrast ratios below are computed (WCAG 2.x relative luminance), not estimated.
+   Rule of the system: the only chromatic color on the site is --pen, and it is
+   used only where something is wrong. Everything else is ink and paper.
+   ============================================================================ */
+:root {
+  color-scheme: dark;
+
+  /* ---- Ink: surfaces ------------------------------------------------------ */
+  --ink-0: #0A0A0B;        /* page background. Warm near-black, never #000 */
+  --ink-1: #121214;        /* raised surface: demo panel, code, inputs, message card */
+  --ink-2: #1A1A1D;        /* hover/active rows and tabs, expanded-row insets. Never decorative */
+  --rule: #2A2A2E;         /* decorative hairlines only (1.4:1, exempt from AA): section rules, table rows */
+  --rule-strong: #626268;  /* boundaries that must be perceivable (3.3:1 on ink-0, 3.1:1 on ink-1):
+                              input borders, ghost-button borders, meaningful diagram strokes, tab underline track */
+
+  /* ---- Paper: text -------------------------------------------------------- */
+  --paper: #EDEBE6;        /* primary text. 16.6:1 on ink-0 · 15.7:1 on ink-1 · 14.6:1 on ink-2 */
+  --paper-2: #A8A6A0;      /* secondary text, body on panels. 8.1:1 on ink-0 · 7.7:1 on ink-1 · 7.1:1 on ink-2 */
+  --paper-3: #85837E;      /* metadata, eyebrows, footnotes. 5.2:1 on ink-0 · 4.9:1 on ink-1 · 4.6:1 on ink-2.
+                              12px minimum. Prefer ink-0/ink-1 under it */
+  --paper-hi: #FFFFFF;     /* primary button hover fill only (ink-0 text: 19.8:1) */
+
+  /* ---- The red pen -------------------------------------------------------- */
+  --pen: #FF5A4E;          /* the only chromatic color. 6.4:1 on ink-0 · 6.1:1 on ink-1 · 5.6:1 on pen-wash.
+                              Text on a --pen fill is ALWAYS --ink-0 (6.4:1); --paper on --pen fails (2.6:1) */
+  --pen-wash: #2A1512;     /* solid tint behind a flagged row or a margin note. Opacity-free so it survives screenshots */
+
+  /* ---- Semantic aliases (use these in components) ------------------------- */
+  --bg: var(--ink-0);
+  --surface: var(--ink-1);
+  --surface-2: var(--ink-2);
+  --border: var(--rule);
+  --border-strong: var(--rule-strong);
+  --text: var(--paper);
+  --text-muted: var(--paper-2);
+  --text-faint: var(--paper-3);
+  --accent: var(--paper);          /* there is no brand accent color: CTAs are paper */
+  --accent-hover: var(--paper-hi);
+  --danger: var(--pen);
+  --danger-bg: var(--pen-wash);
+  --verdict-blocked: var(--pen);   /* filled chip, ink-0 text, 2px solid underline */
+  --verdict-caution: var(--pen);   /* outlined chip, pen text, 1px dotted underline */
+  --verdict-clear: var(--paper);   /* outlined chip, paper text, no underline */
+  --focus: var(--paper);           /* 2px solid, 3px offset, every interactive element */
+  --selection-bg: var(--paper);
+  --selection-fg: var(--ink-0);
+  --logo: var(--paper);            /* the mark is always paper on ink or ink on paper, never --pen */
+
+  /* ---- Typography --------------------------------------------------------- */
+  --font-display: "Newsreader", "Newsreader Fallback", Georgia, "Times New Roman", serif;
+  --font-body: "Geist", "Geist Fallback", Inter, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --t-eyebrow: 12px;   --lh-eyebrow: 1.4;  --ls-eyebrow: 0.14em;   /* Geist Mono 400, uppercase, paper-3 */
+  --t-mono: 13.5px;    --lh-mono: 1.6;                             /* Geist Mono 400: demo rows, code, tables */
+  --t-mono-sm: 12.5px;                                             /* mono under 400px viewport, margin notes */
+  --t-small: 14px;     --lh-small: 1.5;                            /* Geist 400: captions, footer, footnotes */
+  --t-body: 17px;      --lh-body: 1.6;                             /* Geist 400, measure 62ch */
+  --t-lead: 21px;      --lh-lead: 1.45;                            /* Geist 400, paper-2, measure 56ch */
+  --t-h3: 24px;        --lh-h3: 1.25; --ls-h3: -0.01em;            /* Geist 500 */
+  --t-tier: 32px;      --lh-tier: 1.1;                             /* Newsreader 450, pricing tier names */
+  --t-h2: clamp(32px, 4.6vw, 56px);   --lh-h2: 1.05; --ls-h2: -0.015em;  /* Newsreader 450, opsz 48 */
+  --t-h1: clamp(42px, 8vw, 104px);    --lh-h1: 0.98; --ls-h1: -0.025em;  /* Newsreader 450, opsz 48 */
+  --display-wght: 450;
+  --display-opsz: 48;                 /* capped: opsz 72 hairlines bloom on ink */
+  --measure: 62ch;
+  --measure-lead: 56ch;
+
+  /* ---- Layout ------------------------------------------------------------- */
+  --container: 1180px;
+  --gutter: 20px;          /* 320–599 */
+  --gutter-md: 40px;       /* 600–1023 */
+  --gutter-lg: 64px;       /* 1024+ */
+  --cols: 12;
+  --col-gap: 24px;
+  --margin-cols: 3;        /* the editorial margin: columns 1–3 on 1024+ */
+  --nav-h: 56px;
+  --sticky-top: 96px;      /* nav-h + 40px: sticky margin apparatus */
+  --scroll-margin: 72px;   /* scroll-margin-top on every section target */
+  --control-h: 48px;       /* inputs and primary buttons outside the nav */
+  --control-h-sm: 36px;    /* nav button, demo toolbar buttons */
+  --panel-min-h: 560px;    /* demo panel reserved height (desktop); 760px below 840px */
+
+  /* ---- Spacing (8px base) ------------------------------------------------- */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
+  --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 112px; --s-11: 128px; --s-12: 160px;
+  --section-pad: var(--s-10);     /* 112px desktop between sections */
+  --section-pad-sm: 72px;         /* mobile */
+  --block-gap: var(--s-7);        /* 48px between sub-blocks desktop */
+  --block-gap-sm: var(--s-6);     /* 32px mobile */
+
+  /* ---- Radii -------------------------------------------------------------- */
+  --r-chip: 2px;
+  --r-control: 4px;        /* buttons, inputs, tabs */
+  --r-panel: 4px;          /* demo panel, code block, message card */
+
+  /* ---- Motion (opacity and transform only) -------------------------------- */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --d-fast: 160ms;         /* links, buttons, row opacity, diff row fade */
+  --d-base: 200ms;         /* verdict fade, margin note, FAQ caret, cursor move, form crossfade */
+  --d-slow: 240ms;         /* the red underline drawing under an argument */
+  --d-draw: 300ms;         /* hairline draw-in under demo headings */
+  --d-stop: 400ms;         /* the hero full stop fading in */
+  --d-dwell: 380ms;        /* reading cursor dwell per row (580ms per row with the 200ms move) */
+  --d-hold: 1000ms;        /* "Sign anyway" hold-to-confirm */
+
+  /* ---- Z-index ------------------------------------------------------------ */
+  --z-nav: 20;
+  --z-menu: 30;
+  --z-skip: 40;
+}
+
+/* ============================================================================
+   Brand guidelines — page styles. Same system as index.html: base, type,
+   the Manuscript grid, shared components (BRIEF §8), then page-specific plates.
+   ============================================================================ */
+
+/* ---- Fallback metrics (BRIEF §5.3): no layout jump on swap --------------- */
+@font-face { font-family: "Newsreader Fallback"; src: local("Georgia"), local("Times New Roman"); size-adjust: 97%; ascent-override: 93%; descent-override: 25%; line-gap-override: 0%; }
+@font-face { font-family: "Geist Fallback"; src: local("Inter"), local("Helvetica Neue"), local("Arial"); size-adjust: 99%; ascent-override: 92%; descent-override: 23%; line-gap-override: 0%; }
+@font-face { font-family: "Geist Mono Fallback"; src: local("Menlo"), local("Consolas"), local("Courier New"); size-adjust: 96%; ascent-override: 92%; descent-override: 23%; line-gap-override: 0%; }
+
+/* ---- Base ---------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--ink-0); color: var(--paper); font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; -webkit-text-size-adjust: 100%; }
+body { margin: 0; min-width: 320px; background: var(--bg); color: var(--text); font: 400 var(--t-body) / var(--lh-body) var(--font-body); }
+::selection { background: var(--selection-bg); color: var(--selection-fg); }
+h1, h2, h3, h4, p, dl, dd, dt, figure, figcaption, pre, table { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+a { color: inherit; }
+svg { display: block; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip { position: absolute; top: -200px; left: 16px; z-index: var(--z-skip); padding: 10px 14px; background: var(--ink-0); color: var(--paper); font: 500 14px / 1 var(--font-body); text-decoration: none; outline: 2px solid var(--paper); }
+.skip:focus { top: 12px; }
+
+/* ---- Type ---------------------------------------------------------------- */
+.eyebrow { display: block; font: 400 var(--t-eyebrow) / var(--lh-eyebrow) var(--font-mono); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--paper-3); }
+.mono, .addr { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; overflow-wrap: anywhere; }
+.h1, .h2, .pull { font-family: var(--font-display); font-weight: var(--display-wght); font-optical-sizing: none; font-variation-settings: "opsz" var(--display-opsz); color: var(--paper); }
+.h1 { font-size: var(--t-h1); line-height: var(--lh-h1); letter-spacing: var(--ls-h1); margin-bottom: .5em; }
+.h2 { font-size: var(--t-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); margin-bottom: .5em; }
+.pull { font-size: var(--t-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); max-width: 20ch; }
+.tier { font-family: var(--font-display); font-weight: 500; font-size: var(--t-tier); line-height: var(--lh-tier); font-optical-sizing: none; font-variation-settings: "opsz" 32; color: var(--paper); }
+.h3 { font: 500 var(--t-h3) / var(--lh-h3) var(--font-body); letter-spacing: var(--ls-h3); color: var(--paper); margin-bottom: 12px; }
+.lead { font-size: var(--t-lead); line-height: var(--lh-lead); color: var(--paper-2); max-width: var(--measure-lead); margin-bottom: 40px; }
+.prose { max-width: var(--measure); color: var(--paper); }
+.prose p + p { margin-top: 16px; }
+.muted { color: var(--paper-2); }
+.small { font-size: var(--t-small); line-height: var(--lh-small); color: var(--paper-3); max-width: var(--measure); }
+.stop { color: var(--pen); }
+.note { font: 400 var(--t-mono-sm) / 1.5 var(--font-mono); color: var(--paper-3); max-width: var(--measure); }
+.m-mono { font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* ---- Layout: the Manuscript grid (BRIEF §6) ----------------------------- */
+.container { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
+.sec { position: relative; padding-top: 40px; scroll-margin-top: var(--scroll-margin); }
+.sec-rule { position: relative; height: 1px; margin-bottom: 32px; background: var(--rule); }
+.sec-no { position: absolute; left: 0; top: 50%; transform: translateY(-50%); padding-right: 12px; background: var(--ink-0); font: 400 var(--t-eyebrow) / var(--lh-eyebrow) var(--font-mono); letter-spacing: var(--ls-eyebrow); color: var(--paper-3); }
+.margin { display: none; }
+.sec-line { margin-bottom: 24px; }
+.text { min-width: 0; }
+.text > .h2 { max-width: calc(100% * 8 / 9 - 24px / 9); }
+.block { margin-top: var(--block-gap-sm); }
+.block-lg { margin-top: 48px; }
+.titleblock { padding-top: 48px; }
+@media (min-width: 600px) { .container { padding: 0 var(--gutter-md); } }
+@media (min-width: 1024px) {
+  .container { padding: 0 var(--gutter-lg); }
+  .sec { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); padding-top: 64px; }
+  .sec-rule { grid-column: 1 / -1; margin-bottom: 48px; }
+  .margin { display: flex; flex-direction: column; gap: 2px; grid-column: 1 / 4; position: sticky; top: var(--sticky-top); align-self: start; }
+  .margin .gap { height: 12px; }
+  .margin .footnote { margin-top: 12px; font: 400 var(--t-small) / var(--lh-small) var(--font-body); letter-spacing: 0; text-transform: none; color: var(--paper-3); max-width: 24ch; }
+  .sec-line { display: none; }
+  .text { grid-column: 4 / -1; }
+  .block { margin-top: var(--block-gap); }
+  .block-lg { margin-top: 64px; }
+  .titleblock { padding-top: 80px; }
+}
+
+/* ---- Nav ----------------------------------------------------------------- */
+.nav { height: var(--nav-h); background: var(--ink-0); border-bottom: 1px solid var(--rule); z-index: var(--z-nav); }
+.nav-in { height: 100%; display: flex; align-items: center; gap: 16px; }
+.nav-div { display: none; width: 1px; height: 16px; background: var(--rule-strong); }
+.nav-status { display: none; white-space: nowrap; }
+.nav-status-x { display: none; }
+.nav-site { margin-left: auto; font: 500 14px / 1 var(--font-body); white-space: nowrap; }
+@media (min-width: 600px) { .nav-div, .nav-status { display: block; } }
+@media (min-width: 840px) { .nav { position: sticky; top: 0; } }
+@media (min-width: 1180px) { .nav-status-x { display: inline; } }
+
+/* ---- Lockups (BRIEF §3.4) ----------------------------------------------- */
+.lockup { display: inline-flex; align-items: center; color: var(--logo); text-decoration: none; }
+.lockup .wordmark { font: 500 13px / 1 var(--font-body); letter-spacing: .16em; text-transform: uppercase; font-variant-ligatures: none; }
+.lockup-nav { gap: 10px; }
+.lockup-nav svg { width: 20px; height: 20px; }
+.lockup-footer { gap: 14px; }
+.lockup-footer svg { width: 28px; height: 28px; }
+.lockup-footer .wordmark { font-size: 16px; }
+.lockup-stack { flex-direction: column; gap: 24px; }
+.lockup-stack svg { width: 200px; height: 200px; }
+.lockup-stack .wordmark { font-size: 28px; letter-spacing: .22em; }
+.point { transition: transform var(--d-base) var(--ease); }
+a.lockup-nav:hover .point { transform: translate(6.4px, -6.4px); } /* 6.4 user units = 2px at a 20px mark */
+
+/* ---- Components (BRIEF §8) ---------------------------------------------- */
+.btn, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; height: var(--control-h); padding: 0 20px; border-radius: var(--r-control); font: 500 14px / 1 var(--font-body); text-decoration: none; cursor: pointer; white-space: nowrap; }
+.btn { background: var(--paper); color: var(--ink-0); border: 0; transition: background-color var(--d-fast) var(--ease); }
+.btn:hover { background: var(--paper-hi); }
+.btn:active { background: var(--paper); }
+.btn-ghost { background: transparent; color: var(--paper); border: 1px solid var(--rule-strong); transition: border-color var(--d-fast) var(--ease); }
+.btn-ghost:hover { border-color: var(--paper); }
+.btn:disabled, .btn-ghost:disabled { opacity: .5; cursor: not-allowed; }
+.btn-sm { height: var(--control-h-sm); }
+.link { color: var(--paper); text-decoration: underline; text-decoration-color: var(--paper-3); text-underline-offset: 2px; transition: text-underline-offset var(--d-fast) var(--ease), text-decoration-color var(--d-fast) var(--ease); }
+.link:hover { text-underline-offset: 4px; text-decoration-color: var(--paper); }
+.field { max-width: 360px; }
+.field .eyebrow { margin-bottom: 8px; }
+.input { display: block; width: 100%; height: var(--control-h); padding: 0 14px; background: var(--ink-1); border: 1px solid var(--rule-strong); border-radius: var(--r-control); color: var(--paper); font: 400 17px / 1 var(--font-body); }
+.input::placeholder { color: var(--paper-3); opacity: 1; }
+.input:focus, .input.is-focus { border-color: var(--paper); }
+.input.is-focus { outline: 2px solid var(--focus); outline-offset: 3px; }
+.input[aria-invalid="true"] { border-color: var(--pen); }
+.error { margin-top: 8px; font-size: var(--t-small); line-height: var(--lh-small); color: var(--pen); }
+.chip { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: var(--r-chip); font: 400 12px / 1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; vertical-align: middle; }
+.chip-blocked { background: var(--pen); color: var(--ink-0); }
+.chip-caution { border: 1px solid var(--pen); color: var(--pen); }
+.chip-clear { border: 1px solid var(--paper); color: var(--paper); }
+.rule-id { font: 400 var(--t-mono) / 1 var(--font-mono); color: var(--paper-2); margin-left: 8px; vertical-align: middle; }
+.u-blocked { text-decoration-line: underline; text-decoration-style: solid; text-decoration-color: var(--pen); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.u-caution { text-decoration-line: underline; text-decoration-style: dotted; text-decoration-color: var(--pen); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+.ruled { margin: 0; }
+.ruled .row { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 6px; padding: 20px 0; border-top: 1px solid var(--rule); }
+.ruled .row:last-child { border-bottom: 1px solid var(--rule); }
+.ruled dt { font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper); min-width: 0; }
+.ruled dt .sub { display: block; color: var(--paper-3); font-size: var(--t-mono-sm); }
+.ruled dd { max-width: var(--measure); color: var(--paper-2); min-width: 0; }
+.ruled dd .lead-in { color: var(--paper); }
+.ruled-wide dd { max-width: none; }
+@media (min-width: 840px) { .ruled .row { grid-template-columns: 160px minmax(0, 1fr); column-gap: 24px; row-gap: 0; } }
+
+.ledger-wrap { overflow-x: auto; }
+.ledger { width: 100%; border-collapse: collapse; border-spacing: 0; }
+.ledger caption { text-align: left; }
+.ledger th, .ledger td { padding: 14px 20px 14px 0; text-align: left; vertical-align: top; border-top: 1px solid var(--rule); }
+.ledger th:last-child, .ledger td:last-child { padding-right: 0; }
+.ledger tbody tr:last-child th, .ledger tbody tr:last-child td { border-bottom: 1px solid var(--rule); }
+.ledger thead th { padding-top: 0; border-top: 0; font: 400 var(--t-eyebrow) / var(--lh-eyebrow) var(--font-mono); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--paper-3); }
+.ledger tbody th { font: 400 15px / 1.5 var(--font-body); color: var(--paper); position: sticky; left: 0; background: var(--ink-0); min-width: 160px; }
+.ledger td { font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper-2); }
+.ledger-nums td, .ledger-nums thead th { white-space: nowrap; }
+.ledger .wrap { white-space: normal; min-width: 22ch; }
+.ledger .prose-cell { white-space: normal; font: 400 15px / 1.5 var(--font-body); min-width: 24ch; }
+.ledger .hi { color: var(--paper); }
+.ledger .fail { color: var(--pen); }
+.ledger-min { min-width: 640px; }
+.ledger-foot { margin-top: 12px; }
+
+.codefig { max-width: 720px; }
+.code-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; padding-bottom: 10px; }
+.code-head .eyebrow { white-space: nowrap; }
+.code { background: var(--ink-1); border: 1px solid var(--rule); border-radius: var(--r-panel); padding: 20px 24px; font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); color: var(--paper-2); overflow-x: auto; counter-reset: ln; }
+.code code { font: inherit; display: block; min-width: max-content; }
+.code .ln { display: block; white-space: pre; }
+.code .ln::before { counter-increment: ln; content: counter(ln); display: inline-block; width: 2ch; margin-right: 2ch; text-align: right; color: var(--paper-3); }
+.code .say { color: var(--paper); }
+
+.faq-item { border-top: 1px solid var(--rule); max-width: 760px; }
+.faq-item.last { border-bottom: 1px solid var(--rule); }
+.faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0 8px; font: 500 20px / 1.35 var(--font-body); color: var(--paper); cursor: pointer; list-style: none; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item:not([open]) summary { padding-bottom: 20px; }
+.faq-item .caret { flex: none; transform: rotate(180deg); transition: transform var(--d-base) var(--ease); }
+.faq-item[open] .caret { transform: none; }
+.faq-a { padding: 12px 0 24px; color: var(--paper-2); max-width: var(--measure); }
+.caret { display: inline-block; color: currentColor; }
+
+/* ---- Page plates --------------------------------------------------------- */
+.toc .row { padding: 14px 0; }
+.toc dd a { color: var(--paper); text-decoration: none; font-weight: 500; }
+.toc dd a:hover { text-decoration: underline; text-decoration-color: var(--paper-3); text-underline-offset: 3px; }
+.toc .desc { display: block; margin-top: 2px; font-size: var(--t-small); line-height: var(--lh-small); color: var(--paper-3); }
+
+.rule-large { margin-top: 12px; }
+.promise-lines { font: 500 var(--t-h3) / var(--lh-h3) var(--font-body); letter-spacing: var(--ls-h3); color: var(--paper); }
+
+.mark-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px 40px; padding: 32px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.mark-item { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.plate-paper { background: var(--paper); color: var(--ink-0); border-radius: var(--r-panel); padding: 0 32px; }
+.plate-paper .mark-row { border-color: transparent; }
+.plate-paper .eyebrow { color: var(--rule-strong); }
+
+.plate-wrap { overflow-x: auto; padding-bottom: 4px; }
+.construction { width: 545px; height: 460px; max-width: none; }
+.construction text { font-family: var(--font-mono); font-size: 2.4px; fill: var(--paper-3); }
+.construction .on-paper { fill: var(--ink-0); }
+.clearspace { width: 100%; max-width: 320px; height: auto; }
+.clearspace text { font-family: var(--font-mono); font-size: 4.6px; fill: var(--paper-3); }
+.fig-cap { margin-top: 12px; }
+.two-up { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; }
+@media (min-width: 840px) { .two-up { grid-template-columns: 320px minmax(0, 1fr); gap: 48px; align-items: start; } }
+.minsize { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+.seal-row { display: flex; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
+.chrome { display: flex; align-items: flex-end; gap: 16px; height: 44px; padding: 0 12px; border-radius: 4px; }
+.chrome + .chrome { margin-top: 12px; }
+.chrome-light { background: #E4E4E4; color: #1E1E1E; }
+.chrome-dark { background: #202020; color: #E6E6E6; }
+.chrome .tab { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 6px 6px 0 0; font: 500 12px / 1 var(--font-body); white-space: nowrap; overflow: hidden; min-width: 0; }
+.chrome .tab span { overflow: hidden; text-overflow: ellipsis; }
+.chrome-light .tab { background: #FFFFFF; }
+.chrome-dark .tab { background: #3A3A3A; }
+.chrome .tile { margin-left: auto; align-self: center; flex: none; }
+.caret-uses .demo { margin-top: 8px; }
+.cursor-demo { position: relative; padding-top: 12px; border-top: 1px solid var(--paper); max-width: 520px; }
+.cursor-demo .caret { position: absolute; top: -6px; left: 0; }
+.menu-demo { display: inline-flex; align-items: center; gap: 8px; font: 500 14px / 1 var(--font-body); color: var(--paper-2); }
+
+.misuse { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 24px; }
+@media (min-width: 840px) { .misuse { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.mis { display: flex; flex-direction: column; border-top: 1px solid var(--pen); padding-top: 12px; }
+.mis figcaption { font: 400 var(--t-eyebrow) / var(--lh-eyebrow) var(--font-mono); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--pen); }
+.mis .why { display: block; margin-top: 6px; font: 400 var(--t-mono-sm) / 1.5 var(--font-mono); letter-spacing: 0; text-transform: none; color: var(--paper-3); }
+.mis-plate { height: 160px; display: grid; place-items: center; margin-top: auto; padding-top: 8px; }
+.mis-plate svg { width: 80px; height: 80px; }
+
+.swatches { margin: 0; }
+.swatches .row { display: grid; grid-template-columns: 48px minmax(0, 1fr); column-gap: 16px; row-gap: 4px; padding: 16px 0; border-top: 1px solid var(--rule); align-items: start; }
+.swatches .row:last-child { border-bottom: 1px solid var(--rule); }
+.sw { width: 48px; height: 48px; border-radius: 2px; border: 1px solid var(--rule); grid-row: 1 / 4; }
+.swatches .tok { font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); color: var(--paper); }
+.swatches .hex { font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper-3); }
+.swatches .role { font-size: 15px; line-height: 1.5; color: var(--paper-2); max-width: var(--measure); }
+@media (min-width: 840px) {
+  .swatches .row { grid-template-columns: 48px 150px 100px minmax(0, 1fr); column-gap: 24px; align-items: center; }
+  .sw { grid-row: auto; }
+}
+
+.specimen { padding: 24px 0; border-top: 1px solid var(--rule); }
+.specimen.last { border-bottom: 1px solid var(--rule); }
+.specimen > .eyebrow { margin-bottom: 16px; }
+.sp-h1 { font-size: var(--t-h1); line-height: var(--lh-h1); letter-spacing: var(--ls-h1); }
+.sp-h2 { font-size: var(--t-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); max-width: 20ch; }
+.sp-mono { font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper); overflow-wrap: anywhere; }
+.sp-mono-sm { font-size: var(--t-mono-sm); color: var(--paper-3); }
+.amounts { display: inline-grid; grid-template-columns: auto auto; column-gap: 32px; row-gap: 2px; text-align: right; font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper); }
+.amounts .k { text-align: left; color: var(--paper-3); }
+.banned { font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); color: var(--paper-2); max-width: var(--measure); }
+
+.demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.inputs { display: grid; gap: 24px; max-width: 360px; }
+.comp .row { padding: 28px 0; }
+
+.foot { margin-top: 72px; border-top: 1px solid var(--rule); padding: 48px 0 40px; }
+.foot-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px 48px; }
+.promise { margin-top: 20px; font-size: var(--t-small); line-height: var(--lh-small); color: var(--paper-2); }
+.foot-meta { font-size: var(--t-small); line-height: var(--lh-small); color: var(--paper-3); max-width: 40ch; }
+.foot-meta .eyebrow { margin-bottom: 8px; }
+.colophon { margin-top: 48px; text-align: center; font: 400 12px / 1.6 var(--font-mono); color: var(--paper-3); }
+@media (min-width: 840px) { .foot { margin-top: 112px; } }
+
+/* ---- Utilities and specimen helpers ------------------------------------- */
+.mt-2 { margin-top: 8px; } .mt-3 { margin-top: 12px; } .mt-4 { margin-top: 16px; } .mt-5 { margin-top: 24px; } .mt-6 { margin-top: 32px; }
+.caret-down { transform: rotate(180deg); }
+.cursor-demo .caret { top: -10px; }
+.mis-red { color: var(--pen); }
+.mis-rot { transform: rotate(-16deg); }
+.mis-shadow { color: var(--rule-strong); }
+.stop-a { stop-color: var(--paper); }
+.stop-b { stop-color: var(--rule-strong); }
+.mis-tone { fill: var(--paper-3); }
+.hi-dd { color: var(--paper); }
+.specimen .h1, .specimen .h2, .specimen .h3, .specimen .lead { margin: 0; }
+.ledger-scale { min-width: 720px; table-layout: fixed; }
+.ledger-scale td { white-space: normal; }
+.ledger-scale tbody th { min-width: 0; }
+.ledger-scale .c-token { width: 104px; } .ledger-scale .c-size { width: 164px; } .ledger-scale .c-family { width: 212px; } .ledger-scale .c-color { width: 104px; }
+
+/* ---- Reduced motion (BRIEF §7.3), last ----------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; transition-duration: 1ms !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="g-mark" viewBox="0 0 64 64"><path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/><rect x="48" y="8" width="8" height="8" fill="currentColor"/></symbol>
+    <symbol id="g-seal" viewBox="0 0 64 64"><circle cx="32" cy="32" r="31.5" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"/><g transform="translate(32 32) scale(.6) translate(-32 -32)"><path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/><rect x="48" y="8" width="8" height="8" fill="currentColor"/></g></symbol>
+    <symbol id="g-favicon" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#0A0A0B"/><path d="M32 16H20A4 4 0 0 0 16 20V44A4 4 0 0 0 20 48H44A4 4 0 0 0 48 44V36H32" fill="none" stroke="#EDEBE6" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/><rect x="40" y="12" width="8" height="8" fill="#EDEBE6"/></symbol>
+    <symbol id="g-caret" viewBox="0 0 16 12"><path d="M1.5 10.5 8 2l6.5 8.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="container nav-in">
+    <a class="lockup lockup-nav" href="index.html" aria-label="GUARDIAN, back to the site">
+      <svg viewBox="0 0 64 64" width="20" height="20" aria-hidden="true" fill="none"><path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" stroke="currentColor" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/><rect class="point" x="48" y="8" width="8" height="8" fill="currentColor"/></svg>
+      <span class="wordmark">GUARDIAN</span>
+    </a>
+    <span class="nav-div" aria-hidden="true"></span>
+    <span class="eyebrow nav-status">Brand guidelines<span class="nav-status-x"> · v1.0 · 2026-10-20</span></span>
+    <a class="link nav-site" href="index.html">Site →</a>
+  </div>
+</header>
+
+<main id="main" class="container">
+
+<!-- ===================================================================== Title -->
+<section class="sec titleblock" id="top" aria-labelledby="title-h">
+  <aside class="margin" aria-hidden="true">
+    <span class="eyebrow">GUARDIAN</span>
+    <span class="eyebrow">Brand guidelines</span>
+    <span class="eyebrow">Version 1.0</span>
+    <span class="gap"></span>
+    <span class="eyebrow">Direction</span>
+    <span class="eyebrow">The Red Pen</span>
+    <span class="eyebrow">2026-10-20</span>
+  </aside>
+  <div class="text">
+    <p class="eyebrow sec-line">GUARDIAN · Brand guidelines · v1.0 · The Red Pen · 2026-10-20</p>
+    <h1 class="h1" id="title-h">Brand guidelines.</h1>
+    <p class="lead">The document a partner or a new designer reads before setting a single line of GUARDIAN. It is written in the brand's voice and set in the brand's system, from the values in <span class="mono">design/tokens.css</span>. Where this page and a rule disagree, the page is wrong.</p>
+    <dl class="ruled toc">
+      <div class="row"><dt>01</dt><dd><a href="#idea">The idea</a><span class="desc">The proofreader, the one rule, the positioning, the promise.</span></dd></div>
+      <div class="row"><dt>02</dt><dd><a href="#mark">The mark</a><span class="desc">The Open G: sizes, construction, clear space, minimums.</span></dd></div>
+      <div class="row"><dt>03</dt><dd><a href="#lockups">Lockups</a><span class="desc">Nav, footer and stacked lockups, the seal, the favicon, the caret.</span></dd></div>
+      <div class="row"><dt>04</dt><dd><a href="#misuse">Misuse</a><span class="desc">Six things not to do, marked in red because they are wrong.</span></dd></div>
+      <div class="row"><dt>05</dt><dd><a href="#color">Color</a><span class="desc">Eleven values, the contrast ledger, the aliases, the chips.</span></dd></div>
+      <div class="row"><dt>06</dt><dd><a href="#type">Typography</a><span class="desc">Newsreader, Geist, Geist Mono: specimens, the scale, the display rules.</span></dd></div>
+      <div class="row"><dt>07</dt><dd><a href="#voice">Voice</a><span class="desc">Eleven rules, do and don't, the canonical lines, the banned words.</span></dd></div>
+      <div class="row"><dt>08</dt><dd><a href="#components">Components</a><span class="desc">Buttons, links, inputs, ruled lists, ledgers, code, disclosures, addresses.</span></dd></div>
+      <div class="row"><dt>09</dt><dd><a href="#assets">Assets</a><span class="desc">The four files, with what each one is for.</span></dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ===================================================================== 01 The idea -->
+<section class="sec" id="idea" aria-labelledby="idea-h">
+  <div class="sec-rule"><span class="sec-no">01</span></div>
+  <aside class="margin" aria-hidden="true">
+    <span class="eyebrow">01</span>
+    <span class="eyebrow">The idea</span>
+    <span class="footnote">One gesture: an editor's red pen on a typeset page.</span>
+  </aside>
+  <div class="text">
+    <p class="eyebrow sec-line">01 / The idea</p>
+    <h2 class="h2" id="idea-h">GUARDIAN is the proofreader.</h2>
+    <div class="prose">
+      <p>A Solana transaction is a document your wallet asks you to sign, and almost nobody reads it. GUARDIAN is the proofreader. It reads the document aloud in plain language, marks the line that lies, and hands it back before you sign. The whole brand is that one gesture: an editor's red pen on a typeset page. Large serif headlines that state facts. A sans for the body. A mono for anything that is literally on-chain. Exactly one chromatic color, used only to say that something is wrong. The site is laid out like a security whitepaper that somebody at Stripe designed: numbered sections, hairline rules, ledger tables instead of cards, precise line-art diagrams, and a hero that is a single sentence with a red full stop.</p>
+      <p class="muted">Restraint is the trust signal. A product that never raises its voice reads as a product that knows what it is looking at.</p>
+    </div>
+
+    <div class="block">
+      <p class="eyebrow">The one rule · auditable on every screen</p>
+      <p class="pull rule-large">The only color on the site is the one we use to say no.</p>
+      <div class="prose mt-5">
+        <p class="muted">If a pixel is red (<span class="mono">--pen</span>), something is wrong at that pixel: a flagged instruction, a mismatched simulation cell, a Blocked or Caution chip, a form error, the single flagged node in a diagram, and the full stop of the hero sentence, which is the editor's mark. Red is never used for a CTA, never for the logo, never for decoration, never for "brand". Everything else is ink and paper. When in doubt, it is not red.</p>
+      </div>
+      <dl class="ruled mt-5">
+        <div class="row"><dt>Corollary 1</dt><dd>No cards, no shadows, no gradients, no canvas, no particles, no glows, no blur.</dd></div>
+        <div class="row"><dt>Corollary 2</dt><dd>No icons except the mark, the caret glyph, the check glyph, the status glyphs in the roadmap, and arrows drawn as 1 px lines.</dd></div>
+        <div class="row"><dt>Corollary 3</dt><dd>No section-entrance animations. Sections are simply there, like pages of a document. Motion is reserved for reading.</dd></div>
+        <div class="row"><dt>Corollary 4</dt><dd>Every claim on the page is pinned to an instruction name, a program id, a rule id, a list provenance, a date, or a balance diff.</dd></div>
+      </dl>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">Positioning</h3>
+      <div class="prose">
+        <p class="muted">For Solana holders who sign transactions every day and distrust being sold to, GUARDIAN is the non-custodial defense layer that sits between the wallet and the signature: it decodes and simulates every pending transaction, diffs what the page says against what the payload does, matches every counterparty against threat intelligence with the provenance shown, and keeps watching approvals after the signature. Unlike a wallet's built-in warning (a label) or a hosted screening API (a verdict you cannot audit), GUARDIAN shows its reading row by row, cites the rule that fired, never touches a key, and leaves the decision to you.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <p class="eyebrow">The promise · footer, canonical, verbatim</p>
+      <p class="promise-lines mt-3">Non-custodial.<br>Not a wallet.<br>Never your keys.</p>
+      <p class="small mt-4">One line in the footer, three sentences, in this order. Never reordered, never shortened, never followed by a fourth.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================== 02 The mark -->
+<section class="sec" id="mark" aria-labelledby="mark-h">
+  <div class="sec-rule"><span class="sec-no">02</span></div>
+  <aside class="margin" aria-hidden="true">
+    <span class="eyebrow">02</span>
+    <span class="eyebrow">The mark</span>
+    <span class="footnote">The Open G. Master file assets/logo-mark.svg, 64 units.</span>
+  </aside>
+  <div class="text">
+    <p class="eyebrow sec-line">02 / The mark</p>
+    <h2 class="h2" id="mark-h">A G whose loop never closes.</h2>
+    <p class="lead">A squared G whose loop never closes. The corner that would close it is lifted out and held as a single square point, one stroke width away.</p>
+    <div class="prose">
+      <p class="muted">Read as a letter, it is the G of GUARDIAN, built like a block of set type. Read as a gesture, it is a sentence held open: the point is not placed until the line has been read. The crossbar that enters from the right is the line between the user and the signature. The mark says "G", it says "not closed yet", and it never says "shield", "lock" or "alarm".</p>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">On ink</h3>
+      <p class="small">Paper (<span class="mono">#EDEBE6</span>) on ink, always <span class="mono">currentColor</span>. The strokes and the point are one color.</p>
+      <div class="mark-row mt-4">
+        <div class="mark-item"><svg width="200" height="200" aria-hidden="true"><use href="#g-mark"/></svg><span class="eyebrow">200 px</span></div>
+        <div class="mark-item"><svg width="64" height="64" aria-hidden="true"><use href="#g-mark"/></svg><span class="eyebrow">64 px</span></div>
+        <div class="mark-item"><svg width="32" height="32" aria-hidden="true"><use href="#g-mark"/></svg><span class="eyebrow">32 px</span></div>
+        <div class="mark-item"><svg width="16" height="16" aria-hidden="true"><use href="#g-mark"/></svg><span class="eyebrow">16 px</span></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">On paper</h3>
+      <p class="small">Ink (<span class="mono">#0A0A0B</span>) on paper for print and light surfaces. Same file, same geometry, inverted color.</p>
+      <div class="plate-paper mt-4">
+        <div class="mark-row">
+          <div class="mark-item"><svg width="200" height="200" aria-hidden="true"><use href="#g-mark"/></svg><span class="eyebrow">200 px</span></div>
+          <div class="mark-item"><svg width="64" height="64" aria-hidden="true"><use href="#g-mark"/></svg><span class="eyebrow">64 px</span></div>
+          <div class="mark-item"><svg width="32" height="32" aria-hidden="true"><use href="#g-mark"/></svg><span class="eyebrow">32 px</span></div>
+          <div class="mark-item"><svg width="16" height="16" aria-hidden="true"><use href="#g-mark"/></svg><span class="eyebrow">16 px</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">Construction</h3>
+      <p class="small">64-unit master, stroke 8, every coordinate on the 2-unit grid. Drawn here at 320 px: one unit is 5 px. Grid in <span class="mono">--rule</span>, dimensions in <span class="mono">--rule-strong</span>, centerline dashed in ink.</p>
+      <div class="plate-wrap mt-4"><svg class="construction" viewBox="-9 -14 109 92" width="545" height="460" role="img" aria-labelledby="cons-t cons-d">
+  <title id="cons-t">Construction of the Open G</title>
+  <desc id="cons-d">The mark on its 64-unit master grid with the 8-unit stroke, the radius-6 corners, the 8-unit gap between the top stroke and the square point, the 16-unit mouth, the crossbar ending at x = 34 and the square miter corner at 56, 32.</desc>
+  <g stroke="var(--rule)" stroke-width=".2" fill="none"><path d="M0 0V64 M2 0V64 M4 0V64 M6 0V64 M8 0V64 M10 0V64 M12 0V64 M14 0V64 M16 0V64 M18 0V64 M20 0V64 M22 0V64 M24 0V64 M26 0V64 M28 0V64 M30 0V64 M32 0V64 M34 0V64 M36 0V64 M38 0V64 M40 0V64 M42 0V64 M44 0V64 M46 0V64 M48 0V64 M50 0V64 M52 0V64 M54 0V64 M56 0V64 M58 0V64 M60 0V64 M62 0V64 M64 0V64"/><path d="M0 0H64 M0 2H64 M0 4H64 M0 6H64 M0 8H64 M0 10H64 M0 12H64 M0 14H64 M0 16H64 M0 18H64 M0 20H64 M0 22H64 M0 24H64 M0 26H64 M0 28H64 M0 30H64 M0 32H64 M0 34H64 M0 36H64 M0 38H64 M0 40H64 M0 42H64 M0 44H64 M0 46H64 M0 48H64 M0 50H64 M0 52H64 M0 54H64 M0 56H64 M0 58H64 M0 60H64 M0 62H64 M0 64H64"/></g>
+  <rect x="0" y="0" width="64" height="64" fill="none" stroke="var(--rule-strong)" stroke-width=".2"/>
+  <g><text x="0" y="-1.8" text-anchor="middle">0</text><text x="8" y="-1.8" text-anchor="middle">8</text><text x="16" y="-1.8" text-anchor="middle">16</text><text x="24" y="-1.8" text-anchor="middle">24</text><text x="32" y="-1.8" text-anchor="middle">32</text><text x="40" y="-1.8" text-anchor="middle">40</text><text x="48" y="-1.8" text-anchor="middle">48</text><text x="56" y="-1.8" text-anchor="middle">56</text><text x="64" y="-1.8" text-anchor="middle">64</text><text x="-1.8" y="0" text-anchor="end" dominant-baseline="middle">0</text><text x="-1.8" y="8" text-anchor="end" dominant-baseline="middle">8</text><text x="-1.8" y="16" text-anchor="end" dominant-baseline="middle">16</text><text x="-1.8" y="24" text-anchor="end" dominant-baseline="middle">24</text><text x="-1.8" y="32" text-anchor="end" dominant-baseline="middle">32</text><text x="-1.8" y="40" text-anchor="end" dominant-baseline="middle">40</text><text x="-1.8" y="48" text-anchor="end" dominant-baseline="middle">48</text><text x="-1.8" y="56" text-anchor="end" dominant-baseline="middle">56</text><text x="-1.8" y="64" text-anchor="end" dominant-baseline="middle">64</text></g>
+  <path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" fill="none" stroke="var(--paper)" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/>
+  <rect x="48" y="8" width="8" height="8" fill="var(--paper)"/>
+  <path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" fill="none" stroke="var(--ink-0)" stroke-width=".3" stroke-dasharray="1.2 1.2"/>
+  <g stroke="var(--rule-strong)" stroke-width=".2" fill="none">
+    <path d="M40 -7H48M40 -8.2V-5.8M48 -8.2V-5.8"/>
+    <path d="M67 8V32M65.8 8H68.2M65.8 16H68.2M65.8 32H68.2"/>
+    <path d="M56.4 32.4L60 36H67"/>
+    <path d="M8 70H16M8 68.8V71.2M16 68.8V71.2"/>
+    <path d="M34 40.6V71"/>
+    <path d="M10.93 10.93L18 18"/>
+  </g>
+  <circle cx="18" cy="18" r=".55" fill="var(--rule-strong)"/>
+  <text x="44" y="-9.4" text-anchor="middle">8 gap</text>
+  <text x="69.5" y="12" dominant-baseline="middle">8 point</text>
+  <text x="69.5" y="24" dominant-baseline="middle">16 mouth</text>
+  <text x="69.5" y="36" dominant-baseline="middle">square miter</text>
+  <text x="69.5" y="39.2" dominant-baseline="middle">corner at 56, 32</text>
+  <text x="12" y="74" text-anchor="middle">8 stroke</text>
+  <text x="38" y="74">crossbar ends at x = 34</text>
+  <text x="19.5" y="23">r 6 centerline</text>
+  <text x="19.5" y="26.2">r 10 outer</text>
+  <text x="19.5" y="29.4">r 2 inner</text>
+</svg></div>
+      <dl class="ruled mt-5">
+        <div class="row"><dt>Stroke</dt><dd>8 units on a 64 grid, one eighth of the box. Butt caps, miter joins. Outer bounds 8..56 on both axes.</dd></div>
+        <div class="row"><dt>Corners</dt><dd>Three corners are true arcs of radius 6 on the centerline: 10 outer, 2 inner. The fourth, where the right stem meets the crossbar at (52, 36), is a square miter whose outer corner sits at (56, 32), echoing the square point.</dd></div>
+        <div class="row"><dt>Point and gap</dt><dd>The top stroke ends with a butt cap at x = 40. The point occupies x 48..56, y 8..16: exactly the band the missing corner would fill. The gap between stroke and point is 8 units, one stroke width, 2 px at 16 px, so it never closes on fractional device-pixel ratios.</dd></div>
+        <div class="row"><dt>Crossbar and mouth</dt><dd>The crossbar enters at y = 36 and stops at x = 34, just past the center of the counter. The mouth, from the point's bottom at y = 16 to the stem's top at y = 32, is 16 units: generous at every size.</dd></div>
+        <div class="row"><dt>Grid</dt><dd>Every coordinate sits on a 2-unit grid. Rendered at 16, 20, 24, 32, 64 and 200 px the strokes land on whole or half pixels.</dd></div>
+      </dl>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">Clear space and minimum sizes</h3>
+      <div class="two-up mt-4">
+        <div>
+          <svg class="clearspace" viewBox="-20 -20 104 104" width="320" height="320" role="img" aria-labelledby="cs-t cs-d">
+  <title id="cs-t">Clear space around the mark</title>
+  <desc id="cs-d">A dashed band one stroke width wide, marked x, surrounds the mark's box on all four sides. Nothing enters the band.</desc>
+  <rect x="-8" y="-8" width="80" height="80" fill="none" stroke="var(--rule-strong)" stroke-width=".4" stroke-dasharray="2 2"/>
+  <rect x="0" y="0" width="64" height="64" fill="none" stroke="var(--rule)" stroke-width=".4"/>
+  <rect x="-8" y="-8" width="8" height="8" fill="var(--ink-2)"/>
+  <text x="-4" y="-3.8" text-anchor="middle" dominant-baseline="middle">x</text>
+  <text x="32" y="-3.8" text-anchor="middle" dominant-baseline="middle">x</text>
+  <text x="32" y="68.2" text-anchor="middle" dominant-baseline="middle">x</text>
+  <text x="-4" y="32.2" text-anchor="middle" dominant-baseline="middle">x</text>
+  <text x="68" y="32.2" text-anchor="middle" dominant-baseline="middle">x</text>
+  <path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" fill="none" stroke="var(--paper)" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/>
+  <rect x="48" y="8" width="8" height="8" fill="var(--paper)"/>
+</svg>
+          <p class="note fig-cap">x = one stroke width = one eighth of the mark's height. Nothing enters the band.</p>
+        </div>
+        <div>
+          <div class="prose">
+            <p class="muted">Clear space on every side is one stroke width at the rendered size, one eighth of the mark's height: 2 px at 16 px, 8 px at 64 px, 25 px at 200 px. Nothing enters it. The wordmark's gap in a lockup is defined separately and is always larger than the clear space.</p>
+          </div>
+          <dl class="ruled mt-5">
+            <div class="row"><dt>Mark alone</dt><dd><div class="minsize"><svg width="16" height="16" aria-hidden="true"><use href="#g-favicon"/></svg><span>16 px minimum, and only as the favicon cut.</span></div></dd></div>
+            <div class="row"><dt>Mark in a lockup</dt><dd><div class="minsize"><svg width="20" height="20" aria-hidden="true"><use href="#g-mark"/></svg><span>20 px minimum, the nav size.</span></div></dd></div>
+            <div class="row"><dt>Lockup width</dt><dd>110 px minimum, from the mark's left edge to the wordmark's last letter.</dd></div>
+          </dl>
+          <p class="small mt-4">The mark never ships alone except as the favicon and the seal. On the page it always has the wordmark next to it or beneath it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================== 03 Lockups -->
+<section class="sec" id="lockups" aria-labelledby="lockups-h">
+  <div class="sec-rule"><span class="sec-no">03</span></div>
+  <aside class="margin" aria-hidden="true">
+    <span class="eyebrow">03</span>
+    <span class="eyebrow">Lockups</span>
+    <span class="footnote">Build the lockup inline: SVG mark plus HTML text in Geist. Never embed logo-lockup.svg as an image.</span>
+  </aside>
+  <div class="text">
+    <p class="eyebrow sec-line">03 / Lockups</p>
+    <h2 class="h2" id="lockups-h">The mark never ships alone.</h2>
+    <p class="lead">Mark, a gap of half the mark's height, then the wordmark in Geist 500, uppercase, tracked .16em. The wordmark's cap height is centered on the center of the mark's box; the crossbar sits slightly below the cap midline, which is correct optically.</p>
+    <dl class="ruled ruled-wide">
+      <div class="row">
+        <dt>Nav<span class="sub">mark 20 · gap 10 · Geist 500 13 · .16em</span></dt>
+        <dd><a class="lockup lockup-nav" href="index.html" aria-label="GUARDIAN, nav lockup, links to the site"><svg viewBox="0 0 64 64" width="20" height="20" aria-hidden="true" fill="none"><path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" stroke="currentColor" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/><rect class="point" x="48" y="8" width="8" height="8" fill="currentColor"/></svg><span class="wordmark">GUARDIAN</span></a>
+        <p class="small mt-3">Links to the top of the page. On hover the point lifts 2 px up and 2 px right over 200 ms and returns on leave: the only time the mark moves. Under reduced motion it does not.</p></dd>
+      </div>
+      <div class="row">
+        <dt>Footer<span class="sub">mark 28 · gap 14 · Geist 500 16 · .16em</span></dt>
+        <dd><span class="lockup lockup-footer"><svg width="28" height="28" aria-hidden="true"><use href="#g-mark"/></svg><span class="wordmark">GUARDIAN</span></span></dd>
+      </div>
+      <div class="row">
+        <dt>Large, stacked<span class="sub">mark 200 · gap 24 · Geist 500 28 · .22em · centered</span></dt>
+        <dd><span class="lockup lockup-stack"><svg width="200" height="200" aria-hidden="true"><use href="#g-mark"/></svg><span class="wordmark">GUARDIAN</span></span>
+        <p class="small mt-4">Trust and social contexts, the future OG image. The stacked lockup is the one centered element in the system; a stacked footer variant uses a gap of 0.75 × the mark's height.</p></dd>
+      </div>
+    </dl>
+    <p class="small mt-4">No ligatures, never italic, never "Guardian". Minimum lockup width 110 px. The wordmark is live text so it matches the page's rendering; the SVG lockup file exists for documents, not for pages.</p>
+
+    <div class="block">
+      <h3 class="h3">The seal</h3>
+      <p class="small">Avatars, the Telegram bot, social. The mark scaled to 60% inside a 1 px hairline circle, 64 viewBox. For raster exports, a solid ink disc with the mark in paper.</p>
+      <div class="seal-row mt-4">
+        <div class="mark-item"><svg width="96" height="96" aria-hidden="true"><use href="#g-seal"/></svg><span class="eyebrow">96 px</span></div>
+        <div class="mark-item"><svg width="64" height="64" aria-hidden="true"><use href="#g-seal"/></svg><span class="eyebrow">64 px</span></div>
+        <div class="mark-item"><svg width="32" height="32" aria-hidden="true"><use href="#g-seal"/></svg><span class="eyebrow">32 px</span></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">The favicon</h3>
+      <p class="small">A dedicated 16–32 px cut, not a scaled master: an ink tile with radius 12/64, the mark inset to a 40-unit box so the strokes stay 2 px at 16 px, point 2 px, gap 2 px, mouth 3 px. Colors are hard-coded because a favicon cannot inherit <span class="mono">currentColor</span>. One tile for both light and dark chrome.</p>
+      <div class="chrome chrome-light mt-4" role="img" aria-label="The favicon at 16 px in a light browser tab, and at 32 px as a shortcut tile">
+        <div class="tab"><svg width="16" height="16" aria-hidden="true"><use href="#g-favicon"/></svg><span>GUARDIAN — Nothing gets signed unread.</span></div>
+        <div class="tile"><svg width="32" height="32" aria-hidden="true"><use href="#g-favicon"/></svg></div>
+      </div>
+      <div class="chrome chrome-dark" role="img" aria-label="The favicon at 16 px in a dark browser tab, and at 32 px as a shortcut tile">
+        <div class="tab"><svg width="16" height="16" aria-hidden="true"><use href="#g-favicon"/></svg><span>GUARDIAN — Nothing gets signed unread.</span></div>
+        <div class="tile"><svg width="32" height="32" aria-hidden="true"><use href="#g-favicon"/></svg></div>
+      </div>
+      <p class="note mt-3">Light and dark chrome · 16 px in the tab · 32 px in the shortcut tile · wired as a data URI in the head, see 09.</p>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">The caret</h3>
+      <p class="small">GUARDIAN's proofreading mark, "insert here". It is not the logo and never appears in the lockup. It appears in exactly three places.</p>
+      <div class="demo-row mt-4">
+        <svg class="caret" width="56" height="42" aria-hidden="true"><use href="#g-caret"/></svg>
+        <span class="m-mono muted">viewBox 0 0 16 12 · 14 × 10 at rest · stroke 1.5 · round joins and caps · currentColor</span>
+      </div>
+      <dl class="ruled ruled-wide mt-5 caret-uses">
+        <div class="row">
+          <dt>1 · Reading cursor</dt>
+          <dd>A 1 px paper rule across the READ column with the caret at its left end, pushed up against the current row. It points up: GUARDIAN is inserting its reading under the line.
+            <div class="demo cursor-demo"><svg class="caret" width="14" height="10" aria-hidden="true"><use href="#g-caret"/></svg><p class="m-mono muted">4 &nbsp;Token.SetAuthority · new_authority: 3kvc…rmjA</p></div>
+          </dd>
+        </div>
+        <div class="row">
+          <dt>2 · FAQ disclosure</dt>
+          <dd>Rotated 180°, pointing down, when closed; upright when open; 200 ms.
+            <div class="demo demo-row">
+              <span class="menu-demo">Closed <svg class="caret caret-down" width="14" height="10" aria-hidden="true"><use href="#g-caret"/></svg></span>
+              <span class="menu-demo">Open <svg class="caret" width="14" height="10" aria-hidden="true"><use href="#g-caret"/></svg></span>
+            </div>
+          </dd>
+        </div>
+        <div class="row">
+          <dt>3 · Mobile menu</dt>
+          <dd>The nav's disclosure below 840 px, same behavior as the FAQ glyph.
+            <div class="demo"><span class="menu-demo">Menu <svg class="caret caret-down" width="14" height="10" aria-hidden="true"><use href="#g-caret"/></svg></span></div>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================== 04 Misuse -->
+<section class="sec" id="misuse" aria-labelledby="misuse-h">
+  <div class="sec-rule"><span class="sec-no">04</span></div>
+  <aside class="margin" aria-hidden="true">
+    <span class="eyebrow">04</span>
+    <span class="eyebrow">Misuse</span>
+    <span class="footnote">The one place on this page where red is correct.</span>
+  </aside>
+  <div class="text">
+    <p class="eyebrow sec-line">04 / Misuse</p>
+    <h2 class="h2" id="misuse-h">Six ways to get it wrong.</h2>
+    <p class="lead">Misuse is the one place on this page where red is correct. Each example below is wrong, and the pen says so.</p>
+    <div class="misuse">
+      <figure class="mis">
+        <figcaption>✕ Not red<span class="why">The pen is reserved for things that are wrong. A red mark looks like an alarm.</span></figcaption>
+        <div class="mis-plate"><svg class="mis-red" viewBox="0 0 64 64" aria-hidden="true"><use href="#g-mark"/></svg></div>
+      </figure>
+      <figure class="mis">
+        <figcaption>✕ Not rotated<span class="why">The G is set type. It stands upright, always.</span></figcaption>
+        <div class="mis-plate"><svg class="mis-rot" viewBox="0 0 64 64" aria-hidden="true"><use href="#g-mark"/></svg></div>
+      </figure>
+      <figure class="mis">
+        <figcaption>✕ Not in a shield<span class="why">No shield, no lock, no badge. The mark never says alarm.</span></figcaption>
+        <div class="mis-plate"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 55 11v19c0 15-10 26-23 31C19 56 9 45 9 30V11z" fill="none" stroke="var(--rule-strong)" stroke-width="1.5"/><g transform="translate(32 33) scale(.5) translate(-32 -32)"><use href="#g-mark"/></g></svg></div>
+      </figure>
+      <figure class="mis">
+        <figcaption>✕ No shadow, no glow<span class="why">The system has no shadows and no blur. The mark sits flat on ink.</span></figcaption>
+        <div class="mis-plate"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><filter id="mis-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.5"/></filter></defs><g class="mis-shadow" filter="url(#mis-blur)" transform="translate(5 6)"><use href="#g-mark"/></g><use href="#g-mark"/></svg></div>
+      </figure>
+      <figure class="mis">
+        <figcaption>✕ Not two-tone, no gradient<span class="why">One color for the strokes and the point. No outline-only version either.</span></figcaption>
+        <div class="mis-plate"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="mis-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" class="stop-a"/><stop offset="1" class="stop-b"/></linearGradient></defs><path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" fill="none" stroke="url(#mis-grad)" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/><rect class="mis-tone" x="48" y="8" width="8" height="8"/></svg></div>
+      </figure>
+      <figure class="mis">
+        <figcaption>✕ Not alone<span class="why">Outside the favicon and the seal, the wordmark is always next to it or beneath it.</span></figcaption>
+        <div class="mis-plate"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#g-mark"/></svg></div>
+      </figure>
+    </div>
+    <p class="small mt-5">Also never: animate the stroke drawing itself, place the mark in a rounded square other than the favicon tile, set the wordmark in italics, or set "Guardian" in mixed case.</p>
+  </div>
+</section>
+
+<!-- ===================================================================== 05 Color -->
+<section class="sec" id="color" aria-labelledby="color-h">
+  <div class="sec-rule"><span class="sec-no">05</span></div>
+  <aside class="margin" aria-hidden="true">
+    <span class="eyebrow">05</span>
+    <span class="eyebrow">Color</span>
+    <span class="footnote">Every value is in design/tokens.css. Ratios computed, not estimated.</span>
+  </aside>
+  <div class="text">
+    <p class="eyebrow sec-line">05 / Color</p>
+    <h2 class="h2" id="color-h">Ink, paper, and one red pen.</h2>
+    <p class="lead">Eleven values. Nine of them are grey. The tenth and the eleventh are the pen and its wash, and they appear only where something is wrong.</p>
+
+    <div class="swatches">
+      <div class="row"><span class="sw" style="background:var(--ink-0)"></span><span class="tok">--ink-0</span><span class="hex">#0A0A0B</span><span class="role">Page background. Warm near-black, never #000.</span></div>
+      <div class="row"><span class="sw" style="background:var(--ink-1)"></span><span class="tok">--ink-1</span><span class="hex">#121214</span><span class="role">Raised surface: the demo panel, code, inputs, the message card.</span></div>
+      <div class="row"><span class="sw" style="background:var(--ink-2)"></span><span class="tok">--ink-2</span><span class="hex">#1A1A1D</span><span class="role">Hover and active rows and tabs, expanded-row insets. Never decorative.</span></div>
+      <div class="row"><span class="sw" style="background:var(--rule)"></span><span class="tok">--rule</span><span class="hex">#2A2A2E</span><span class="role">Decorative hairlines only: section rules, table rows. 1.38:1, exempt from AA.</span></div>
+      <div class="row"><span class="sw" style="background:var(--rule-strong)"></span><span class="tok">--rule-strong</span><span class="hex">#626268</span><span class="role">Boundaries that must be perceivable: input borders, ghost buttons, meaningful diagram strokes, the tab track. 3.27:1 on ink-0.</span></div>
+      <div class="row"><span class="sw" style="background:var(--paper)"></span><span class="tok">--paper</span><span class="hex">#EDEBE6</span><span class="role">Primary text, headlines, the CLEAR chip outline, the cursor rule, the logo.</span></div>
+      <div class="row"><span class="sw" style="background:var(--paper-2)"></span><span class="tok">--paper-2</span><span class="hex">#A8A6A0</span><span class="role">Secondary text, body on panels, check glyphs.</span></div>
+      <div class="row"><span class="sw" style="background:var(--paper-3)"></span><span class="tok">--paper-3</span><span class="hex">#85837E</span><span class="role">Eyebrows, metadata, footnotes. 12 px minimum. Never on ink-2.</span></div>
+      <div class="row"><span class="sw" style="background:var(--paper-hi)"></span><span class="tok">--paper-hi</span><span class="hex">#FFFFFF</span><span class="role">Primary button hover fill, and nothing else.</span></div>
+      <div class="row"><span class="sw" style="background:var(--pen)"></span><span class="tok">--pen</span><span class="hex">#FF5A4E</span><span class="role">Everything that is wrong. Text on a pen fill is always ink-0.</span></div>
+      <div class="row"><span class="sw" style="background:var(--pen-wash)"></span><span class="tok">--pen-wash</span><span class="hex">#2A1512</span><span class="role">The solid tint behind a flagged row or a margin note. Opacity-free, so it survives screenshots.</span></div>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">Where the pen goes</h3>
+      <div class="ledger-wrap">
+        <table class="ledger ledger-min">
+          <caption class="sr-only">Where red is correct and where it is never used</caption>
+          <thead><tr><th scope="col">Red is correct</th><th scope="col">Red is never</th></tr></thead>
+          <tbody>
+            <tr><td class="prose-cell hi">A flagged instruction and the underline beneath its argument.</td><td class="prose-cell">A call to action. CTAs are paper.</td></tr>
+            <tr><td class="prose-cell hi">A simulation cell that disagrees with the declared intent.</td><td class="prose-cell">The logo, the favicon, the seal.</td></tr>
+            <tr><td class="prose-cell hi">A Blocked or Caution chip, and the margin note under a flagged row.</td><td class="prose-cell">Decoration, "brand", a hover state.</td></tr>
+            <tr><td class="prose-cell hi">A form error, after a submit attempt only.</td><td class="prose-cell">Section numbers and running titles.</td></tr>
+            <tr><td class="prose-cell hi">The single flagged node in a diagram.</td><td class="prose-cell">The "you are here" marker and the roadmap glyphs.</td></tr>
+            <tr><td class="prose-cell hi">The full stop of the hero sentence: the editor's mark.</td><td class="prose-cell">Anything that is simply important. Important is paper.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">Contrast ledger</h3>
+      <p class="small">Computed from the hex values with the WCAG 2.x relative-luminance formula, rounded to two decimals. Every text pair passes AA at 4.5:1 on every ink surface.</p>
+      <div class="ledger-wrap mt-4">
+        <table class="ledger ledger-min ledger-nums">
+          <caption class="sr-only">Contrast ratios of each foreground token on each ink surface</caption>
+          <thead><tr><th scope="col">Foreground</th><th scope="col">on ink-0</th><th scope="col">on ink-1</th><th scope="col">on ink-2</th><th scope="col">on pen-wash</th><th scope="col">Use</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><span class="mono">--paper</span></th><td class="hi">16.61</td><td>15.71</td><td>14.57</td><td>14.51</td><td class="wrap">primary text, headlines, CLEAR chip outline, cursor rule</td></tr>
+            <tr><th scope="row"><span class="mono">--paper-2</span></th><td class="hi">8.13</td><td>7.69</td><td>7.13</td><td>7.10</td><td class="wrap">secondary text, body on panels, check glyphs</td></tr>
+            <tr><th scope="row"><span class="mono">--paper-3</span></th><td class="hi">5.23</td><td>4.94</td><td>4.58</td><td>4.57</td><td class="wrap">eyebrows, metadata, footnotes, 12 px minimum</td></tr>
+            <tr><th scope="row"><span class="mono">--pen</span></th><td class="hi">6.43</td><td>6.08</td><td>5.64</td><td>5.62</td><td class="wrap">everything that is wrong</td></tr>
+            <tr><th scope="row"><span class="mono">--rule-strong</span></th><td>3.27</td><td>3.09</td><td>2.87</td><td>2.85</td><td class="wrap">perceivable UI boundaries, which need 3:1 (WCAG 1.4.11). Not on ink-2</td></tr>
+            <tr><th scope="row"><span class="mono">--rule</span></th><td>1.38</td><td>1.31</td><td>1.21</td><td>1.21</td><td class="wrap">decorative hairlines only, exempt</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ledger-wrap mt-5">
+        <table class="ledger ledger-nums">
+          <caption class="sr-only">Ink on a fill</caption>
+          <thead><tr><th scope="col">Ink on a fill</th><th scope="col">Ratio</th><th scope="col">Use</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><span class="mono">--ink-0</span> on <span class="mono">--paper</span></th><td class="hi">16.61</td><td class="wrap">primary button text</td></tr>
+            <tr><th scope="row"><span class="mono">--ink-0</span> on <span class="mono">--paper-hi</span></th><td>19.79</td><td class="wrap">primary button hover</td></tr>
+            <tr><th scope="row"><span class="mono">--ink-0</span> on <span class="mono">--pen</span></th><td class="hi">6.43</td><td class="wrap">BLOCKED chip text, the only text on a red fill</td></tr>
+            <tr><th scope="row"><span class="mono">--paper</span> on <span class="mono">--pen</span></th><td>2.58</td><td class="wrap">never. Text on a pen fill is always ink</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small mt-3">On the paper plate in 02, labels are set in <span class="mono">--rule-strong</span>: 5.09:1 on paper. <span class="mono">--paper-3</span> on paper is 3.07:1 and is not used for text.</p>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">Aliases</h3>
+      <p class="small">Components use the aliases. The demo uses <span class="mono">--pen</span> and <span class="mono">--pen-wash</span> directly.</p>
+      <div class="ledger-wrap mt-4">
+        <table class="ledger">
+          <caption class="sr-only">Semantic aliases and the tokens they point to</caption>
+          <thead><tr><th scope="col">Alias</th><th scope="col">Points to</th><th scope="col">Use</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><span class="mono">--bg · --surface · --surface-2</span></th><td>ink-0 · ink-1 · ink-2</td><td class="wrap">page, raised surface, hover and insets</td></tr>
+            <tr><th scope="row"><span class="mono">--border · --border-strong</span></th><td>rule · rule-strong</td><td class="wrap">decorative hairlines, perceivable boundaries</td></tr>
+            <tr><th scope="row"><span class="mono">--text · --text-muted · --text-faint</span></th><td>paper · paper-2 · paper-3</td><td class="wrap">primary, secondary, metadata</td></tr>
+            <tr><th scope="row"><span class="mono">--accent · --accent-hover</span></th><td>paper · paper-hi</td><td class="wrap">there is no brand accent color: CTAs are paper</td></tr>
+            <tr><th scope="row"><span class="mono">--danger · --danger-bg</span></th><td>pen · pen-wash</td><td class="wrap">form errors, flagged rows</td></tr>
+            <tr><th scope="row"><span class="mono">--verdict-blocked · --verdict-caution</span></th><td>pen · pen</td><td class="wrap">filled chip and 2 px solid underline · outlined chip and 1 px dotted underline</td></tr>
+            <tr><th scope="row"><span class="mono">--verdict-clear</span></th><td>paper</td><td class="wrap">outlined chip, paper text, no underline</td></tr>
+            <tr><th scope="row"><span class="mono">--focus</span></th><td>paper</td><td class="wrap">2 px solid, 3 px offset, every interactive element</td></tr>
+            <tr><th scope="row"><span class="mono">--selection-bg · --selection-fg</span></th><td>paper · ink-0</td><td class="wrap">text selection</td></tr>
+            <tr><th scope="row"><span class="mono">--logo</span></th><td>paper</td><td class="wrap">paper on ink or ink on paper, never the pen</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block">
+      <p class="eyebrow">The one rule, restated</p>
+      <p class="tier mt-3">The only color on the site is the one we use to say no.</p>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">Verdict chips</h3>
+      <p class="small">Inline, mono 12 px uppercase, tracking .08em, 24 px tall, 8 px side padding, radius 2 px, always followed by the rule id in mono. The word is always present; color and weight never carry the state alone.</p>
+      <dl class="ruled ruled-wide mt-4">
+        <div class="row">
+          <dt><span class="chip chip-blocked">Blocked</span><span class="rule-id">R-021</span></dt>
+          <dd><span class="mono">--pen</span> fill, <span class="mono">--ink-0</span> text. Pairs with a 2 px solid pen underline under the flagged argument:<br><span class="m-mono mt-2" style="display:inline-block">new_authority: <span class="u-blocked">3kvc…rmjA</span></span></dd>
+        </div>
+        <div class="row">
+          <dt><span class="chip chip-caution">Caution</span><span class="rule-id">R-003</span></dt>
+          <dd>Transparent, 1 px <span class="mono">--pen</span> border, <span class="mono">--pen</span> text. Pairs with a 1 px dotted pen underline:<br><span class="m-mono mt-2" style="display:inline-block">amount: <span class="u-caution">18446744073709551615</span></span></dd>
+        </div>
+        <div class="row">
+          <dt><span class="chip chip-clear">Clear</span><span class="rule-id">0 findings</span></dt>
+          <dd>Transparent, 1 px <span class="mono">--paper</span> border, <span class="mono">--paper</span> text. No underline anywhere. A Clear verdict describes a payload, not an investment.</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================== 06 Typography -->
+<section class="sec" id="type" aria-labelledby="type-h">
+  <div class="sec-rule"><span class="sec-no">06</span></div>
+  <aside class="margin" aria-hidden="true">
+    <span class="eyebrow">06</span>
+    <span class="eyebrow">Typography</span>
+    <span class="footnote">All three families from Google Fonts, all variable, one request.</span>
+  </aside>
+  <div class="text">
+    <p class="eyebrow sec-line">06 / Typography</p>
+    <h2 class="h2" id="type-h">Three families, three jobs.</h2>
+    <p class="lead">A serif that states facts, a sans that explains them, a mono for anything that is literally on-chain. Nothing on the page is smaller than 12 px, and body text stays 17 px at every viewport.</p>
+
+    <div class="ledger-wrap">
+      <table class="ledger ledger-min">
+        <caption class="sr-only">The three families, their loaded axes and where each is used</caption>
+        <thead><tr><th scope="col">Role</th><th scope="col">Family</th><th scope="col">Axis, weights loaded</th><th scope="col">Where</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Display</th><td class="hi">Newsreader</td><td>opsz 6..72 · wght 400..500 · upright only</td><td class="wrap">H1, H2, pricing tier names, the sparse act</td></tr>
+          <tr><th scope="row">Body</th><td class="hi">Geist</td><td>wght 400..500</td><td class="wrap">body, lead, H3, UI labels, nav, buttons, forms, FAQ, tables</td></tr>
+          <tr><th scope="row">Mono</th><td class="hi">Geist Mono</td><td>wght 400</td><td class="wrap">eyebrows, section numbers, instruction names, addresses, amounts, rule samples, demo rows, code, captions, status line</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure class="codefig mt-5">
+      <div class="code-head"><span class="eyebrow">&lt;head&gt; · fonts</span><span class="eyebrow">one request · display=swap</span></div>
+      <pre class="code"><code><span class="ln">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="ln">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="ln">&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..500&amp;family=Geist:wght@400..500&amp;family=Geist+Mono:wght@400&amp;display=swap"&gt;</span></code></pre>
+      <figcaption class="note mt-3">Keep it exactly in this form so only the used ranges download. Budget: under 160 KB of font bytes on first load.</figcaption>
+    </figure>
+
+    <div class="block">
+      <h3 class="h3">Specimens</h3>
+      <div class="specimen">
+        <span class="eyebrow">Newsreader 450 · opsz 48 · clamp(42, 8vw, 104) / 0.98 · −0.025em · --t-h1 · the hero sentence only</span>
+        <p class="h1 sp-h1">Nothing gets signed unread<span class="stop">.</span></p>
+      </div>
+      <div class="specimen">
+        <span class="eyebrow">Newsreader 450 · opsz 48 · clamp(32, 4.6vw, 56) / 1.05 · −0.015em · --t-h2 · section headlines, the sparse act</span>
+        <p class="h2 sp-h2">Your wallet shows you a button. The chain executes the payload.</p>
+      </div>
+      <div class="specimen">
+        <span class="eyebrow">Newsreader 500 · opsz 32 · 32 / 1.1 · --t-tier · pricing tier names</span>
+        <p class="tier">Pro</p>
+        <p class="m-mono muted">0.1 SOL per month</p>
+      </div>
+      <div class="specimen">
+        <span class="eyebrow">Geist 500 · 24 / 1.25 · −0.01em · --t-h3 · sub-headlines inside sections</span>
+        <p class="h3 sp-h3">Six instructions that empty wallets</p>
+      </div>
+      <div class="specimen">
+        <span class="eyebrow">Geist 400 · 21 / 1.45 · --t-lead · paper-2 · measure 56ch</span>
+        <p class="lead sp-lead">GUARDIAN decodes and simulates every Solana transaction before you sign, compares what the page says with what the payload does, and tells you in one sentence when they disagree. It never sees your keys.</p>
+      </div>
+      <div class="specimen">
+        <span class="eyebrow">Geist 400 · 17 / 1.6 · --t-body · paper for primary paragraphs, paper-2 on panels · measure 62ch</span>
+        <div class="prose"><p>Decoding and simulation happen on your machine, against the RPC you configure. The decoded transaction and its simulated effects, never a key, go to the agent, which runs inside a trusted execution environment and returns the verdict with its rule id. If the agent is unreachable, your wallet behaves as before and shows an "unverified" state. Fail-open is deliberate.</p></div>
+      </div>
+      <div class="specimen">
+        <span class="eyebrow">Geist 400 · 14 / 1.5 · --t-small · paper-3 or paper-2 · proof lines, captions, footnotes, footer</span>
+        <p class="small">Phantom, Solflare, Backpack · Free tier stays free · One email, when your wallet is up.</p>
+      </div>
+      <div class="specimen">
+        <span class="eyebrow">Geist Mono 400 · 13.5 / 1.6 · --t-mono · tabular numerals · addresses, instruction lines, amounts</span>
+        <p class="sp-mono">signer <span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></p>
+        <p class="sp-mono mt-2">4 &nbsp;Token.SetAuthority · account: <span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> · authority_type: AccountOwner · new_authority: <span class="addr" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span></p>
+        <div class="amounts mt-4">
+          <span class="k">SOL</span><span>−12.5</span>
+          <span class="k">USDC</span><span>+2,431.18</span>
+          <span class="k">fee</span><span>−0.000005</span>
+          <span class="k">u64::MAX</span><span>18446744073709551615</span>
+        </div>
+      </div>
+      <div class="specimen last">
+        <span class="eyebrow">Geist Mono 400 · 12.5 / 1.5 · --t-mono-sm · margin notes, expanded-row insets, the demo caption</span>
+        <p class="sp-mono sp-mono-sm">R-021 · 3kvc…rmjA · SlowMist malicious-address DB · added 2026-09-14 · drainer · 212 reports</p>
+        <p class="sp-mono sp-mono-sm mt-2">Replayed from beta fixtures · build 0.4 · addresses are fixture keys, not live accounts</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">The scale</h3>
+      <p class="small">Rhythm on an 8 px grid: headline margin-bottom 0.5em, lead margin-bottom 40 px, paragraph gap 16 px, H3 to body 12 px. <span class="mono">font-feature-settings: "tnum"</span> wherever a number sits in a table, a diff or a spec list.</p>
+      <div class="ledger-wrap mt-4">
+        <table class="ledger ledger-min ledger-scale">
+          <caption class="sr-only">The type scale: token, size and line-height, family and weight, color, use</caption>
+          <colgroup><col class="c-token"><col class="c-size"><col class="c-family"><col class="c-color"><col></colgroup>
+          <thead><tr><th scope="col">Token</th><th scope="col">Size / line-height</th><th scope="col">Family, weight, tracking</th><th scope="col">Color</th><th scope="col">Used for</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><span class="mono">--t-h1</span></th><td>clamp(42, 8vw, 104) / 0.98</td><td>Newsreader 450, opsz 48, −0.025em</td><td>paper</td><td class="wrap">hero sentence only</td></tr>
+            <tr><th scope="row"><span class="mono">--t-h2</span></th><td>clamp(32, 4.6vw, 56) / 1.05</td><td>Newsreader 450, opsz 48, −0.015em</td><td>paper</td><td class="wrap">section headlines, the sparse act, waitlist H2</td></tr>
+            <tr><th scope="row"><span class="mono">--t-tier</span></th><td>32 / 1.1</td><td>Newsreader 500, opsz 32</td><td>paper</td><td class="wrap">pricing tier names</td></tr>
+            <tr><th scope="row"><span class="mono">--t-h3</span></th><td>24 / 1.25</td><td>Geist 500, −0.01em</td><td>paper</td><td class="wrap">sub-headlines inside sections</td></tr>
+            <tr><th scope="row"><span class="mono">--t-lead</span></th><td>21 / 1.45</td><td>Geist 400</td><td>paper-2</td><td class="wrap">hero lead, section intros; max-width 56ch</td></tr>
+            <tr><th scope="row"><span class="mono">--t-body</span></th><td>17 / 1.6</td><td>Geist 400</td><td>paper-2 on panels · paper for primary paragraphs</td><td class="wrap">body; max-width 62ch</td></tr>
+            <tr><th scope="row"><span class="mono">--t-small</span></th><td>14 / 1.5</td><td>Geist 400</td><td>paper-3 or paper-2</td><td class="wrap">proof line, captions, footnotes, footer, table footnotes</td></tr>
+            <tr><th scope="row"><span class="mono">--t-ui</span></th><td>14 / 1</td><td>Geist 500</td><td>paper-2, paper on hover</td><td class="wrap">nav links, buttons; tab labels are mono</td></tr>
+            <tr><th scope="row"><span class="mono">--t-eyebrow</span></th><td>12 / 1.4</td><td>Geist Mono 400, uppercase, +0.14em</td><td>paper-3</td><td class="wrap">eyebrows, running heads, section numbers, table column heads</td></tr>
+            <tr><th scope="row"><span class="mono">--t-mono</span></th><td>13.5 / 1.6 · 12.5 under 400 px</td><td>Geist Mono 400, tabular-nums</td><td>per context</td><td class="wrap">demo rows, diff cells, code, ledger cells, addresses, tab labels, spec lists</td></tr>
+            <tr><th scope="row"><span class="mono">--t-mono-sm</span></th><td>12.5 / 1.5</td><td>Geist Mono 400</td><td>pen on pen-wash, paper-3</td><td class="wrap">margin notes, expanded-row insets, demo caption</td></tr>
+            <tr><th scope="row">FAQ question</th><td>20 / 1.35</td><td>Geist 500</td><td>paper</td><td class="wrap">summary text</td></tr>
+            <tr><th scope="row">FAQ answer</th><td>17 / 1.6</td><td>Geist 400</td><td>paper-2</td><td class="wrap">the answer</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">Display craft</h3>
+      <p class="small">A high-contrast serif on near-black blooms: thin hairlines sparkle and break. Therefore:</p>
+      <dl class="ruled mt-4">
+        <div class="row"><dt>Weight</dt><dd>450 for H1 and H2 on the variable axis; 500 for tier names and the sparse act at 32–40 px.</dd></div>
+        <div class="row"><dt>Optical size</dt><dd><span class="mono">font-optical-sizing: none; font-variation-settings: "opsz" 48</span> for H1 and H2. Do not let the browser pick opsz 72 at 104 px.</dd></div>
+        <div class="row"><dt>Tracking</dt><dd>H1 −0.025em, H2 −0.015em. Never looser.</dd></div>
+        <div class="row"><dt>Italics</dt><dd>None loaded, none synthesized: <span class="mono">font-synthesis: none</span> on <span class="mono">html</span>. Emphasis is a sentence break, a mono span, or a hairline.</dd></div>
+        <div class="row"><dt>Rendering</dt><dd><span class="mono">text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased</span> on <span class="mono">html</span>. Fallback faces carry <span class="mono">size-adjust</span> and ascent overrides so the hero keeps its line count with the fonts blocked: CLS target 0.</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================== 07 Voice -->
+<section class="sec" id="voice" aria-labelledby="voice-h">
+  <div class="sec-rule"><span class="sec-no">07</span></div>
+  <aside class="margin" aria-hidden="true">
+    <span class="eyebrow">07</span>
+    <span class="eyebrow">Voice</span>
+    <span class="footnote">Short declaratives. Full stops. The instruction name, not the metaphor.</span>
+  </aside>
+  <div class="text">
+    <p class="eyebrow sec-line">07 / Voice</p>
+    <h2 class="h2" id="voice-h">State the mechanism, not the feeling.</h2>
+    <p class="lead">The product never raises its voice. It names the instruction, cites the rule, gives the number with its unit and its source, and admits the limit in the same breath as the claim.</p>
+
+    <dl class="ruled">
+      <div class="row"><dt>01</dt><dd><span class="lead-in">State the mechanism, not the feeling.</span> "Runs <span class="mono">simulateTransaction</span> against the RPC you configure", never "keeps you safe".</dd></div>
+      <div class="row"><dt>02</dt><dd><span class="lead-in">Prefer the instruction name to the metaphor.</span> If a metaphor is used, the instruction name follows in the same sentence.</dd></div>
+      <div class="row"><dt>03</dt><dd><span class="lead-in">Short declarative sentences.</span> Full stops. No exclamation marks. No rhetorical questions in body copy; FAQ questions are questions, that is fine.</dd></div>
+      <div class="row"><dt>04</dt><dd><span class="lead-in">Every number carries its unit and its source.</span> "$494M across chains in 2024 (ScamSniffer, 2024 annual report)."</dd></div>
+      <div class="row"><dt>05</dt><dd><span class="lead-in">Admit the limit in the same breath as the claim.</span> "Blocked is advice, not a lock."</dd></div>
+      <div class="row"><dt>06</dt><dd><span class="lead-in">Banned words.</span> The list is below. There are no exceptions for quotes, testimonials or partner copy.</dd></div>
+      <div class="row"><dt>07</dt><dd><span class="lead-in">Second person, present tense.</span> The product is "GUARDIAN" or "it". "We" appears only in the waitlist section and the footer, where humans are speaking.</dd></div>
+      <div class="row"><dt>08</dt><dd><span class="lead-in">Addresses are truncated 4…4.</span> First four, ellipsis U+2026, last four, the full key in a <span class="mono">title</span> attribute, and never invented without a fixture behind them.</dd></div>
+      <div class="row"><dt>09</dt><dd><span class="lead-in">Program and instruction names are set in mono, exactly as decoded.</span> <span class="mono">System.Assign</span>, <span class="mono">Token.SetAuthority</span>, <span class="mono">Token.Approve</span>, <span class="mono">Jupiter v6.sharedAccountsRoute</span>, <span class="mono">ComputeBudget.SetComputeUnitLimit</span>.</dd></div>
+      <div class="row"><dt>10</dt><dd><span class="lead-in">GUARDIAN is always uppercase</span> in running text and the wordmark. Never "Guardian", never "guardian" except in a domain.</dd></div>
+      <div class="row"><dt>11</dt><dd><span class="lead-in">No italics anywhere.</span> Emphasis is done with a sentence break, a mono span, or a hairline.</dd></div>
+    </dl>
+
+    <div class="block">
+      <h3 class="h3">Do and don't</h3>
+      <div class="ledger-wrap">
+        <table class="ledger ledger-min">
+          <caption class="sr-only">Lines not to write, and the line to write instead</caption>
+          <thead><tr><th scope="col">Don't</th><th scope="col">Do</th></tr></thead>
+          <tbody>
+            <tr><td class="prose-cell">Keep your assets safe with next-gen protection.</td><td class="prose-cell hi">Nothing gets signed unread.</td></tr>
+            <tr><td class="prose-cell">Our AI detects threats in real time!</td><td class="prose-cell hi">It decodes and simulates every pending Solana transaction, compares what the page says with what the payload does, and tells you in one sentence when they disagree.</td></tr>
+            <tr><td class="prose-cell">Military-grade security you can trust.</td><td class="prose-cell hi">The agent that reads your transaction runs inside a TEE. Each release publishes an attestation you can verify against the binary.</td></tr>
+            <tr><td class="prose-cell">Stops drainers dead.</td><td class="prose-cell hi">Instruction 4 hands your USDC account to a flagged address. The swap pays out into an account that is no longer yours.</td></tr>
+            <tr><td class="prose-cell">Guardian blocks dangerous transactions.</td><td class="prose-cell hi">GUARDIAN never rejects a transaction. You do. A Blocked verdict is evidence, not a lock.</td></tr>
+            <tr><td class="prose-cell">Join thousands of happy users!</td><td class="prose-cell hi">We add wallets in batches of 100. Leave an address; we tell you when yours is up, and nothing else.</td></tr>
+            <tr><td class="prose-cell">Seamless integration with your favorite wallet.</td><td class="prose-cell hi">GUARDIAN is an adapter for Phantom, Solflare and Backpack. Your wallet stays your wallet.</td></tr>
+            <tr><td class="prose-cell">Oops, something went wrong.</td><td class="prose-cell hi">That doesn't look like an email address. Check for a stray space.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">Canonical lines</h3>
+      <p class="small">Reuse verbatim. Do not paraphrase a canonical line to fit a layout; change the layout.</p>
+      <dl class="ruled mt-4">
+        <div class="row"><dt>Headline</dt><dd class="hi-dd">Nothing gets signed unread.</dd></div>
+        <div class="row"><dt>Threat H2</dt><dd class="hi-dd">Your wallet shows you a button. The chain executes the payload.</dd></div>
+        <div class="row"><dt>Sparse act</dt><dd class="hi-dd">GUARDIAN never rejects a transaction. You do.</dd></div>
+        <div class="row"><dt>Button</dt><dd class="hi-dd">Join the waitlist</dd></div>
+        <div class="row"><dt>Error</dt><dd class="hi-dd">That doesn't look like an email address. Check for a stray space.</dd></div>
+        <div class="row"><dt>Success</dt><dd class="hi-dd">You're on the list. We'll write once.</dd></div>
+        <div class="row"><dt>Empty state</dt><dd class="hi-dd">No outstanding delegates or authorities. Nothing to watch.</dd></div>
+        <div class="row"><dt>Footer</dt><dd class="hi-dd">Non-custodial. Not a wallet. Never your keys.</dd></div>
+        <div class="row"><dt>Footer notice</dt><dd class="hi-dd">GUARDIAN never asks for a seed phrase or private key. If something claiming to be GUARDIAN does, it is not GUARDIAN.</dd></div>
+        <div class="row"><dt>Legal</dt><dd class="hi-dd">A Clear verdict describes a payload, not an investment.</dd></div>
+        <div class="row"><dt>Pricing</dt><dd class="hi-dd">No GUARDIAN token. There will not be one.</dd></div>
+      </dl>
+    </div>
+
+    <div class="block">
+      <h3 class="h3">Banned words</h3>
+      <p class="banned">secure · safe · safety · 100% · military-grade · revolutionary · seamless · next-gen · unlock · supercharge · frictionless · Web3 · bulletproof · cutting-edge · game-changing · trustless (as a boast) · peace of mind</p>
+      <p class="small mt-4">If one of these appears in a draft, the sentence is restating a feeling. Replace it with the mechanism: the instruction, the rule id, the number with its source.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================== 08 Components -->
+<section class="sec" id="components" aria-labelledby="components-h">
+  <div class="sec-rule"><span class="sec-no">08</span></div>
+  <aside class="margin" aria-hidden="true">
+    <span class="eyebrow">08</span>
+    <span class="eyebrow">Components</span>
+    <span class="footnote">Live examples, built with the shared classes from the site's stylesheet.</span>
+  </aside>
+  <div class="text">
+    <p class="eyebrow sec-line">08 / Components</p>
+    <h2 class="h2" id="components-h">The parts, drawn once.</h2>
+    <p class="lead">Every component below is live and uses the class it has on the site. Flat class names, no utility soup, nothing nested deeper than three levels. Focus is a 2 px paper outline with a 3 px offset on every one of them, and it is never removed.</p>
+
+    <dl class="ruled ruled-wide comp">
+      <div class="row">
+        <dt>Buttons<span class="sub">.btn · .btn-ghost</span></dt>
+        <dd>
+          <div class="demo-row">
+            <button class="btn" type="button">Join the waitlist</button>
+            <button class="btn-ghost" type="button">Read again</button>
+            <button class="btn btn-sm" type="button">Reject</button>
+            <button class="btn" type="button" disabled>Sending…</button>
+          </div>
+          <p class="small mt-4">Primary: paper fill, ink-0 text, Geist 500 14, 48 px tall, 36 px in the nav and the demo toolbar, 20 px side padding, radius 4, no border. Hover paper-hi, no movement. Ghost: transparent, 1 px rule-strong border, paper text; hover border paper. Disabled: opacity .5. Red is never a button.</p>
+        </dd>
+      </div>
+      <div class="row">
+        <dt>Text link<span class="sub">.link</span></dt>
+        <dd>
+          <p><a class="link" href="index.html">Read the transaction, row by row →</a></p>
+          <p class="small mt-4">Paper, underlined in paper-3 with a 2 px offset; on hover the offset grows to 4 px and the underline turns paper, 160 ms. The trailing arrow is text, not an icon.</p>
+        </dd>
+      </div>
+      <div class="row">
+        <dt>Email input<span class="sub">.input · rest, focus, invalid</span></dt>
+        <dd>
+          <div class="inputs">
+            <div class="field"><label class="eyebrow" for="sp-rest">Email · rest</label><input class="input" id="sp-rest" type="email" inputmode="email" autocomplete="off" placeholder="you@domain.sol"></div>
+            <div class="field"><label class="eyebrow" for="sp-focus">Email · focus</label><input class="input is-focus" id="sp-focus" type="email" inputmode="email" autocomplete="off" value="you@domain.sol"></div>
+            <div class="field"><label class="eyebrow" for="sp-invalid">Email · invalid, after submit</label><input class="input" id="sp-invalid" type="email" inputmode="email" autocomplete="off" value="you@domain .sol" aria-invalid="true" aria-describedby="sp-invalid-msg"><p class="error" id="sp-invalid-msg">That doesn't look like an email address. Check for a stray space.</p></div>
+          </div>
+          <p class="small mt-4">48 px tall, ink-1 fill, 1 px rule-strong border, radius 4, 14 px side padding, Geist 400 17 in paper, placeholder paper-3. Focus: paper border plus the ring. Invalid, after a submit attempt only: <span class="mono">aria-invalid="true"</span>, pen border, the error line below in pen 14 px with <span class="mono">role="alert"</span>. Validation never runs on keystroke.</p>
+        </dd>
+      </div>
+      <div class="row">
+        <dt>Ruled list<span class="sub">dl.ruled › .row › dt, dd</span></dt>
+        <dd>
+          <dl class="ruled">
+            <div class="row"><dt>System.Assign<span class="sub">R-014</span></dt><dd>Hands ownership of your wallet account to another program. Dressed up as "Claim airdrop".</dd></div>
+            <div class="row"><dt>Token.SetAuthority<span class="sub">R-021</span></dt><dd>Changes who owns a token account, or who can mint. Dressed up as "Swap".</dd></div>
+            <div class="row"><dt>Token.Approve<span class="sub">R-003</span></dt><dd>An unlimited delegate: the amount is <span class="mono">u64::MAX</span>. Dressed up as "Enable trading". Drained later, when you have stopped paying attention.</dd></div>
+          </dl>
+          <p class="small mt-4">A stack of rows separated by 1 px rule, the last row also ruled beneath. Each row is a grid: a 160 px mono label column, a 24 px gap, a text column at 62ch, 20 px vertical padding. The label may carry a second mono line in paper-3. Below 840 px the label stacks above the text. Used for threat exhibits, the layers, the trust facts, the verdict definitions, the roadmap items.</p>
+        </dd>
+      </div>
+      <div class="row">
+        <dt>Ledger table<span class="sub">table.ledger in .ledger-wrap</span></dt>
+        <dd>
+          <div class="ledger-wrap">
+            <table class="ledger">
+              <caption class="sr-only">Comparison excerpt: capability by wallet warnings, hosted screening APIs and GUARDIAN</caption>
+              <thead><tr><th scope="col">Capability</th><th scope="col">Built-in wallet warnings</th><th scope="col">Hosted screening APIs</th><th scope="col">GUARDIAN</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Decodes every instruction</th><td>partial¹</td><td>yes</td><td class="hi">yes</td></tr>
+                <tr><th scope="row">Simulates on your machine, against your RPC</th><td>—</td><td>—</td><td class="hi">yes</td></tr>
+                <tr><th scope="row">Diffs declared intent against the payload</th><td>—</td><td>—</td><td class="hi">yes</td></tr>
+                <tr><th scope="row">Rules you can read</th><td>—</td><td>—</td><td class="hi">Q3&nbsp;2027</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small ledger-foot">¹ For some transaction types.</p>
+          <p class="small mt-4">One table with an sr-only caption, mono column heads, row headers in Geist 400 15 paper, body cells mono 13.5 paper-2 with tabular numerals, 1 px rule on every row, 14 px vertical padding, no vertical rules, no zebra. Below 840 px the first column is sticky and the table scrolls inside its wrapper, never the page. Used for Can/Cannot, the comparison, pricing.</p>
+        </dd>
+      </div>
+      <div class="row">
+        <dt>Code block<span class="sub">pre.code › code › span.ln</span></dt>
+        <dd>
+          <figure class="codefig">
+            <div class="code-head"><span class="eyebrow">rules/R-021.rule</span><span class="eyebrow">Apache-2.0 · Q3 2027</span></div>
+            <pre class="code"><code><span class="ln">id: R-021</span>
+<span class="ln">name: token.set_authority.to_unknown</span>
+<span class="ln">severity: block</span>
+<span class="ln">when:</span>
+<span class="ln">  program: TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</span>
+<span class="ln">  instruction: SetAuthority</span>
+<span class="ln">  authority_type: AccountOwner</span>
+<span class="ln">  new_authority: not_in [signer, verified_programs, user_known]</span>
+<span class="ln say">say: "Instruction {index} hands your {mint} account to {new_authority}."</span>
+<span class="ln">tests: fixtures/R-021/set_authority_drainer.json</span>
+<span class="ln"># 23 cases · 0 false positives on the beta corpus</span></code></pre>
+          </figure>
+          <p class="small mt-4">ink-1, 1 px rule, radius 4, 20 × 24 padding, mono 13.5/1.6, line numbers by CSS counter in paper-3, horizontal scroll inside the block only. No syntax colors: the <span class="mono">say:</span> line is paper, everything else paper-2. A mono header row above it carries the file name left and the license right.</p>
+        </dd>
+      </div>
+      <div class="row">
+        <dt>Details / summary<span class="sub">details.faq-item</span></dt>
+        <dd>
+          <details class="faq-item">
+            <summary>Does GUARDIAN need my seed phrase? <svg class="caret" width="14" height="10" aria-hidden="true"><use href="#g-caret"/></svg></summary>
+            <div class="faq-a"><p>No. It never asks and has no field for it. It reads the unsigned transaction your wallet is about to display and the public state of the chain.</p></div>
+          </details>
+          <details class="faq-item last">
+            <summary>Can it block a transaction without my consent? <svg class="caret" width="14" height="10" aria-hidden="true"><use href="#g-caret"/></svg></summary>
+            <div class="faq-a"><p>No. It shows a verdict with evidence; your wallet still asks you to sign. Blocked is advice, not a lock.</p></div>
+          </details>
+          <p class="small mt-4">Hairline top border, summary in Geist 500 20 with the caret at the right, native marker hidden, 12 px above the answer and 24 px below it. Keyboard-operable by default; no JS. The caret turns from pointing down to upright over 200 ms. Also the mobile nav menu.</p>
+        </dd>
+      </div>
+      <div class="row">
+        <dt>Address span<span class="sub">span.addr</span></dt>
+        <dd>
+          <p class="sp-mono">signer <span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> · delegate <span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span></p>
+          <p class="sp-mono mt-2">program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</p>
+          <p class="small mt-4">Mono, tabular numerals, first four and last four characters around U+2026, the full key in <span class="mono">title</span>. Program ids are shown in full inside expanded rows and the rules block; truncation is reserved for wallet and token-account addresses. Never invent an address: the six fixture keys live in the brief.</p>
+        </dd>
+      </div>
+    </dl>
+
+    <div class="block">
+      <h3 class="h3">Spacing, radii, motion</h3>
+      <div class="ledger-wrap">
+        <table class="ledger ledger-min">
+          <caption class="sr-only">Spacing, radius and motion tokens</caption>
+          <thead><tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">Use</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><span class="mono">--s-1 … --s-12</span></th><td>4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 112 · 128 · 160</td><td class="wrap">the 8 px base unit for everything</td></tr>
+            <tr><th scope="row"><span class="mono">--section-pad</span></th><td>112 · 72 below 840</td><td class="wrap">between sections, the rule inside the gap</td></tr>
+            <tr><th scope="row"><span class="mono">--block-gap</span></th><td>48 · 32 below 840</td><td class="wrap">between sub-blocks inside a section</td></tr>
+            <tr><th scope="row"><span class="mono">--container · --gutter</span></th><td>1180 · 20, 40, 64</td><td class="wrap">max-width; side gutters at 320, 600, 1024</td></tr>
+            <tr><th scope="row"><span class="mono">--r-chip · --r-control · --r-panel</span></th><td>2 · 4 · 4</td><td class="wrap">chips; buttons, inputs, tabs; panels and code</td></tr>
+            <tr><th scope="row"><span class="mono">--ease</span></th><td>cubic-bezier(.2, .8, .2, 1)</td><td class="wrap">everywhere; opacity and transform only</td></tr>
+            <tr><th scope="row"><span class="mono">--d-fast · --d-base · --d-slow</span></th><td>160 · 200 · 240 ms</td><td class="wrap">links and buttons · verdict, caret, cursor move · the red underline drawing</td></tr>
+            <tr><th scope="row"><span class="mono">--d-draw · --d-stop · --d-dwell · --d-hold</span></th><td>300 · 400 · 380 · 1000 ms</td><td class="wrap">heading hairlines · the hero full stop · cursor dwell per row · hold-to-sign</td></tr>
+            <tr><th scope="row">Reduced motion</th><td>1 ms</td><td class="wrap">every duration; the cursor hidden; the case rendered in its final state</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small mt-4">Nothing else moves. Section headings do not fade in. Diagrams do not draw themselves. Numbers do not count up.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================== 09 Assets -->
+<section class="sec" id="assets" aria-labelledby="assets-h">
+  <div class="sec-rule"><span class="sec-no">09</span></div>
+  <aside class="margin" aria-hidden="true">
+    <span class="eyebrow">09</span>
+    <span class="eyebrow">Assets</span>
+    <span class="footnote">Four files. Everything else on this page is built from them.</span>
+  </aside>
+  <div class="text">
+    <p class="eyebrow sec-line">09 / Assets</p>
+    <h2 class="h2" id="assets-h">Four files.</h2>
+    <p class="lead">The master mark, the lockup for documents, the favicon cut, and the tokens. Vector only; there is no raster asset at launch.</p>
+    <dl class="ruled ruled-wide">
+      <div class="row"><dt>Mark<span class="sub">SVG · 1.2 KB</span></dt><dd><a class="link mono" href="assets/logo-mark.svg" download>assets/logo-mark.svg</a><span class="small mt-2" style="display:block">The Open G master: 64-unit viewBox, stroke 8, currentColor. Inline it; never recolor it.</span></dd></div>
+      <div class="row"><dt>Lockup<span class="sub">SVG · 1.5 KB</span></dt><dd><a class="link mono" href="assets/logo-lockup.svg" download>assets/logo-lockup.svg</a><span class="small mt-2" style="display:block">Horizontal lockup, 352 × 64, wordmark as live text in Geist 500. For documents and decks; on a page, rebuild it inline.</span></dd></div>
+      <div class="row"><dt>Favicon<span class="sub">SVG · 0.8 KB</span></dt><dd><a class="link mono" href="assets/favicon.svg" download>assets/favicon.svg</a><span class="small mt-2" style="display:block">The 16–32 px cut on an ink tile, colors hard-coded. Wire it as a URL-encoded data URI in the head.</span></dd></div>
+      <div class="row"><dt>Tokens<span class="sub">CSS · 7.1 KB</span></dt><dd><a class="link mono" href="design/tokens.css" download>design/tokens.css</a><span class="small mt-2" style="display:block">The :root block with every value on this page and the contrast notes. Paste it unchanged as the first block of the stylesheet.</span></dd></div>
+    </dl>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="container">
+    <div class="foot-row">
+      <div>
+        <a class="lockup lockup-footer" href="index.html" aria-label="GUARDIAN, back to the site"><svg width="28" height="28" aria-hidden="true"><use href="#g-mark"/></svg><span class="wordmark">GUARDIAN</span></a>
+        <p class="promise">Non-custodial. Not a wallet. Never your keys.</p>
+      </div>
+      <div class="foot-meta">
+        <span class="eyebrow">Brand guidelines</span>
+        Version 1.0 · The Red Pen · 2026-10-20. Questions about the brand go to <a class="link" href="mailto:hello@guardian.example">hello@guardian.example</a>.
+      </div>
+    </div>
+    <p class="colophon">Set in Newsreader, Geist and Geist Mono. Rules under Apache-2.0. Brand guidelines v1.0 · Updated 2026-10-20. © 2026 GUARDIAN.</p>
+  </div>
+</footer>
+</body>
+</html>

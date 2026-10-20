@@ -1,0 +1,2237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GUARDIAN — Nothing gets signed unread.</title>
+<meta name="description" content="A non-custodial defense agent for Solana. GUARDIAN decodes and simulates every pending transaction, compares what the page says with what the payload does, and tells you when they disagree. It never sees your keys.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2064%2064%22%20width=%2264%22%20height=%2264%22%3E%3Crect%20width=%2264%22%20height=%2264%22%20rx=%2212%22%20fill=%22%230A0A0B%22/%3E%3Cpath%20d=%22M32%2016H20A4%204%200%200%200%2016%2020V44A4%204%200%200%200%2020%2048H44A4%204%200%200%200%2048%2044V36H32%22%20fill=%22none%22%20stroke=%22%23EDEBE6%22%20stroke-width=%228%22%20stroke-linecap=%22butt%22%20stroke-linejoin=%22miter%22/%3E%3Crect%20x=%2240%22%20y=%2212%22%20width=%228%22%20height=%228%22%20fill=%22%23EDEBE6%22/%3E%3C/svg%3E">
+<meta property="og:title" content="GUARDIAN — Nothing gets signed unread.">
+<meta property="og:description" content="Non-custodial defense agent for Solana. Decodes, simulates and diffs every transaction before you sign. Never your keys.">
+<meta property="og:type" content="website">
+<!-- og:image: none at launch (no raster available). Add a 1200×630 PNG of the stacked lockup on ink later. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..500&family=Geist:wght@400..500&family=Geist+Mono:wght@400&display=swap">
+<style>
+/* ============================================================================
+   GUARDIAN design tokens — "The Red Pen" (final, 2026-10-20)
+   Paste this block unchanged at the top of the inline <style> in index.html.
+   Contrast ratios below are computed (WCAG 2.x relative luminance), not estimated.
+   Rule of the system: the only chromatic color on the site is --pen, and it is
+   used only where something is wrong. Everything else is ink and paper.
+   ============================================================================ */
+:root {
+  color-scheme: dark;
+
+  /* ---- Ink: surfaces ------------------------------------------------------ */
+  --ink-0: #0A0A0B;        /* page background. Warm near-black, never #000 */
+  --ink-1: #121214;        /* raised surface: demo panel, code, inputs, message card */
+  --ink-2: #1A1A1D;        /* hover/active rows and tabs, expanded-row insets. Never decorative */
+  --rule: #2A2A2E;         /* decorative hairlines only (1.4:1, exempt from AA): section rules, table rows */
+  --rule-strong: #626268;  /* boundaries that must be perceivable (3.3:1 on ink-0, 3.1:1 on ink-1):
+                              input borders, ghost-button borders, meaningful diagram strokes, tab underline track */
+
+  /* ---- Paper: text -------------------------------------------------------- */
+  --paper: #EDEBE6;        /* primary text. 16.6:1 on ink-0 · 15.7:1 on ink-1 · 14.6:1 on ink-2 */
+  --paper-2: #A8A6A0;      /* secondary text, body on panels. 8.1:1 on ink-0 · 7.7:1 on ink-1 · 7.1:1 on ink-2 */
+  --paper-3: #85837E;      /* metadata, eyebrows, footnotes. 5.2:1 on ink-0 · 4.9:1 on ink-1 · 4.6:1 on ink-2.
+                              12px minimum. Prefer ink-0/ink-1 under it */
+  --paper-hi: #FFFFFF;     /* primary button hover fill only (ink-0 text: 19.8:1) */
+
+  /* ---- The red pen -------------------------------------------------------- */
+  --pen: #FF5A4E;          /* the only chromatic color. 6.4:1 on ink-0 · 6.1:1 on ink-1 · 5.6:1 on pen-wash.
+                              Text on a --pen fill is ALWAYS --ink-0 (6.4:1); --paper on --pen fails (2.6:1) */
+  --pen-wash: #2A1512;     /* solid tint behind a flagged row or a margin note. Opacity-free so it survives screenshots */
+
+  /* ---- Semantic aliases (use these in components) ------------------------- */
+  --bg: var(--ink-0);
+  --surface: var(--ink-1);
+  --surface-2: var(--ink-2);
+  --border: var(--rule);
+  --border-strong: var(--rule-strong);
+  --text: var(--paper);
+  --text-muted: var(--paper-2);
+  --text-faint: var(--paper-3);
+  --accent: var(--paper);          /* there is no brand accent color: CTAs are paper */
+  --accent-hover: var(--paper-hi);
+  --danger: var(--pen);
+  --danger-bg: var(--pen-wash);
+  --verdict-blocked: var(--pen);   /* filled chip, ink-0 text, 2px solid underline */
+  --verdict-caution: var(--pen);   /* outlined chip, pen text, 1px dotted underline */
+  --verdict-clear: var(--paper);   /* outlined chip, paper text, no underline */
+  --focus: var(--paper);           /* 2px solid, 3px offset, every interactive element */
+  --selection-bg: var(--paper);
+  --selection-fg: var(--ink-0);
+  --logo: var(--paper);            /* the mark is always paper on ink or ink on paper, never --pen */
+
+  /* ---- Typography --------------------------------------------------------- */
+  --font-display: "Newsreader", "Newsreader Fallback", Georgia, "Times New Roman", serif;
+  --font-body: "Geist", "Geist Fallback", Inter, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --t-eyebrow: 12px;   --lh-eyebrow: 1.4;  --ls-eyebrow: 0.14em;   /* Geist Mono 400, uppercase, paper-3 */
+  --t-mono: 13.5px;    --lh-mono: 1.6;                             /* Geist Mono 400: demo rows, code, tables */
+  --t-mono-sm: 12.5px;                                             /* mono under 400px viewport, margin notes */
+  --t-small: 14px;     --lh-small: 1.5;                            /* Geist 400: captions, footer, footnotes */
+  --t-body: 17px;      --lh-body: 1.6;                             /* Geist 400, measure 62ch */
+  --t-lead: 21px;      --lh-lead: 1.45;                            /* Geist 400, paper-2, measure 56ch */
+  --t-h3: 24px;        --lh-h3: 1.25; --ls-h3: -0.01em;            /* Geist 500 */
+  --t-tier: 32px;      --lh-tier: 1.1;                             /* Newsreader 450, pricing tier names */
+  --t-h2: clamp(32px, 4.6vw, 56px);   --lh-h2: 1.05; --ls-h2: -0.015em;  /* Newsreader 450, opsz 48 */
+  --t-h1: clamp(42px, 8vw, 104px);    --lh-h1: 0.98; --ls-h1: -0.025em;  /* Newsreader 450, opsz 48 */
+  --display-wght: 450;
+  --display-opsz: 48;                 /* capped: opsz 72 hairlines bloom on ink */
+  --measure: 62ch;
+  --measure-lead: 56ch;
+
+  /* ---- Layout ------------------------------------------------------------- */
+  --container: 1180px;
+  --gutter: 20px;          /* 320–599 */
+  --gutter-md: 40px;       /* 600–1023 */
+  --gutter-lg: 64px;       /* 1024+ */
+  --cols: 12;
+  --col-gap: 24px;
+  --margin-cols: 3;        /* the editorial margin: columns 1–3 on 1024+ */
+  --nav-h: 56px;
+  --sticky-top: 96px;      /* nav-h + 40px: sticky margin apparatus */
+  --scroll-margin: 72px;   /* scroll-margin-top on every section target */
+  --control-h: 48px;       /* inputs and primary buttons outside the nav */
+  --control-h-sm: 36px;    /* nav button, demo toolbar buttons */
+  --panel-min-h: 560px;    /* demo panel reserved height (desktop); 760px below 840px */
+
+  /* ---- Spacing (8px base) ------------------------------------------------- */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
+  --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 112px; --s-11: 128px; --s-12: 160px;
+  --section-pad: var(--s-10);     /* 112px desktop between sections */
+  --section-pad-sm: 72px;         /* mobile */
+  --block-gap: var(--s-7);        /* 48px between sub-blocks desktop */
+  --block-gap-sm: var(--s-6);     /* 32px mobile */
+
+  /* ---- Radii -------------------------------------------------------------- */
+  --r-chip: 2px;
+  --r-control: 4px;        /* buttons, inputs, tabs */
+  --r-panel: 4px;          /* demo panel, code block, message card */
+
+  /* ---- Motion (opacity and transform only) -------------------------------- */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --d-fast: 160ms;         /* links, buttons, row opacity, diff row fade */
+  --d-base: 200ms;         /* verdict fade, margin note, FAQ caret, cursor move, form crossfade */
+  --d-slow: 240ms;         /* the red underline drawing under an argument */
+  --d-draw: 300ms;         /* hairline draw-in under demo headings */
+  --d-stop: 400ms;         /* the hero full stop fading in */
+  --d-dwell: 380ms;        /* reading cursor dwell per row (580ms per row with the 200ms move) */
+  --d-hold: 1000ms;        /* "Sign anyway" hold-to-confirm */
+
+  /* ---- Z-index ------------------------------------------------------------ */
+  --z-nav: 20;
+  --z-menu: 30;
+  --z-skip: 40;
+}
+
+/* ============================================================================
+   Fallback faces (BRIEF §5.3): metric-matched so the swap does not move a line
+   ============================================================================ */
+@font-face { font-family: "Newsreader Fallback"; src: local("Georgia"), local("Times New Roman"); size-adjust: 97%; ascent-override: 93%; descent-override: 25%; line-gap-override: 0%; }
+@font-face { font-family: "Geist Fallback"; src: local("Inter"), local("Helvetica Neue"), local("Arial"); size-adjust: 99%; ascent-override: 92%; descent-override: 23%; line-gap-override: 0%; }
+@font-face { font-family: "Geist Mono Fallback"; src: local("Menlo"), local("Consolas"), local("Courier New"); size-adjust: 96%; ascent-override: 92%; descent-override: 23%; line-gap-override: 0%; }
+
+/* ============================================================================
+   Base
+   ============================================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  background: var(--ink-0); color: var(--paper);
+  font-family: var(--font-body); font-size: var(--t-body); line-height: var(--lh-body);
+  font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+body { margin: 0; min-width: 320px; background: var(--ink-0); color: var(--paper); }
+::selection { background: var(--selection-bg); color: var(--selection-fg); }
+h1, h2, h3, p, dl, dd, ul, ol, pre, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+a { color: inherit; }
+button, input, select { font: inherit; color: inherit; margin: 0; }
+button { cursor: pointer; }
+svg { display: block; }
+em, i { font-style: normal; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+:focus:not(:focus-visible) { outline: none; }
+
+/* ---- Shared utilities (ADDENDUM §7) ---- */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.mono, .addr { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+.addr { white-space: nowrap; }
+.eyebrow { display: block; margin: 0; font: 400 var(--t-eyebrow) / var(--lh-eyebrow) var(--font-mono); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--paper-3); }
+.caret { display: inline-block; flex: none; vertical-align: middle; }
+.container { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); box-sizing: content-box; }
+@media (min-width: 600px) { .container { padding: 0 var(--gutter-md); } }
+@media (min-width: 1024px) { .container { padding: 0 var(--gutter-lg); } }
+
+/* ============================================================================
+   Type scale (BRIEF §5.4)
+   ============================================================================ */
+h1, h2 {
+  font-family: var(--font-display); font-weight: var(--display-wght);
+  font-optical-sizing: none; font-variation-settings: "opsz" var(--display-opsz);
+  color: var(--paper); margin-bottom: .5em;
+}
+h1 { font-size: var(--t-h1); line-height: var(--lh-h1); letter-spacing: var(--ls-h1); }
+h2 { font-size: var(--t-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); text-wrap: balance; }
+h3 { font: 500 var(--t-h3) / var(--lh-h3) var(--font-body); letter-spacing: var(--ls-h3); color: var(--paper); margin-bottom: var(--s-3); }
+p { max-width: var(--measure); }
+p + p { margin-top: var(--s-4); }
+.lead { font-size: var(--t-lead); line-height: var(--lh-lead); color: var(--paper-2); max-width: var(--measure-lead); margin-bottom: 40px; }
+.muted { color: var(--paper-2); }
+.small { font-size: var(--t-small); line-height: var(--lh-small); color: var(--paper-3); }
+.note { font: 400 var(--t-mono-sm) / var(--lh-small) var(--font-mono); color: var(--paper-3); }
+
+/* ============================================================================
+   The Manuscript grid (BRIEF §6)
+   ============================================================================ */
+.sec { position: relative; padding-top: var(--section-pad-sm); scroll-margin-top: var(--scroll-margin); }
+.sec-rule { position: relative; height: 1px; background: var(--rule); }
+.sec-no {
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  padding-right: var(--s-3); background: var(--ink-0);
+  font: 400 var(--t-eyebrow) / var(--lh-eyebrow) var(--font-mono); letter-spacing: var(--ls-eyebrow); color: var(--paper-3);
+}
+/* Below 1024 the apparatus is one mono line sitting ON the rule next to the number: "02 / The threat" */
+.margin { position: relative; display: flex; width: fit-content; gap: var(--s-2); margin: -9px 0 var(--s-6); padding-right: var(--s-3); background: var(--ink-0); }
+.margin .eyebrow + .eyebrow::before { content: "/"; margin-right: var(--s-2); }
+.margin .footnote { display: none; }
+.sec-no { display: none; }
+.text { min-width: 0; }
+.text > h2 { max-width: 20ch; }
+.block { margin-top: var(--block-gap-sm); }
+@media (min-width: 1024px) {
+  .sec { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); padding-top: var(--section-pad); }
+  .sec-rule { grid-column: 1 / -1; margin-bottom: 40px; }
+  .sec-no { display: block; }
+  .margin { grid-column: 1 / 4; position: sticky; top: var(--sticky-top); align-self: start; flex-direction: column; width: auto; gap: 2px; margin: 0; padding: 0; background: none; }
+  .margin .eyebrow + .eyebrow::before { content: none; }
+  .margin .footnote { display: block; margin-top: var(--s-4); max-width: 22ch; font: 400 var(--t-small) / var(--lh-small) var(--font-body); color: var(--paper-3); }
+  .text { grid-column: 4 / -1; }
+  /* headlines span columns 4–11: eight of the text block's nine columns */
+  .text > h2 { max-width: calc(100% * 8 / 9 - var(--col-gap) / 9); }
+  .block { margin-top: var(--block-gap); }
+}
+
+/* ============================================================================
+   Nav (BRIEF §6.5)
+   ============================================================================ */
+.skip { position: absolute; left: var(--s-4); top: var(--s-2); z-index: var(--z-skip); padding: var(--s-2) var(--s-3); background: var(--ink-0); color: var(--paper); font: 500 var(--t-small) / 1 var(--font-body); text-decoration: none; transform: translateY(-200%); }
+.skip:focus-visible { transform: none; outline: 2px solid var(--focus); outline-offset: 0; }
+.nav { position: relative; z-index: var(--z-nav); height: var(--nav-h); background: var(--ink-0); border-bottom: 1px solid var(--rule); }
+.nav > .container { display: flex; align-items: center; justify-content: space-between; height: 100%; }
+.lockup { display: inline-flex; align-items: center; gap: 10px; color: var(--logo); text-decoration: none; }
+.lockup svg { width: 20px; height: 20px; }
+.lockup .point { transition: transform var(--d-base) var(--ease); }
+.lockup:hover .point { transform: translate(6.4px, -6.4px); } /* 2px at the 20px render size */
+.wordmark { font: 500 13px / 1 var(--font-body); letter-spacing: .16em; text-transform: uppercase; font-variant-ligatures: none; }
+.nav-links { display: none; align-items: center; gap: var(--s-6); }
+.nav-links > a:not(.btn) { font: 500 var(--t-small) / 1 var(--font-body); color: var(--paper-2); text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 2px; transition: color var(--d-fast) var(--ease), text-underline-offset var(--d-fast) var(--ease), text-decoration-color var(--d-fast) var(--ease); }
+.nav-links > a:not(.btn):hover { color: var(--paper); text-decoration-color: var(--paper-3); text-underline-offset: 4px; }
+.status { display: none; font: 400 var(--t-mono-sm) / 1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper-3); white-space: nowrap; }
+.menu { position: static; }
+.menu > summary { display: inline-flex; align-items: center; gap: var(--s-2); height: var(--control-h-sm); padding: 0 var(--s-2); margin-right: calc(-1 * var(--s-2)); list-style: none; font: 500 var(--t-small) / 1 var(--font-body); color: var(--paper-2); cursor: pointer; user-select: none; }
+.menu > summary::-webkit-details-marker { display: none; }
+.menu > summary .caret { transform: rotate(180deg); transition: transform var(--d-base) var(--ease); }
+.menu[open] > summary .caret { transform: none; }
+.menu[open] > summary { color: var(--paper); }
+.menu-panel { position: absolute; left: 0; right: 0; top: 100%; z-index: var(--z-menu); background: var(--ink-0); border-bottom: 1px solid var(--rule); }
+.menu-panel > .container { padding-top: var(--s-2); padding-bottom: var(--s-5); }
+.menu-panel a:not(.btn) { display: block; padding: var(--s-4) 0; border-top: 1px solid var(--rule); font: 500 var(--t-body) / 1.3 var(--font-body); color: var(--paper); text-decoration: none; }
+.menu-panel a:not(.btn):first-child { border-top: 0; }
+.menu-panel .status { display: block; padding: var(--s-4) 0; border-top: 1px solid var(--rule); }
+.menu-panel .btn { margin-top: var(--s-2); width: 100%; }
+@media (min-width: 840px) {
+  .nav { position: sticky; top: 0; }
+  .nav-links { display: flex; }
+  .menu { display: none; }
+}
+@media (min-width: 1180px) { .nav-links .status { display: block; } }
+
+/* ============================================================================
+   Hero (BRIEF §9.3)
+   ============================================================================ */
+.hero { position: relative; padding-top: var(--s-8); scroll-margin-top: var(--scroll-margin); }
+.hero-eyebrow { margin: 0 0 var(--s-5); max-width: none; }
+.hero-eyebrow span { display: inline; }
+.hero-eyebrow span + span::before { content: "·"; margin: 0 .6em; }
+.hero h1 { margin-bottom: .5em; }
+.stop { color: var(--pen); animation: stop var(--d-stop) var(--ease) 200ms both; }
+@keyframes stop { from { opacity: 0; } to { opacity: 1; } }
+.proof { margin-top: var(--s-3); max-width: none; }
+.custody { display: grid; grid-template-columns: 1fr 1fr; margin-top: var(--s-6); border-bottom: 1px solid var(--rule); }
+.custody > div { padding: var(--s-4) var(--s-4) var(--s-4) 0; border-top: 1px solid var(--rule); min-width: 0; }
+.custody > div:nth-child(2n) { padding-left: var(--s-4); border-left: 1px solid var(--rule); }
+.custody > div:last-child { grid-column: 1 / -1; }
+.custody .k { margin-bottom: var(--s-1); white-space: nowrap; }
+.custody .v { display: block; font: 400 var(--t-mono) / 1.4 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper); overflow-wrap: anywhere; }
+@media (min-width: 840px) {
+  .custody { grid-template-columns: auto 1.2fr 1.4fr 1.2fr 1fr; }
+  .custody > div:nth-child(2n) { padding-left: 0; border-left: 0; }
+  .custody > div + div { padding-left: var(--s-4); border-left: 1px solid var(--rule); }
+  .custody > div:last-child { grid-column: auto; }
+}
+@media (min-width: 1024px) {
+  .hero { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); padding-top: var(--s-9); }
+  .hero-eyebrow { grid-column: 1 / 4; display: flex; flex-direction: column; gap: 2px; margin: 0; padding-top: .14em; }
+  .hero-eyebrow span + span::before { content: none; }
+  .hero-eyebrow .gap { margin-top: var(--s-4); }
+  .hero-body { grid-column: 4 / -1; min-width: 0; }
+  .hero h1 { max-width: calc(100% * 8 / 9 - var(--col-gap) / 9); }
+}
+
+/* ============================================================================
+   Components (BRIEF §8)
+   ============================================================================ */
+.btn, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2); height: var(--control-h); padding: 0 20px; border-radius: var(--r-control); font: 500 var(--t-small) / 1 var(--font-body); text-decoration: none; white-space: nowrap; }
+.btn { background: var(--paper); color: var(--ink-0); border: 0; transition: background-color var(--d-fast) var(--ease); }
+.btn:hover { background: var(--paper-hi); }
+.btn:active { background: var(--paper); }
+.btn-sm { height: var(--control-h-sm); padding: 0 var(--s-4); }
+.btn-ghost { background: transparent; color: var(--paper); border: 1px solid var(--rule-strong); transition: border-color var(--d-fast) var(--ease); }
+.btn-ghost:hover { border-color: var(--paper); }
+.btn:disabled, .btn-ghost:disabled { opacity: .5; cursor: not-allowed; }
+.btn:disabled:hover { background: var(--paper); }
+.btn-ghost:disabled:hover { border-color: var(--rule-strong); }
+.link { color: var(--paper); text-decoration: underline; text-decoration-color: var(--paper-3); text-underline-offset: 2px; transition: text-underline-offset var(--d-fast) var(--ease), text-decoration-color var(--d-fast) var(--ease); }
+.link:hover { text-underline-offset: 4px; text-decoration-color: var(--paper); }
+
+.chip { display: inline-flex; align-items: center; height: 24px; padding: 0 var(--s-2); border-radius: var(--r-chip); font: 400 var(--t-eyebrow) / 1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; vertical-align: middle; }
+.chip-blocked { background: var(--pen); color: var(--ink-0); }
+.chip-caution { border: 1px solid var(--pen); color: var(--pen); }
+.chip-clear { border: 1px solid var(--paper); color: var(--paper); }
+
+.ruled { margin: 0; }
+.ruled .row { display: grid; grid-template-columns: 1fr; row-gap: 6px; padding: 20px 0; border-top: 1px solid var(--rule); }
+.ruled .row:last-child { border-bottom: 1px solid var(--rule); }
+.ruled dt { margin: 0; font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper); overflow-wrap: anywhere; }
+.ruled dt .rid { display: block; color: var(--paper-3); }
+.ruled dt .arg { display: block; font-size: var(--t-mono-sm); color: var(--paper-2); }
+.ruled dd { margin: 0; max-width: var(--measure); color: var(--paper-2); }
+.ruled dd .mono { color: var(--paper); }
+@media (min-width: 840px) { .ruled .row { grid-template-columns: 160px 1fr; column-gap: var(--col-gap); row-gap: 0; } }
+
+.ledger-wrap { overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
+.ledger { width: 100%; border-collapse: separate; border-spacing: 0; }
+.ledger th, .ledger td { padding: 14px var(--s-4) 14px 0; border-top: 1px solid var(--rule); text-align: left; vertical-align: top; }
+.ledger thead th { font: 400 var(--t-eyebrow) / var(--lh-eyebrow) var(--font-mono); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--paper-3); border-top: 0; padding-top: 0; }
+.ledger tbody th { font: 400 15px / 1.5 var(--font-body); color: var(--paper); }
+.ledger td { font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper-2); }
+.ledger tbody tr:last-child > * { border-bottom: 1px solid var(--rule); }
+.ledger .sticky { position: sticky; left: 0; z-index: 1; background: var(--ink-0); }
+.ledger .yes { color: var(--paper); }
+
+.code-head { display: flex; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; margin-bottom: var(--s-2); }
+.code { margin: 0; background: var(--ink-1); border: 1px solid var(--rule); border-radius: var(--r-panel); padding: 20px 24px; overflow-x: auto; font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper-2); counter-reset: ln; }
+.code code { font: inherit; display: block; min-width: max-content; }
+.code .ln { display: block; white-space: pre; }
+.code .ln::before { counter-increment: ln; content: counter(ln); display: inline-block; width: 2ch; margin-right: 2ch; text-align: right; color: var(--paper-3); }
+.code .say { color: var(--paper); }
+@media (max-width: 599.98px) { .code { padding: 16px; } }
+
+.faq { max-width: 760px; border-bottom: 1px solid var(--rule); }
+.faq-item { border-top: 1px solid var(--rule); }
+.faq-item > summary { display: flex; align-items: center; justify-content: space-between; gap: var(--s-5); padding: 20px 0; list-style: none; font: 500 20px / 1.35 var(--font-body); color: var(--paper); cursor: pointer; }
+.faq-item > summary::-webkit-details-marker { display: none; }
+.faq-item > summary .caret { color: var(--paper-2); transform: rotate(180deg); transition: transform var(--d-base) var(--ease); }
+.faq-item[open] > summary .caret { transform: none; }
+.faq-item .a { padding: var(--s-3) 0 var(--s-5); color: var(--paper-2); }
+
+/* ---- Inputs and forms (BRIEF §8.2, §12) ---- */
+.field { display: grid; gap: var(--s-2); min-width: 0; }
+.input, .select { width: 100%; height: var(--control-h); padding: 0 14px; background: var(--ink-1); border: 1px solid var(--rule-strong); border-radius: var(--r-control); font: 400 var(--t-body) / 1 var(--font-body); color: var(--paper); transition: border-color var(--d-fast) var(--ease); }
+.input::placeholder { color: var(--paper-3); opacity: 1; }
+.input:focus, .select:focus { border-color: var(--paper); }
+.input[aria-invalid="true"] { border-color: var(--pen); }
+.select-wrap { position: relative; }
+.select { appearance: none; -webkit-appearance: none; padding-right: 40px; }
+.select-wrap .caret { position: absolute; right: 14px; top: 50%; margin-top: -5px; color: var(--paper-2); pointer-events: none; }
+.check { display: flex; align-items: center; gap: var(--s-3); font: 400 var(--t-small) / var(--lh-small) var(--font-body); color: var(--paper-2); cursor: pointer; }
+.check input { width: 18px; height: 18px; margin: 0; accent-color: var(--paper); cursor: pointer; }
+.hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+.form-wrap { position: relative; }
+.form-row { display: grid; grid-template-columns: 1fr; gap: var(--s-3); max-width: 520px; }
+.form-msg { min-height: 24px; margin-top: var(--s-2); font: 400 var(--t-small) / 24px var(--font-body); color: var(--pen); max-width: none; }
+.form-wrap form { transition: opacity var(--d-base) var(--ease); }
+.form-wrap form.is-out { opacity: 0; pointer-events: none; }
+.form-done { animation: fadein var(--d-base) var(--ease) both; }
+.form-done[hidden] { display: none; }
+.form-done p { font: 500 var(--t-lead) / var(--lh-lead) var(--font-body); color: var(--paper); }
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+@media (min-width: 600px) { .form-row { grid-template-columns: minmax(0, 1fr) auto; } }
+
+/* ============================================================================
+   Sections
+   ============================================================================ */
+/* 02 — threat */
+.closing { margin-top: var(--block-gap-sm); font: 500 var(--t-h3) / var(--lh-h3) var(--font-body); letter-spacing: var(--ls-h3); color: var(--paper); max-width: 32ch; }
+@media (min-width: 1024px) {
+  .closing { margin-top: var(--block-gap); }
+  .lead.cols { max-width: none; columns: 2; column-gap: var(--s-7); }
+}
+
+/* 03 — how it works */
+.layers { border-bottom: 1px solid var(--rule); }
+.layer { display: grid; grid-template-columns: 1fr; row-gap: var(--s-3); padding: var(--s-6) 0 40px; border-top: 1px solid var(--rule); }
+.layer .num { font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); color: var(--paper-3); letter-spacing: .08em; }
+.layer .body { min-width: 0; }
+.layer p { color: var(--paper-2); }
+.layer p .mono { color: var(--paper); font-size: 15.5px; }
+.spec { display: grid; grid-template-columns: 72px 1fr; column-gap: var(--s-4); margin-top: var(--s-5); max-width: 62ch; font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; }
+.spec dt, .spec dd { padding: 7px 0; border-top: 1px solid var(--rule); margin: 0; }
+.spec dt { color: var(--paper-3); }
+.spec dd { color: var(--paper-2); overflow-wrap: anywhere; }
+.spec dt:nth-last-of-type(1), .spec dd:last-of-type { border-bottom: 1px solid var(--rule); }
+.sample { margin-top: var(--s-5); padding: 14px; background: var(--ink-1); border: 1px solid var(--rule); border-radius: var(--r-panel); font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper-2); overflow-x: auto; }
+.sample .l { display: block; white-space: pre-wrap; }
+.sample .k { color: var(--paper-3); }
+.sample .hi { color: var(--paper); }
+.sample .pen { color: var(--pen); }
+@media (min-width: 1024px) {
+  .layer { grid-template-columns: 160px 1fr; column-gap: var(--col-gap); row-gap: 0; padding: 40px 0 48px; }
+  .spec { grid-template-columns: 96px 1fr; column-gap: var(--s-5); }
+}
+
+/* 04 — rules */
+.rules-note { margin-top: var(--s-4); }
+
+/* sparse act */
+.act { padding: var(--s-9) 0; scroll-margin-top: var(--scroll-margin); }
+.act p { font-family: var(--font-display); font-weight: var(--display-wght); font-size: var(--t-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); font-optical-sizing: none; font-variation-settings: "opsz" var(--display-opsz); color: var(--paper); max-width: 20ch; }
+@media (min-width: 1024px) {
+  .act { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); padding: var(--s-12) 0; }
+  .act p { grid-column: 4 / 12; max-width: none; }
+}
+
+/* 05 — trust: can / cannot as two aligned ruled lists */
+.cc { display: grid; grid-template-columns: 1fr; row-gap: var(--s-6); }
+.cc-col { display: grid; grid-template-rows: auto; min-width: 0; }
+.cc-col .eyebrow { padding-bottom: var(--s-3); }
+.cc-col li { padding: 14px 0; border-top: 1px solid var(--rule); color: var(--paper-2); max-width: var(--measure); }
+.cc-col li:last-child { border-bottom: 1px solid var(--rule); }
+@media (min-width: 840px) {
+  .cc { grid-template-columns: 1fr 1fr; grid-template-rows: auto repeat(5, auto); column-gap: var(--s-7); row-gap: 0; border-bottom: 1px solid var(--rule); }
+  .cc-col { grid-row: 1 / -1; grid-template-rows: subgrid; }
+  .cc-col ul { display: grid; grid-row: 2 / -1; grid-template-rows: subgrid; }
+  .cc-col li:last-child { border-bottom: 0; }
+}
+
+/* 06 — comparison */
+.compare { min-width: 640px; }
+.compare th:first-child, .compare td:first-child { width: 42%; }
+.foot { margin-top: var(--s-4); max-width: var(--measure); }
+.foot + .foot { margin-top: var(--s-3); }
+
+/* 07 — pricing */
+.pricing { min-width: 720px; display: none; }
+.pricing thead th { vertical-align: bottom; border-top: 0; }
+.pricing thead th:first-child { width: 34%; }
+.pricing .tier { display: block; font: 500 var(--t-tier) / var(--lh-tier) var(--font-display); font-optical-sizing: none; font-variation-settings: "opsz" 32; letter-spacing: -.01em; text-transform: none; color: var(--paper); }
+.pricing .price { display: block; margin-top: var(--s-2); font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: 0; text-transform: none; color: var(--paper-2); }
+.pricing .cta td { padding-top: var(--s-5); padding-bottom: var(--s-5); }
+.tier-list { padding-top: var(--s-5); border-top: 1px solid var(--rule); }
+.tier-list + .tier-list { margin-top: var(--s-6); }
+.tier-list .tier { display: block; font: 500 var(--t-tier) / var(--lh-tier) var(--font-display); font-optical-sizing: none; font-variation-settings: "opsz" 32; letter-spacing: -.01em; color: var(--paper); }
+.tier-list .price { display: block; margin: var(--s-2) 0 var(--s-5); font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); color: var(--paper-2); }
+.tier-list .ruled .row { grid-template-columns: 1fr auto; column-gap: var(--s-4); padding: 12px 0; }
+.tier-list .ruled dt { font: 400 15px / 1.5 var(--font-body); color: var(--paper); }
+.tier-list .ruled dd { font: 400 var(--t-mono) / 1.5 var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--paper-2); }
+.tier-list .btn { margin-top: var(--s-5); width: 100%; }
+@media (min-width: 840px) {
+  .pricing { display: table; }
+  .tier-lists { display: none; }
+}
+
+/* 08 — roadmap: the timeline */
+.timeline { position: relative; display: grid; grid-template-columns: 1fr; row-gap: var(--s-6); padding-left: 28px; }
+.timeline::before { content: ""; position: absolute; left: 3px; top: 0; bottom: 0; width: 1px; background: var(--rule-strong); }
+.tl-col { position: relative; min-width: 0; }
+.tl-col::before { content: ""; position: absolute; left: -28px; top: 7px; width: 7px; height: 1px; background: var(--paper-3); }
+.tl-col .eyebrow { color: var(--paper-2); margin-bottom: var(--s-3); }
+.tl-col li { display: grid; grid-template-columns: 20px 1fr; column-gap: var(--s-2); padding: 10px 0; border-top: 1px solid var(--rule); font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); color: var(--paper-2); }
+.tl-col li:last-child { border-bottom: 1px solid var(--rule); }
+.tl-col li .g { color: var(--paper); }
+.here { position: relative; display: flex; align-items: center; gap: 10px; margin: 0 0 -8px -28px; font: 400 var(--t-mono-sm) / 1 var(--font-mono); color: var(--paper); white-space: nowrap; }
+.here::before { content: ""; width: 8px; height: 8px; background: var(--paper); flex: none; }
+.tl-cap { margin-top: var(--s-6); }
+@media (min-width: 840px) {
+  .timeline { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--s-5); padding: 0; row-gap: 0; }
+  .timeline::before { left: 0; right: 0; top: 44px; bottom: auto; height: 1px; width: auto; }
+  .tl-col { padding-top: 64px; }
+  .tl-col::before { left: 0; top: 41px; width: 1px; height: 7px; }
+  .tl-col .eyebrow { position: absolute; left: 0; right: 0; top: 0; margin: 0; white-space: normal; }
+  .here { position: absolute; left: 12%; top: 40px; margin: 0; padding-right: var(--s-2); background: var(--ink-0); }
+}
+
+/* 10 — waitlist */
+.wl { max-width: 560px; margin: 0 auto; text-align: center; }
+.wl h2 { max-width: none; margin-left: auto; margin-right: auto; }
+.wl > p { margin: 0 auto; }
+.wl-form { margin-top: 40px; text-align: left; }
+.wl-form .fields { display: grid; grid-template-columns: 1fr; gap: var(--s-4); }
+.wl-form .check { margin-top: var(--s-4); }
+.wl-form .btn { width: 100%; margin-top: var(--s-5); }
+.wl-form .form-msg { margin-top: var(--s-3); }
+.wl .privacy { margin-top: var(--s-4); max-width: none; }
+.wl .form-done { padding: var(--s-6) 0; text-align: center; }
+.wl .form-done p { margin: 0 auto; }
+@media (min-width: 600px) { .wl-form .fields { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) {
+  #waitlist .text { grid-column: 1 / -1; grid-row: 2; }
+  #waitlist .margin { grid-row: 2; }
+}
+
+/* ============================================================================
+   Diagrams (BRIEF §11): HTML + CSS, SVG only for arrowheads and the pen ellipse
+   ============================================================================ */
+.dg { position: relative; margin-top: var(--block-gap-sm); font: 400 var(--t-mono-sm) / 1.5 var(--font-mono); color: var(--paper-3); }
+.dg .eyebrow { margin-bottom: var(--s-3); }
+.arrow { position: relative; display: flex; align-items: center; color: var(--rule-strong); }
+.arrow .line { flex: 1; height: 1px; background: currentColor; min-width: 8px; }
+.arrow.dotted .line { height: 0; background: none; border-top: 1px dotted currentColor; }
+.arrow svg { flex: none; }
+.arrow.v { flex-direction: column; width: 8px; height: 56px; }
+.arrow.v .line { width: 1px; height: auto; min-width: 0; min-height: 8px; }
+.arrow.v.dotted .line { width: 0; border-top: 0; border-left: 1px dotted currentColor; }
+.arrow.v svg { transform: rotate(90deg); }
+.fake-btn { display: inline-flex; align-items: center; height: 44px; width: 160px; max-width: 100%; padding: 0 16px; border: 1px solid var(--rule-strong); border-radius: var(--r-control); font: 500 var(--t-small) / 1 var(--font-body); color: var(--paper); }
+.node { display: inline-block; padding: 12px 16px; border: 1px solid var(--rule-strong); border-radius: var(--r-control); font: 400 var(--t-mono) / 1.2 var(--font-mono); color: var(--paper); white-space: nowrap; }
+.node.dbl { padding: 3px; }
+.node.dbl > div { border: 1px solid var(--rule); border-radius: 2px; padding: 9px 13px; }
+@media (min-width: 1024px) { .dg { margin-top: var(--block-gap); } }
+
+/* 11.1 declared vs actual */
+.dg-dva { display: grid; grid-template-columns: 1fr; row-gap: var(--s-5); min-height: 340px; }
+.dg-dva .payload { font-size: var(--t-mono-sm); line-height: 28px; color: var(--paper-2); }
+.dg-dva .payload li { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.dg-dva .payload .i { color: var(--paper-3); width: 1ch; flex: none; }
+.ring { position: relative; display: inline-block; padding: 0 2px; color: var(--paper); }
+.ring svg { position: absolute; left: -8px; top: -5px; width: calc(100% + 16px); height: calc(100% + 10px); overflow: visible; pointer-events: none; }
+.ring ellipse { fill: none; stroke: var(--pen); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.dg-dva .pen-note { color: var(--pen); white-space: nowrap; }
+@media (min-width: 840px) {
+  .dg-dva { grid-template-columns: 1fr 56px 1.4fr; column-gap: var(--s-5); align-items: start; min-height: 176px; }
+  .dg-dva .arrow { margin-top: 50px; }
+}
+
+/* 11.2 sequence */
+.dg-seq { display: grid; grid-template-columns: 1fr; justify-items: start; min-height: 520px; }
+.dg-seq .arrow { display: grid; grid-template-columns: 8px 1fr; column-gap: var(--s-4); align-items: center; height: 56px; width: 100%; margin-left: 20px; }
+.dg-seq .arrow .ar { display: flex; flex-direction: column; align-items: center; height: 56px; width: 8px; color: var(--rule-strong); }
+.dg-seq .arrow .ar .line { width: 1px; min-width: 0; min-height: 8px; }
+.dg-seq .arrow.dotted .ar .line { width: 0; border-top: 0; border-left: 1px dotted currentColor; height: 100%; }
+.dg-seq .arrow .ar svg { transform: rotate(90deg); }
+.dg-seq .cap { color: var(--paper-3); }
+.dg-seq .cap:empty { display: none; }
+.steps { display: flex; flex-direction: column; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--rule); font-size: var(--t-mono-sm); color: var(--paper-2); }
+.steps span { padding: 3px 0; }
+.steps .diff { align-self: flex-start; padding: 3px 8px; margin: 2px 0; border: 1px solid var(--pen); border-radius: 2px; color: var(--pen); }
+@media (min-width: 1024px) {
+  .dg-seq { grid-template-columns: auto minmax(16px, 1fr) auto minmax(16px, 1fr) auto minmax(16px, 1fr) auto minmax(16px, 1fr) auto; grid-template-rows: auto auto; align-items: center; min-height: 140px; }
+  .dg-seq > .node { grid-row: 1; }
+  .dg-seq .arrow { display: contents; }
+  .dg-seq .arrow .ar { grid-row: 1; flex-direction: row; height: auto; width: 100%; }
+  .dg-seq .arrow .ar .line { width: auto; min-height: 0; flex: 1; height: 1px; }
+  .dg-seq .arrow.dotted .ar .line { border-left: 0; border-top: 1px dotted currentColor; width: auto; height: 0; }
+  .dg-seq .arrow .ar svg { transform: none; }
+  .dg-seq .cap { grid-row: 2; padding-top: 10px; max-width: 24ch; }
+  .dg-seq .cap-1 { grid-column: 4 / 6; }
+  .dg-seq .cap-2 { grid-column: 6 / 8; }
+  .dg-seq .cap-3 { grid-column: 8 / 10; }
+  .steps { flex-direction: row; align-items: center; }
+  .steps span { padding: 2px 10px; border-left: 1px solid var(--rule); }
+  .steps span:first-child { padding-left: 0; border-left: 0; }
+  .steps .diff { align-self: auto; margin: 0 4px; padding: 2px 8px; border-left: 1px solid var(--pen); }
+  .steps .diff + span { border-left: 0; padding-left: 6px; }
+}
+@media (min-width: 1024px) and (max-width: 1179.98px) {
+  .dg-seq .node { padding: 10px 12px; }
+  .dg-seq .node.dbl > div { padding: 7px 10px; }
+  .steps { font-size: 12px; }
+  .steps span { padding: 2px 7px; }
+  .dg-seq .cap { font-size: 12px; }
+}
+
+/* 11.3 data path */
+.dg-dp { display: grid; grid-template-columns: 1fr; row-gap: var(--s-5); min-height: 700px; }
+.dg-dp .box { display: block; width: 100%; max-width: 320px; white-space: normal; }
+.dg-dp .box .t { display: block; margin-bottom: 6px; color: var(--paper); }
+.dg-dp .box .ln { display: block; font-size: var(--t-mono-sm); color: var(--paper-2); }
+.dg-dp .box .ln.hi { color: var(--paper); }
+.dg-dp .region { position: relative; min-width: 0; }
+.dp-keys { position: relative; display: flex; align-items: center; gap: var(--s-3); color: var(--paper-3); }
+.dp-keys::before, .dp-keys::after { content: ""; flex: 1; border-top: 1px dashed var(--paper-3); }
+.dp-flow { display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--s-5); align-items: start; }
+.dp-flow .arrow { flex-direction: column; align-items: flex-start; gap: 6px; height: auto; width: auto; }
+.dp-flow .arrow .ar { display: flex; flex-direction: column; align-items: center; width: 8px; height: 48px; color: var(--rule-strong); }
+.dp-flow .arrow .ar .line { width: 1px; min-width: 0; min-height: 8px; }
+.dp-flow .arrow .ar svg { transform: rotate(90deg); }
+.dp-flow .arrow.back .ar { flex-direction: column-reverse; }
+.dp-flow .arrow.back .ar svg { transform: rotate(-90deg); }
+.dp-flow .cap { color: var(--paper-3); max-width: 100%; }
+.dp-public { position: relative; display: grid; grid-template-columns: 1fr; row-gap: var(--s-5); padding: var(--s-6) var(--s-4) var(--s-4); border: 1px dashed var(--paper-3); border-radius: var(--r-control); }
+.dp-public > .lbl { position: absolute; left: 12px; top: -10px; padding: 0 6px; background: var(--ink-0); color: var(--paper-3); }
+.dp-public .e-agent { order: 4; }
+.dp-public .region.agent { order: 5; }
+@media (min-width: 840px) {
+  .dg-dp { grid-template-columns: minmax(0, 1.2fr) 40px minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1.6fr); grid-template-rows: auto auto; column-gap: 0; row-gap: 0; min-height: 260px; align-items: start; }
+  .dg-dp .eyebrow { grid-row: 1; padding: 28px 0 12px; }
+  .dg-dp .region { grid-row: 2; }
+  .dg-dp .e-wallet, .dg-dp .region.wallet { grid-column: 1; }
+  .dg-dp .box { width: auto; max-width: none; }
+  .dp-keys { grid-column: 2; grid-row: 1 / 3; flex-direction: column; justify-self: center; height: 100%; min-height: 240px; padding-top: 10px; }
+  .dp-keys::before, .dp-keys::after { border-top: 0; border-left: 1px dashed var(--paper-3); }
+  .dp-keys span { writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+  .dp-flow { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; align-items: center; align-self: stretch; padding: 0 12px; }
+  .dg-dp .flow-1 { grid-column: 2 / 4; grid-row: 2; padding-left: 52px; }
+  .dp-flow .arrow { width: auto; gap: 4px; }
+  .dp-flow .arrow .ar { flex-direction: row; width: 100%; height: auto; }
+  .dp-flow .arrow .ar .line { width: auto; flex: 1; height: 1px; min-height: 0; }
+  .dp-flow .arrow .ar svg { transform: none; }
+  .dp-flow .arrow.back { flex-direction: column-reverse; }
+  .dp-flow .arrow.back .ar { flex-direction: row-reverse; }
+  .dp-flow .arrow.back .ar svg { transform: rotate(180deg); }
+  .dp-public { grid-column: 4 / 7; grid-row: 1 / 3; display: grid; grid-template-columns: subgrid; grid-template-rows: subgrid; padding: 0 14px 14px; row-gap: 0; }
+  .dp-public .e-adapter { grid-column: 1; grid-row: 1; }
+  .dp-public .e-agent { grid-column: 3; grid-row: 1; }
+  .dp-public .region.adapter { grid-column: 1; grid-row: 2; }
+  .dp-public .flow-2 { grid-column: 2; grid-row: 2; }
+  .dp-public .region.agent { grid-column: 3; grid-row: 2; }
+}
+
+/* ============================================================================
+   Footer (BRIEF §9.15, ADDENDUM §3)
+   ============================================================================ */
+.footer { margin-top: var(--section-pad-sm); border-top: 1px solid var(--rule); padding: var(--s-8) 0 var(--s-7); font: 400 var(--t-small) / var(--lh-small) var(--font-body); color: var(--paper-3); }
+.footer-cols { display: grid; grid-template-columns: 1fr; row-gap: var(--s-6); }
+.footer .eyebrow { margin-bottom: var(--s-3); }
+.footer a { color: var(--paper-2); text-decoration: underline; text-decoration-color: var(--paper-3); text-underline-offset: 2px; transition: text-underline-offset var(--d-fast) var(--ease), color var(--d-fast) var(--ease); }
+.footer a:hover { color: var(--paper); text-underline-offset: 4px; }
+.footer li + li { margin-top: var(--s-2); }
+.footer p { max-width: none; }
+.lockup-stack { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 21px; color: var(--logo); margin-bottom: var(--s-4); }
+.lockup-stack svg { width: 28px; height: 28px; }
+.lockup-stack .wordmark { font-size: 16px; }
+.promise { color: var(--paper); }
+.notice { margin-top: var(--s-8); padding-top: var(--s-5); border-top: 1px solid var(--rule); color: var(--paper-2); max-width: var(--measure); }
+.colophon { margin-top: var(--s-7); text-align: center; font: 400 var(--t-eyebrow) / 1.7 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper-3); max-width: none; }
+@media (min-width: 840px) {
+  .footer { margin-top: var(--section-pad); }
+  .footer-cols { grid-template-columns: 1.4fr 1fr 1fr; column-gap: var(--col-gap); }
+}
+
+/* ============================================================================
+   READING-CSS — section 01, "The Reading" (BRIEF §8.3, §8.8, §10; ADDENDUM §7–§8)
+   Every selector is scoped under #reading. Shared base classes are used, never defined.
+   Motion: opacity and transform only, plus max-height on the margin note and width on
+   the hold bar (both allowed by BRIEF §7.1). Red (--pen) marks only what is wrong.
+   ============================================================================ */
+
+/* ---- Tabs (§8.8) -------------------------------------------------------- */
+/* Five columns: the mono labels are wider than the text block at every desktop width, so they
+   wrap inside their column with a hanging numeral instead of overflowing. The first column is
+   wider so "Swap · lookalike Jupiter" takes two lines, like the others, down to 1024px. */
+#reading .tabs {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) repeat(4, minmax(0, 1fr));
+  margin: 0 -12px;
+}
+#reading .tabs::after {            /* the track, aligned with the text block */
+  content: "";
+  position: absolute;
+  left: 12px; right: 12px; bottom: 0;
+  height: 1px;
+  background: var(--rule);
+}
+#reading [role="tab"] {
+  position: relative;
+  appearance: none;
+  margin: 0;
+  padding: 10px 12px 12px calc(12px + 2ch);
+  text-indent: -2ch;
+  background: none;
+  border: 0;
+  border-radius: var(--r-control) var(--r-control) 0 0;
+  font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--paper-2);
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--d-fast) var(--ease);
+}
+#reading [role="tab"]::after {     /* the 2px paper underline of the selected tab */
+  content: "";
+  position: absolute;
+  left: 12px; right: 12px; bottom: 0;
+  height: 2px;
+  z-index: 1;
+}
+#reading [role="tab"]:hover { background: var(--ink-2); color: var(--paper); }
+#reading [role="tab"][aria-selected="true"] { color: var(--paper); }
+#reading [role="tab"][aria-selected="true"]::after { background: var(--paper); }
+#reading [role="tab"] .n { color: var(--paper-3); }
+#reading [role="tab"]:hover .n { color: var(--paper-2); }
+
+/* ---- Panel (§10.2) ------------------------------------------------------ */
+/* The stage (tabs, panel, caption, definitions) reserves the height of the tallest case, measured
+   by the script, so switching cases never changes the page height: the box fits the active case and
+   the surplus air sits before the next section's rule. */
+#reading .stage { min-height: var(--panel-min-h); }
+#reading .panel {
+  position: relative;
+  margin-top: var(--s-4);
+  padding: var(--s-5);
+  background: var(--ink-1);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-panel);
+  container-type: inline-size;
+  font-family: var(--font-mono);
+  font-size: var(--t-mono);
+  line-height: var(--lh-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  color: var(--paper-2);
+}
+/* All five cases are in the DOM. The active one is in flow; the others are laid out invisibly at the
+   same width (absolutely positioned) so the script can measure them. */
+#reading .case:not(.is-active) {
+  position: absolute;
+  top: var(--s-5); left: var(--s-5); right: var(--s-5);
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+#reading .panel.no-transition *, #reading .panel.no-transition *::before, #reading .panel.no-transition *::after { transition: none !important; }
+
+#reading .top { display: grid; gap: var(--s-6); }
+@container (min-width: 600px) {   /* DECLARED and READ side by side from ~680px viewports (840+ per §10.2) */
+  #reading .top { grid-template-columns: 5fr 7fr; }
+}
+#reading .region { min-width: 0; }
+#reading .sim, #reading .verdict { margin-top: var(--s-6); }
+
+/* Region headings: a mono eyebrow with a hairline that draws in once per case start. */
+#reading .panel h3.eyebrow {
+  margin: 0 0 var(--s-3);
+  font: 400 var(--t-eyebrow) / var(--lh-eyebrow) var(--font-mono);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--paper-3);
+}
+#reading .panel h3.eyebrow::after {
+  content: "";
+  display: block;
+  height: 1px;
+  margin-top: var(--s-2);
+  background: var(--rule);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--d-draw) var(--ease);
+}
+#reading .case.is-live h3.eyebrow::after { transform: scaleX(1); }
+
+/* ---- DECLARED ----------------------------------------------------------- */
+#reading .decl { margin: 0; }
+#reading .decl > div { padding: var(--s-2) 0 var(--s-3); border-bottom: 1px solid var(--rule); }
+#reading .decl dt {
+  font-size: var(--t-eyebrow);
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--paper-3);
+}
+#reading .decl dd { margin: var(--s-1) 0 0; color: var(--paper); overflow-wrap: anywhere; }
+#reading .dim { color: var(--paper-3); }
+#reading .fake {                   /* the page's button, as the user saw it: non-interactive */
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 var(--s-4);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--r-control);
+  font: 500 var(--t-small) / 1 var(--font-body);
+  color: var(--paper);
+  white-space: nowrap;
+}
+
+/* ALERT card (case D) */
+#reading .card {
+  padding: var(--s-4);
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-panel);
+}
+#reading .card p { margin: 0; }
+#reading .card-meta { font-size: var(--t-mono-sm); line-height: var(--lh-small); color: var(--paper-2); }
+#reading .card-body { margin: var(--s-2) 0 var(--s-3); font: 400 15px / 1.5 var(--font-body); color: var(--paper); }
+#reading .card-line { margin-bottom: var(--s-3); color: var(--paper); overflow-wrap: anywhere; }
+
+/* ---- READ ----------------------------------------------------------------- */
+#reading .read { position: relative; }
+#reading .rows { list-style: none; margin: 0; padding: 0; }
+#reading .rows > li {
+  border-top: 1px solid var(--rule);
+  opacity: .35;
+  transition: opacity var(--d-fast) var(--ease), background-color var(--d-fast) var(--ease);
+}
+#reading .rows > li:last-child { border-bottom: 1px solid var(--rule); }
+#reading .rows > li.is-read { opacity: 1; }
+#reading .rows > li[data-flag].is-stat { background: var(--pen-wash); }
+/* Row: index · body (name, arguments) · status mark; GUARDIAN's reading of the line beneath. */
+#reading .rows > li > button {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  grid-template-areas: "idx body stat" "idx why why";
+  width: 100%;
+  margin: 0;
+  padding: var(--s-3) 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+#reading .rows .idx { grid-area: idx; color: var(--paper-3); }
+#reading .rows .body { grid-area: body; }
+#reading .rows .name { display: block; color: var(--paper); }
+#reading .rows .args { display: block; color: var(--paper-2); overflow-wrap: anywhere; }
+#reading .rows .status {
+  display: block;                  /* the shell's nav `.status` is display:none */
+  grid-area: stat;
+  padding-left: var(--s-3);
+  font-size: var(--t-mono-sm);
+  line-height: calc(var(--t-mono) * var(--lh-mono));
+  color: var(--paper-2);
+  text-align: right;
+}
+#reading .rows > li[data-flag] .status { color: var(--pen); }
+#reading .rows .why {
+  grid-area: why;
+  margin-top: 2px;
+  font-size: var(--t-mono-sm);
+  line-height: var(--lh-small);
+  color: var(--paper-3);
+  overflow-wrap: anywhere;
+}
+#reading .rows .status, #reading .rows .why { visibility: hidden; opacity: 0; transition: opacity var(--d-fast) var(--ease); }
+#reading .rows > li.is-stat .status, #reading .rows > li.is-stat .why { visibility: visible; opacity: 1; }
+
+/* The flagged argument and its pen underline */
+#reading .flag { position: relative; white-space: nowrap; }
+#reading .flag::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -3px;
+  height: 0;
+  border-top: 2px solid var(--pen);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--d-slow) var(--ease);
+}
+#reading li[data-flag="caution"] .flag::after { border-top-width: 1px; border-top-style: dotted; bottom: -2px; }
+#reading li.is-stat .flag::after { transform: scaleX(1); }
+
+/* Margin note under a flagged row */
+#reading .margin-note {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  background: var(--pen-wash);
+  font-size: var(--t-mono-sm);
+  line-height: var(--lh-small);
+  color: var(--pen);
+  transition: max-height var(--d-base) var(--ease), opacity var(--d-base) var(--ease);
+}
+#reading .margin-note > p { margin: 0; padding: 0 var(--s-3) var(--s-3) 32px; overflow-wrap: anywhere; }
+#reading li.is-stat .margin-note { max-height: 120px; opacity: 1; visibility: visible; }
+
+/* Expanded-row inset */
+#reading .inset {
+  margin: 0 0 var(--s-3) 32px;
+  padding: var(--s-3);
+  background: var(--ink-2);
+  border-radius: var(--r-control);
+  font-size: var(--t-mono-sm);
+  line-height: var(--lh-small);
+  color: var(--paper-2);
+}
+#reading .inset[hidden] { display: none; }
+#reading .inset dl { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 2px var(--s-3); margin: 0; }
+#reading .inset dt { color: var(--paper-2); }
+#reading .inset dd { margin: 0; color: var(--paper); overflow-wrap: anywhere; }
+#reading .inset dd > span { display: block; }
+#reading .inset .dim { color: var(--paper-2); }
+
+/* The reading cursor: a 1px paper rule at the top edge of the current row, the caret under it
+   pointing up: GUARDIAN inserts its reading under the line. */
+#reading .cursor {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 1px;
+  background: var(--paper);
+  transform: translateY(var(--y, 0px));
+  transition: transform var(--d-base) var(--ease);
+  display: none;
+  pointer-events: none;
+  z-index: 1;
+}
+#reading .case.is-live:not(.is-sim) .cursor { display: block; }
+#reading .cursor .caret { position: absolute; left: 0; top: 1px; color: var(--paper); }
+
+/* ---- SIMULATION ----------------------------------------------------------- */
+#reading .sim-wrap { overflow-x: auto; padding-bottom: 4px; } /* room for the rows' 4px rise: no stray scrollbar */
+#reading .sim table { width: 100%; min-width: 440px; border-collapse: separate; border-spacing: 0; }
+#reading .sim th {
+  padding: 0 var(--s-4) var(--s-2) 0;
+  font-size: var(--t-eyebrow);
+  font-weight: 400;
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--paper-3);
+}
+#reading .sim th:nth-child(1) { width: 28%; }
+#reading .sim th:nth-child(2) { width: 30%; }
+#reading .sim td {
+  padding: var(--s-2) var(--s-4) var(--s-2) 0;
+  border-top: 1px solid var(--rule);
+  vertical-align: top;
+  color: var(--paper-2);
+}
+#reading .sim td:first-child { color: var(--paper); }
+#reading .sim tr:last-child td { border-bottom: 1px solid var(--rule); }
+#reading .sim tbody tr {           /* height reserved: visibility, not display */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity var(--d-fast) var(--ease), transform var(--d-fast) var(--ease);
+}
+#reading .sim tbody tr.is-in { opacity: 1; visibility: visible; transform: none; }
+#reading .sim .pen { color: var(--pen); }
+
+/* ---- VERDICT (the only live region) ----------------------------------------- */
+#reading .v { visibility: hidden; opacity: 0; transition: opacity var(--d-base) var(--ease); }
+#reading .case.is-done .v { visibility: visible; opacity: 1; }
+#reading .v-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); margin: 0 0 var(--s-3); color: var(--paper); }
+#reading .v-head .also { color: var(--paper-3); }
+#reading .v-say {
+  margin: 0;
+  max-width: var(--measure);
+  font: 400 var(--t-body) / var(--lh-body) var(--font-body);
+  color: var(--paper);
+}
+
+/* ---- Toolbar ------------------------------------------------------------------ */
+#reading .toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+#reading .toolbar .btn, #reading .toolbar .btn-ghost { position: relative; height: var(--control-h-sm); overflow: hidden; }
+#reading .toolbar .sub { margin-left: var(--s-2); font: 400 var(--t-eyebrow) / 1 var(--font-mono); font-variant-numeric: tabular-nums; }
+#reading .toolbar .btn-ghost .sub { color: var(--paper-3); }
+#reading .toolbar .btn-ghost:disabled .sub { color: inherit; }
+#reading .hold { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+#reading .hold::after {            /* the hold bar: width 0→100% over 1s while pressed */
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 2px;
+  width: 0;
+  background: var(--paper);
+}
+#reading .hold.is-holding::after { width: 100%; transition: width var(--d-hold) linear; }
+#reading .note {
+  flex-basis: 100%;
+  min-height: 20px;
+  font-size: var(--t-mono-sm);
+  line-height: var(--lh-small);
+  color: var(--paper-3);
+}
+
+/* ---- Caption and verdict definitions ------------------------------------------- */
+#reading .caption {
+  margin: var(--s-4) 0 0;
+  max-width: none;
+  font-size: var(--t-mono-sm);
+  line-height: var(--lh-small);
+  color: var(--paper-3);
+}
+#reading .defs { margin-top: var(--block-gap); }
+
+/* ---- Responsive ---------------------------------------------------------------- */
+@media (max-width: 839.98px) {
+  #reading .stage { min-height: 760px; }
+  #reading .defs { margin-top: var(--block-gap-sm); }
+  /* Below the side-by-side layout the strip is a single line of tabs that scrolls horizontally,
+     snapping, bleeding to the viewport edges; the page never overflows. */
+  #reading .tabs {
+    --tabs-bleed: var(--gutter-md);
+    display: flex;
+    margin: 0 calc(-1 * var(--tabs-bleed));
+    padding: 0 calc(var(--tabs-bleed) - 12px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: calc(var(--tabs-bleed) - 12px);
+    scrollbar-width: none;
+  }
+  #reading .tabs::after, #reading .tabs::-webkit-scrollbar { display: none; }
+  #reading [role="tab"] { flex: 0 0 auto; white-space: nowrap; scroll-snap-align: start; border-bottom: 1px solid var(--rule); }
+  #reading [role="tab"]::after { bottom: -1px; }
+  #reading [role="tab"]:focus-visible { outline-offset: -3px; }
+}
+@media (max-width: 599.98px) {
+  #reading .tabs { --tabs-bleed: var(--gutter); }
+  #reading li.is-stat .margin-note { max-height: 160px; } /* notes wrap to five lines on phones */
+  #reading .panel { padding: var(--s-4); }
+  #reading .case:not(.is-active) { top: var(--s-4); left: var(--s-4); right: var(--s-4); }
+  #reading .top { gap: var(--s-5); }
+  #reading .sim, #reading .verdict, #reading .toolbar { margin-top: var(--s-5); }
+}
+@media (max-width: 479.98px) {
+  /* The status mark joins the reading line so the instruction keeps the full width. */
+  #reading .rows > li > button { grid-template-columns: 28px minmax(0, 1fr) auto; grid-template-areas: "idx body body" "idx why stat"; }
+  #reading .rows .status { margin-top: 2px; line-height: var(--lh-small); }
+  #reading .inset { margin-left: 28px; }
+  #reading .margin-note > p { padding-left: 28px; }
+}
+@media (max-width: 399.98px) {
+  #reading .panel, #reading [role="tab"] { font-size: var(--t-mono-sm); }
+}
+
+/* ---- Reduced motion (demo-specific; the global query at the end of the sheet also applies) */
+@media (prefers-reduced-motion: reduce) {
+  #reading .cursor { display: none !important; }
+  #reading .hold::after { display: none; }
+  #reading .panel *, #reading .panel *::before, #reading .panel *::after { transition-duration: 1ms !important; }
+}
+
+/* ============================================================================
+   Reduced motion (BRIEF §7.3) — last
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; transition-duration: 1ms !important; }
+  .cursor { display: none !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="container">
+    <a class="lockup" href="#top" aria-label="GUARDIAN, back to top">
+      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" stroke="currentColor" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/><rect class="point" x="48" y="8" width="8" height="8" fill="currentColor"/></svg>
+      <span class="wordmark">GUARDIAN</span>
+    </a>
+    <nav class="nav-links" aria-label="Site">
+      <a href="#how">How it works</a>
+      <a href="#trust">Trust</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#rules">Rules</a>
+      <span class="status">Rules v0.4 · 61 rules</span>
+      <a class="btn btn-sm" href="#waitlist">Join the waitlist</a>
+    </nav>
+    <details class="menu">
+      <summary aria-label="Menu">Menu <svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary>
+      <nav class="menu-panel" aria-label="Site">
+        <div class="container">
+          <a href="#how">How it works</a>
+          <a href="#trust">Trust</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#rules">Rules</a>
+          <span class="status">Rules v0.4 · 61 rules</span>
+          <a class="btn" href="#waitlist">Join the waitlist</a>
+        </div>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<main id="main" class="container">
+
+  <section id="top" class="hero" aria-labelledby="hero-h">
+    <p class="eyebrow hero-eyebrow"><span>Non-custodial</span><span>defense agent</span><span>for Solana</span><span class="gap">Private beta</span><span>100 wallets</span></p>
+    <div class="hero-body">
+      <h1 id="hero-h">Nothing gets signed unread<span class="stop">.</span></h1>
+      <p class="lead">GUARDIAN decodes and simulates every Solana transaction before you sign, compares what the page says with what the payload does, and tells you in one sentence when they disagree. It never sees your keys.</p>
+      <div class="form-wrap">
+        <form class="waitlist" method="post" action="/api/waitlist" novalidate>
+          <div class="form-row">
+            <div class="field">
+              <label class="sr-only" for="hero-email">Email</label>
+              <input class="input" id="hero-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@domain.sol" required>
+            </div>
+            <button class="btn" type="submit">Join the waitlist</button>
+          </div>
+          <div class="hp" aria-hidden="true"><label for="hero-company">Company</label><input id="hero-company" name="company" type="text" tabindex="-1" autocomplete="off"></div>
+          <p class="form-msg" role="alert"></p>
+        </form>
+        <div class="form-done" hidden><p>You're on the list. We'll write once.</p></div>
+      </div>
+      <p class="small proof">Phantom, Solflare, Backpack · Free tier stays free · One email, when your wallet is up.</p>
+      <dl class="custody" aria-label="Custody facts">
+        <div><dt class="eyebrow k">Keys touched</dt><dd class="v">0</dd></div>
+        <div><dt class="eyebrow k">Data read</dt><dd class="v">public on-chain only</dd></div>
+        <div><dt class="eyebrow k">Simulation</dt><dd class="v">your machine, your RPC</dd></div>
+        <div><dt class="eyebrow k">Rules</dt><dd class="v">Apache-2.0, Q3 2027</dd></div>
+        <div><dt class="eyebrow k">Execution</dt><dd class="v">TEE-attested</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="reading" class="sec" aria-labelledby="reading-h">
+    <div class="sec-rule"><span class="sec-no">01</span></div>
+    <aside class="margin" aria-hidden="true">
+      <span class="eyebrow">01</span>
+      <span class="eyebrow">A transaction, read aloud</span>
+    </aside>
+    <div class="text">
+      <h2 id="reading-h">A transaction, read aloud.</h2>
+      <p class="lead">Five shapes of transaction, replayed from the beta fixtures. Left is what the page and the wallet told the user. Right is what GUARDIAN read in the payload.</p>
+
+      <div class="stage">
+      <div role="tablist" aria-label="Recorded cases" class="tabs">
+        <button type="button" role="tab" id="tab-a" aria-selected="true" aria-controls="reading-panel" tabindex="0" data-case="lookalike-swap"><span class="n" aria-hidden="true">1</span> Swap · lookalike Jupiter</button>
+        <button type="button" role="tab" id="tab-b" aria-selected="false" aria-controls="reading-panel" tabindex="-1" data-case="airdrop-assign"><span class="n" aria-hidden="true">2</span> Airdrop claim</button>
+        <button type="button" role="tab" id="tab-c" aria-selected="false" aria-controls="reading-panel" tabindex="-1" data-case="unlimited-approve"><span class="n" aria-hidden="true">3</span> Unlimited approval</button>
+        <button type="button" role="tab" id="tab-d" aria-selected="false" aria-controls="reading-panel" tabindex="-1" data-case="after-signature"><span class="n" aria-hidden="true">4</span> After the signature</button>
+        <button type="button" role="tab" id="tab-e" aria-selected="false" aria-controls="reading-panel" tabindex="-1" data-case="clear-swap"><span class="n" aria-hidden="true">5</span> Swap · jup.ag</button>
+      </div>
+
+      <div id="reading-panel" role="tabpanel" aria-labelledby="tab-a" class="panel" data-state="idle">
+
+        <!-- CASE A — Swap · lookalike Jupiter -->
+        <div class="case is-active" id="lookalike-swap">
+          <div class="top">
+            <div class="region declared">
+              <h3 class="eyebrow">DECLARED</h3>
+              <dl class="decl">
+                <div><dt>origin</dt><dd>jup-ag.app</dd></div>
+                <div><dt>button</dt><dd><span class="fake" aria-hidden="true">Swap</span><span class="sr-only">the page's button label: Swap</span></dd></div>
+                <div><dt>wallet said</dt><dd>Swap 12.5 SOL → ~2,431 USDC</dd></div>
+                <div><dt>signer</dt><dd><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd></div>
+              </dl>
+            </div>
+            <div class="region read">
+              <h3 class="eyebrow">READ</h3>
+              <ol class="rows">
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-a-1">
+                    <span class="idx">1</span>
+                    <span class="body"><span class="name">ComputeBudget.<wbr>SetComputeUnitLimit</span><span class="args">units: 200,000</span></span>
+                    <span class="status">✓</span><span class="why">expected</span>
+                  </button>
+                  <div id="rd-a-1" class="inset" hidden><dl><dt>program</dt><dd>ComputeBudget111111111111111111111111111111</dd><dt>accounts</dt><dd>none</dd></dl></div>
+                </li>
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-a-2">
+                    <span class="idx">2</span>
+                    <span class="body"><span class="name">ComputeBudget.<wbr>SetComputeUnitPrice</span><span class="args">5,000 µlamports per unit</span></span>
+                    <span class="status">✓</span><span class="why">expected</span>
+                  </button>
+                  <div id="rd-a-2" class="inset" hidden><dl><dt>program</dt><dd>ComputeBudget111111111111111111111111111111</dd><dt>accounts</dt><dd>none</dd></dl></div>
+                </li>
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-a-3">
+                    <span class="idx">3</span>
+                    <span class="body"><span class="name">Jupiter v6.<wbr>sharedAccountsRoute</span><span class="args">in: 12.5 SOL · min out: 2,419.02 USDC · via Orca Whirlpool</span></span>
+                    <span class="status">✓</span><span class="why">program verified · route matches the quote</span>
+                  </button>
+                  <div id="rd-a-3" class="inset" hidden><dl>
+                    <dt>program</dt><dd>JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4</dd>
+                    <dt>accounts</dt><dd><span class="dim">31 · showing 4</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> user transfer authority · signer</span><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> source token account · writable</span><span><span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> destination token account · writable</span><span>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA token program</span></dd>
+                  </dl></div>
+                </li>
+                <li data-flag="blocked">
+                  <button type="button" aria-expanded="false" aria-controls="rd-a-4">
+                    <span class="idx">4</span>
+                    <span class="body"><span class="name">Token.<wbr>SetAuthority</span><span class="args">account: <span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> (your USDC) · authority_type: AccountOwner · new_authority: <span class="flag"><span class="addr" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span></span></span></span>
+                    <span class="status">blocked</span>
+                  </button>
+                  <div id="rd-a-4" class="inset" hidden><dl>
+                    <dt>program</dt><dd>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</dd>
+                    <dt>accounts</dt><dd><span><span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> token account (yours) · writable</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> current owner · signer</span></dd>
+                    <dt>data</dt><dd>authority_type = 2 (AccountOwner) · new_authority = <span class="addr" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span></dd>
+                  </dl></div>
+                  <div class="margin-note"><p>R-021 · <span class="addr" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span> · SlowMist malicious-address DB · added 2026-09-14 · drainer · 212 reports</p></div>
+                </li>
+              </ol>
+              <div class="cursor" aria-hidden="true"><svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></div>
+            </div>
+          </div>
+          <div class="region sim">
+            <h3 class="eyebrow">SIMULATION</h3>
+            <div class="sim-wrap">
+              <table>
+                <caption class="sr-only">Simulation: expected against observed balance and authority changes</caption>
+                <thead><tr><th scope="col">asset</th><th scope="col">expected</th><th scope="col">observed</th></tr></thead>
+                <tbody>
+                  <tr><td>SOL</td><td>−12.5</td><td>−12.5</td></tr>
+                  <tr><td>USDC</td><td>+2,431.18</td><td class="pen">+2,431.18 · into an account no longer yours</td></tr>
+                  <tr><td>authority · USDC account owner</td><td>you</td><td class="pen"><span class="addr" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="region verdict" aria-live="polite" aria-atomic="true">
+            <h3 class="eyebrow">VERDICT</h3>
+            <div class="v">
+              <p class="v-head"><span class="chip chip-blocked">BLOCKED</span><span class="rid">· R-021</span><span class="also">· R-041 · R-050</span></p>
+              <p class="v-say">Instruction 4 hands your USDC account to a flagged address. The swap pays out into an account that is no longer yours.</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button type="button" class="btn decide" data-note="Demo · in the extension this returns your decision to the wallet. Nothing was sent." disabled>Reject</button>
+            <button type="button" class="btn-ghost hold decide" data-note="Override logged with your reason · it becomes fixture R-021/override_001.json" disabled>Sign anyway <span class="sub">hold 1 s</span></button>
+            <button type="button" class="btn-ghost again">Read again</button>
+            <span class="note" role="status"></span>
+          </div>
+        </div>
+
+        <!-- CASE B — Airdrop claim -->
+        <div class="case" id="airdrop-assign">
+          <div class="top">
+            <div class="region declared">
+              <h3 class="eyebrow">DECLARED</h3>
+              <dl class="decl">
+                <div><dt>origin</dt><dd>claim-jto-season3.xyz</dd></div>
+                <div><dt>button</dt><dd><span class="fake" aria-hidden="true">Claim 1,400 JTO</span><span class="sr-only">the page's button label: Claim 1,400 JTO</span></dd></div>
+                <div><dt>wallet said</dt><dd>Interact with program <span class="addr" title="Cfk2Q5AUQhwKqoJ8YjQsQQusLGW7qU5ihowe9JobABzW">Cfk2…ABzW</span></dd></div>
+                <div><dt>signer</dt><dd><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd></div>
+              </dl>
+            </div>
+            <div class="region read">
+              <h3 class="eyebrow">READ</h3>
+              <ol class="rows">
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-b-1">
+                    <span class="idx">1</span>
+                    <span class="body"><span class="name">Memo</span><span class="args">"Season 3 rewards"</span></span>
+                    <span class="status">✓</span><span class="why">no effect</span>
+                  </button>
+                  <div id="rd-b-1" class="inset" hidden><dl><dt>program</dt><dd>MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr</dd><dt>accounts</dt><dd><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> · signer</span></dd></dl></div>
+                </li>
+                <li data-flag="blocked">
+                  <button type="button" aria-expanded="false" aria-controls="rd-b-2">
+                    <span class="idx">2</span>
+                    <span class="body"><span class="name">System.<wbr>Assign</span><span class="args">account: <span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> (your wallet) · owner: <span class="flag"><span class="addr" title="Cfk2Q5AUQhwKqoJ8YjQsQQusLGW7qU5ihowe9JobABzW">Cfk2…ABzW</span></span></span></span>
+                    <span class="status">blocked</span>
+                  </button>
+                  <div id="rd-b-2" class="inset" hidden><dl>
+                    <dt>program</dt><dd>11111111111111111111111111111111</dd>
+                    <dt>accounts</dt><dd><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> assigned account · signer · writable</span></dd>
+                    <dt>data</dt><dd>owner = <span class="addr" title="Cfk2Q5AUQhwKqoJ8YjQsQQusLGW7qU5ihowe9JobABzW">Cfk2…ABzW</span></dd>
+                  </dl></div>
+                  <div class="margin-note"><p>R-014 · <span class="addr" title="Cfk2Q5AUQhwKqoJ8YjQsQQusLGW7qU5ihowe9JobABzW">Cfk2…ABzW</span> · deployed 3 h ago · no verified source · upgrade authority live · Assign makes it the owner of your wallet account</p></div>
+                </li>
+              </ol>
+              <div class="cursor" aria-hidden="true"><svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></div>
+            </div>
+          </div>
+          <div class="region sim">
+            <h3 class="eyebrow">SIMULATION</h3>
+            <div class="sim-wrap">
+              <table>
+                <caption class="sr-only">Simulation: expected against observed balance and authority changes</caption>
+                <thead><tr><th scope="col">asset</th><th scope="col">expected</th><th scope="col">observed</th></tr></thead>
+                <tbody>
+                  <tr><td>SOL</td><td>−0.000005 (fee)</td><td>−0.000005</td></tr>
+                  <tr><td>JTO</td><td>+1,400</td><td class="pen">+0</td></tr>
+                  <tr><td>authority · wallet owner</td><td>System Program</td><td class="pen"><span class="addr" title="Cfk2Q5AUQhwKqoJ8YjQsQQusLGW7qU5ihowe9JobABzW">Cfk2…ABzW</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="region verdict" aria-live="polite" aria-atomic="true">
+            <h3 class="eyebrow">VERDICT</h3>
+            <div class="v">
+              <p class="v-head"><span class="chip chip-blocked">BLOCKED</span><span class="rid">· R-014</span></p>
+              <p class="v-say">Instruction 2 gives a three-hour-old program ownership of your wallet. No airdrop pays out.</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button type="button" class="btn decide" data-note="Demo · in the extension this returns your decision to the wallet. Nothing was sent." disabled>Reject</button>
+            <button type="button" class="btn-ghost hold decide" data-note="Override logged with your reason · it becomes fixture R-014/override_001.json" disabled>Sign anyway <span class="sub">hold 1 s</span></button>
+            <button type="button" class="btn-ghost again">Read again</button>
+            <span class="note" role="status"></span>
+          </div>
+        </div>
+
+        <!-- CASE C — Unlimited approval -->
+        <div class="case" id="unlimited-approve">
+          <div class="top">
+            <div class="region declared">
+              <h3 class="eyebrow">DECLARED</h3>
+              <dl class="decl">
+                <div><dt>origin</dt><dd>trade.finance-dex.io</dd></div>
+                <div><dt>button</dt><dd><span class="fake" aria-hidden="true">Enable USDC</span><span class="sr-only">the page's button label: Enable USDC</span></dd></div>
+                <div><dt>wallet said</dt><dd>Approve USDC</dd></div>
+                <div><dt>signer</dt><dd><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd></div>
+              </dl>
+            </div>
+            <div class="region read">
+              <h3 class="eyebrow">READ</h3>
+              <ol class="rows">
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-c-1">
+                    <span class="idx">1</span>
+                    <span class="body"><span class="name">ComputeBudget.<wbr>SetComputeUnitLimit</span><span class="args">units: 50,000</span></span>
+                    <span class="status">✓</span><span class="why">expected</span>
+                  </button>
+                  <div id="rd-c-1" class="inset" hidden><dl><dt>program</dt><dd>ComputeBudget111111111111111111111111111111</dd><dt>accounts</dt><dd>none</dd></dl></div>
+                </li>
+                <li data-flag="caution">
+                  <button type="button" aria-expanded="false" aria-controls="rd-c-2">
+                    <span class="idx">2</span>
+                    <span class="body"><span class="name">Token.<wbr>Approve</span><span class="args">account: <span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> (your USDC) · delegate: <span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span> · amount: <span class="flag">18446744073709551615</span></span></span>
+                    <span class="status">caution</span>
+                  </button>
+                  <div id="rd-c-2" class="inset" hidden><dl>
+                    <dt>program</dt><dd>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</dd>
+                    <dt>accounts</dt><dd><span><span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> token account (yours) · writable</span><span><span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span> delegate</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> owner · signer</span></dd>
+                    <dt>data</dt><dd>amount = 18446744073709551615 (u64::MAX)</dd>
+                  </dl></div>
+                  <div class="margin-note"><p>R-003 · amount = u64::MAX, unlimited · delegate is a wallet, not a program · 2 transactions on record · no list match</p></div>
+                </li>
+              </ol>
+              <div class="cursor" aria-hidden="true"><svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></div>
+            </div>
+          </div>
+          <div class="region sim">
+            <h3 class="eyebrow">SIMULATION</h3>
+            <div class="sim-wrap">
+              <table>
+                <caption class="sr-only">Simulation: expected against observed balance and delegate changes</caption>
+                <thead><tr><th scope="col">asset</th><th scope="col">expected</th><th scope="col">observed</th></tr></thead>
+                <tbody>
+                  <tr><td>USDC</td><td>0</td><td>0</td></tr>
+                  <tr><td>delegate</td><td>none</td><td class="pen"><span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span> · up to the full balance</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="region verdict" aria-live="polite" aria-atomic="true">
+            <h3 class="eyebrow">VERDICT</h3>
+            <div class="v">
+              <p class="v-head"><span class="chip chip-caution">CAUTION</span><span class="rid">· R-003</span></p>
+              <p class="v-say">Unlimited delegate to an unknown wallet. If you proceed, GUARDIAN watches it and keeps a revoke link ready.</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button type="button" class="btn decide" data-note="Demo · in the extension this returns your decision to the wallet. Nothing was sent." disabled>Reject</button>
+            <button type="button" class="btn-ghost hold decide" data-note="Override logged with your reason · it becomes fixture R-003/override_001.json" disabled>Sign anyway <span class="sub">hold 1 s</span></button>
+            <button type="button" class="btn-ghost again">Read again</button>
+            <span class="note" role="status"></span>
+          </div>
+        </div>
+
+        <!-- CASE D — After the signature -->
+        <div class="case" id="after-signature">
+          <div class="top">
+            <div class="region declared">
+              <h3 class="eyebrow">ALERT</h3>
+              <div class="card">
+                <p class="card-meta">GUARDIAN · Telegram · 14:02 UTC</p>
+                <p class="card-body">Delegate <span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span> on your USDC account was added to the SlowMist malicious-address list 2 hours ago. The approval you signed 41 days ago is unlimited.</p>
+                <p class="card-line">Revoke → guardian.example/r/<span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></p>
+                <p class="card-meta">one tap builds the Revoke instruction · you sign it</p>
+              </div>
+            </div>
+            <div class="region read">
+              <h3 class="eyebrow">APPROVALS INDEX</h3>
+              <ol class="rows">
+                <li data-flag="caution">
+                  <button type="button" aria-expanded="false" aria-controls="rd-d-1">
+                    <span class="idx">1</span>
+                    <span class="body"><span class="name">USDC · delegate</span><span class="args"><span class="flag"><span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span></span> · unlimited · granted 41 d ago</span></span>
+                    <span class="status">caution</span>
+                  </button>
+                  <div id="rd-d-1" class="inset" hidden><dl>
+                    <dt>account</dt><dd>token account <span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span></dd>
+                    <dt>data</dt><dd>delegated_amount = 18446744073709551615 · approved in tx from case 3</dd>
+                  </dl></div>
+                  <div class="margin-note"><p>R-041 · <span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span> · SlowMist malicious-address DB · added 2026-10-20 12:01 UTC · 17 reports</p></div>
+                </li>
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-d-2">
+                    <span class="idx">2</span>
+                    <span class="body"><span class="name">USDC · close authority</span><span class="args">none</span></span>
+                    <span class="status">✓</span><span class="why">nothing to watch</span>
+                  </button>
+                  <div id="rd-d-2" class="inset" hidden><dl><dt>account</dt><dd>token account <span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span></dd><dt>data</dt><dd>close_authority = none · owner = <span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd></dl></div>
+                </li>
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-d-3">
+                    <span class="idx">3</span>
+                    <span class="body"><span class="name">wallet · owner</span><span class="args">System Program</span></span>
+                    <span class="status">✓</span><span class="why">nothing to watch</span>
+                  </button>
+                  <div id="rd-d-3" class="inset" hidden><dl><dt>account</dt><dd><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd><dt>data</dt><dd>owner = 11111111111111111111111111111111 (System Program)</dd></dl></div>
+                </li>
+              </ol>
+              <div class="cursor" aria-hidden="true"><svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></div>
+            </div>
+          </div>
+          <div class="region sim">
+            <h3 class="eyebrow">REVOKE, PREPARED</h3>
+            <div class="sim-wrap">
+              <table>
+                <caption class="sr-only">The prepared Revoke transaction: each field before and after</caption>
+                <thead><tr><th scope="col">field</th><th scope="col">before</th><th scope="col">after</th></tr></thead>
+                <tbody>
+                  <tr><td>instruction</td><td>—</td><td>Token.Revoke · account: <span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span></td></tr>
+                  <tr><td>delegate</td><td class="pen"><span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span></td><td>none</td></tr>
+                  <tr><td>fee</td><td>—</td><td>0.000005 SOL · you sign it</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="region verdict" aria-live="polite" aria-atomic="true">
+            <h3 class="eyebrow">VERDICT</h3>
+            <div class="v">
+              <p class="v-head"><span class="chip chip-caution">CAUTION</span><span class="rid">· R-041</span></p>
+              <p class="v-say">A delegate you approved 41 days ago was listed two hours ago. The revoke transaction is built; it moves nothing until you sign it.</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button type="button" class="btn decide" data-note="Demo · in the extension this opens your wallet with the Revoke instruction prepared." disabled>Revoke <span class="sub">0.000005 SOL</span></button>
+            <button type="button" class="btn-ghost decide" data-note="Demo · the delegate stays on the watch list." disabled>Keep the approval</button>
+            <button type="button" class="btn-ghost again">Read again</button>
+            <span class="note" role="status"></span>
+          </div>
+        </div>
+
+        <!-- CASE E — Swap · jup.ag -->
+        <div class="case" id="clear-swap">
+          <div class="top">
+            <div class="region declared">
+              <h3 class="eyebrow">DECLARED</h3>
+              <dl class="decl">
+                <div><dt>origin</dt><dd>jup.ag <span class="dim">· verified origin</span></dd></div>
+                <div><dt>button</dt><dd><span class="fake" aria-hidden="true">Swap</span><span class="sr-only">the page's button label: Swap</span></dd></div>
+                <div><dt>wallet said</dt><dd>Swap 2 SOL → ~310.2 USDC</dd></div>
+                <div><dt>signer</dt><dd><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd></div>
+              </dl>
+            </div>
+            <div class="region read">
+              <h3 class="eyebrow">READ</h3>
+              <ol class="rows">
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-e-1">
+                    <span class="idx">1–2</span>
+                    <span class="body"><span class="name">ComputeBudget.<wbr>SetComputeUnitLimit · SetComputeUnitPrice</span><span class="args">units: 400,000 · 10,000 µlamports per unit</span></span>
+                    <span class="status">✓</span><span class="why">expected</span>
+                  </button>
+                  <div id="rd-e-1" class="inset" hidden><dl><dt>program</dt><dd>ComputeBudget111111111111111111111111111111</dd><dt>accounts</dt><dd>none</dd></dl></div>
+                </li>
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-e-2">
+                    <span class="idx">3</span>
+                    <span class="body"><span class="name">AssociatedToken.<wbr>CreateIdempotent</span><span class="args">wSOL account <span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> · owner: you</span></span>
+                    <span class="status">✓</span><span class="why">owner is you</span>
+                  </button>
+                  <div id="rd-e-2" class="inset" hidden><dl>
+                    <dt>program</dt><dd>ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL</dd>
+                    <dt>accounts</dt><dd><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> payer · signer · writable</span><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> associated token account · writable</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> owner</span><span>So11111111111111111111111111111111111111112 mint</span></dd>
+                  </dl></div>
+                </li>
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-e-3">
+                    <span class="idx">4</span>
+                    <span class="body"><span class="name">System.<wbr>Transfer</span><span class="args">2 SOL → <span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> (your wSOL account)</span></span>
+                    <span class="status">✓</span><span class="why">destination is yours · wraps SOL for the route</span>
+                  </button>
+                  <div id="rd-e-3" class="inset" hidden><dl>
+                    <dt>program</dt><dd>11111111111111111111111111111111</dd>
+                    <dt>accounts</dt><dd><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> from · signer · writable</span><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> to · writable</span></dd>
+                  </dl></div>
+                </li>
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-e-4">
+                    <span class="idx">5</span>
+                    <span class="body"><span class="name">Token.<wbr>SyncNative</span><span class="args"><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span></span></span>
+                    <span class="status">✓</span><span class="why">expected</span>
+                  </button>
+                  <div id="rd-e-4" class="inset" hidden><dl><dt>program</dt><dd>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</dd><dt>accounts</dt><dd><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> native token account · writable</span></dd></dl></div>
+                </li>
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-e-5">
+                    <span class="idx">6</span>
+                    <span class="body"><span class="name">Jupiter v6.<wbr>sharedAccountsRoute</span><span class="args">in: 2 SOL · min out: 308.65 USDC · via Orca Whirlpool</span></span>
+                    <span class="status">✓</span><span class="why">program verified · route matches the quote</span>
+                  </button>
+                  <div id="rd-e-5" class="inset" hidden><dl>
+                    <dt>program</dt><dd>JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4</dd>
+                    <dt>accounts</dt><dd><span class="dim">31 · showing 4</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> user transfer authority · signer</span><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> source token account · writable</span><span><span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> destination token account · writable</span><span>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA token program</span></dd>
+                  </dl></div>
+                </li>
+                <li>
+                  <button type="button" aria-expanded="false" aria-controls="rd-e-6">
+                    <span class="idx">7</span>
+                    <span class="body"><span class="name">Token.<wbr>CloseAccount</span><span class="args"><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> → rent to <span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></span></span>
+                    <span class="status">✓</span><span class="why">destination is you</span>
+                  </button>
+                  <div id="rd-e-6" class="inset" hidden><dl>
+                    <dt>program</dt><dd>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</dd>
+                    <dt>accounts</dt><dd><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> account to close · writable</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> destination · writable</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> owner · signer</span></dd>
+                  </dl></div>
+                </li>
+              </ol>
+              <div class="cursor" aria-hidden="true"><svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></div>
+            </div>
+          </div>
+          <div class="region sim">
+            <h3 class="eyebrow">SIMULATION</h3>
+            <div class="sim-wrap">
+              <table>
+                <caption class="sr-only">Simulation: expected against observed balance, authority and delegate changes</caption>
+                <thead><tr><th scope="col">asset</th><th scope="col">expected</th><th scope="col">observed</th></tr></thead>
+                <tbody>
+                  <tr><td>SOL</td><td>−2.00</td><td>−2.0021 · fee and priority</td></tr>
+                  <tr><td>USDC</td><td>+310.20</td><td>+310.19 · within 0.3% of the quote</td></tr>
+                  <tr><td>authority</td><td>no changes</td><td>no changes</td></tr>
+                  <tr><td>delegates</td><td>none</td><td>none</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="region verdict" aria-live="polite" aria-atomic="true">
+            <h3 class="eyebrow">VERDICT</h3>
+            <div class="v">
+              <p class="v-head"><span class="chip chip-clear">CLEAR</span><span class="rid">· 0 findings</span></p>
+              <p class="v-say">Does what it says. Received amount within 0.3% of the quote.</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button type="button" class="btn decide" data-note="Demo · in the extension the wallet's own Approve button is released." disabled>Continue to wallet</button>
+            <button type="button" class="btn-ghost again">Read again</button>
+            <span class="note" role="status"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="caption mono">Replayed from beta fixtures · build 0.4 · addresses are fixture keys, not live accounts · full keys in the rule repository test fixtures.</p>
+
+      <dl class="ruled defs">
+        <div class="row"><dt class="mono"><span class="chip chip-blocked">BLOCKED</span></dt><dd>A match against a malicious-address list, or an undeclared instruction that changes ownership, authority or delegation. The wallet still asks you to sign.</dd></div>
+        <div class="row"><dt class="mono"><span class="chip chip-caution">CAUTION</span></dt><dd>A reversible but undeclared change, an unlimited approval, or a counterparty with no history. Whatever you proceed with, GUARDIAN keeps watching.</dd></div>
+        <div class="row"><dt class="mono"><span class="chip chip-clear">CLEAR</span></dt><dd>The payload matches the declared intent, every program is verified, no authority or delegate changes. A Clear verdict is a statement about the payload, not about the token you are buying.</dd></div>
+      </dl>
+      </div>
+    </div>
+    <noscript><style>
+      /* No JS: case A (the pre-rendered active case) shows its final state. Scoped to .is-active so
+         nothing leaks through the hidden sibling cases. */
+      #reading .is-active .rows > li { opacity: 1; }
+      #reading .is-active .rows > li[data-flag] { background: var(--pen-wash); }
+      #reading .is-active .rows .status, #reading .is-active .rows .why, #reading .is-active .margin-note,
+      #reading .is-active .sim tbody tr, #reading .is-active .v { visibility: visible; opacity: 1; transform: none; }
+      #reading .is-active .margin-note { max-height: none; }
+      #reading .is-active .flag::after, #reading .is-active h3.eyebrow::after { transform: scaleX(1); }
+      #reading .is-active .toolbar .decide:disabled { opacity: 1; cursor: default; }
+      #reading .cursor { display: none; }
+    </style></noscript>
+  </section>
+
+  <section id="threat" class="sec" aria-labelledby="threat-h">
+    <div class="sec-rule"><span class="sec-no">02</span></div>
+    <aside class="margin" aria-hidden="true">
+      <span class="eyebrow">02</span>
+      <span class="eyebrow">The threat</span>
+      <span class="footnote">Instruction names as decoded by build 0.4. Rule ids are stable.</span>
+    </aside>
+    <div class="text">
+      <h2 id="threat-h">Your wallet shows you a button. The chain executes the payload.</h2>
+      <p class="lead cols">A Solana transaction is a list of instructions. The page shows you a button. Your wallet shows you a summary. Neither one is the payload, and drainers live in that gap. In 2024, wallet drainers took roughly $494M across chains (ScamSniffer, 2024 annual report). Every one of those transactions was signed by its victim.</p>
+      <h3>Six instructions that empty wallets</h3>
+      <dl class="ruled">
+        <div class="row"><dt>System.Assign<span class="rid">R-014</span></dt><dd>Hands ownership of your wallet account to another program. Dressed up as "Claim airdrop".</dd></div>
+        <div class="row"><dt>Token.SetAuthority<span class="rid">R-021</span></dt><dd>Changes who owns a token account, or who can mint. Dressed up as "Swap".</dd></div>
+        <div class="row"><dt>Token.Approve<span class="arg">amount: 18446744073709551615</span><span class="rid">R-003</span></dt><dd>An unlimited delegate: that number is <span class="mono">u64::MAX</span>. Dressed up as "Enable trading". Drained later, when you have stopped paying attention.</dd></div>
+        <div class="row"><dt>Token.CloseAccount<span class="arg">destination ≠ you</span><span class="rid">R-008</span></dt><dd>Closes a token account and sends the balance and the rent to someone else. Dressed up as "Reclaim rent from empty accounts".</dd></div>
+        <div class="row"><dt>Durable nonce<span class="arg">delayed broadcast</span><span class="rid">R-033</span></dt><dd>A transaction you signed in March, broadcast in June, when the balance is worth taking. Dressed up as "Verify wallet ownership".</dd></div>
+        <div class="row"><dt>Lookalike origin<span class="arg">real route</span><span class="rid">R-050</span></dt><dd>A real Jupiter route built by <span class="mono">jup-ag.app</span> instead of <span class="mono">jup.ag</span>, with one instruction appended at the end. Dressed up as the site you meant to visit.</dd></div>
+      </dl>
+      <p class="closing">None of these need your seed phrase. They need your signature, once.</p>
+
+      <figure class="dg dg-dva" aria-labelledby="dva-desc">
+        <p id="dva-desc" class="sr-only">Diagram. What the page shows: a single button labelled Swap. What the payload does: four instructions, SetComputeUnitLimit, SetComputeUnitPrice, Jupiter sharedAccountsRoute and Token.SetAuthority to 3kvc…rmjA. The fourth is circled in red and marked not declared, rule R-021.</p>
+        <div>
+          <span class="eyebrow">What the page shows</span>
+          <span class="fake-btn" aria-hidden="true">Swap</span>
+        </div>
+        <div class="arrow v" aria-hidden="true"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></div>
+        <div>
+          <span class="eyebrow">What the payload does</span>
+          <ol class="payload" aria-hidden="true">
+            <li><span class="i">1</span>ComputeBudget.SetComputeUnitLimit</li>
+            <li><span class="i">2</span>ComputeBudget.SetComputeUnitPrice</li>
+            <li><span class="i">3</span>Jupiter v6.sharedAccountsRoute</li>
+            <li><span class="i">4</span><span class="ring">Token.SetAuthority → 3kvc…rmjA<svg viewBox="0 0 100 100" preserveAspectRatio="none"><ellipse cx="50" cy="50" rx="49" ry="48"/></svg></span><span class="pen-note">not declared · R-021</span></li>
+          </ol>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section id="how" class="sec" aria-labelledby="how-h">
+    <div class="sec-rule"><span class="sec-no">03</span></div>
+    <aside class="margin" aria-hidden="true">
+      <span class="eyebrow">03</span>
+      <span class="eyebrow">How it works</span>
+      <span class="footnote">Latencies are beta measurements on the fixture corpus.</span>
+    </aside>
+    <div class="text">
+      <h2 id="how-h">Three readings before the signature. One after.</h2>
+      <div class="layers">
+        <div class="layer">
+          <div class="num">I</div>
+          <div class="body">
+            <h3>Simulate and diff</h3>
+            <p>GUARDIAN decodes the unsigned transaction instruction by instruction and runs <span class="mono">simulateTransaction</span> on the RPC you configure, with signature verification off and the blockhash replaced, so the result reflects the chain as it is now, not a third party's summary. It records every balance change, every authority change, every account closed or assigned, then diffs that against the declared intent. If the page says "Swap" and the simulation shows your USDC account changing owner, the verdict is Blocked, with the instruction number and the rule that fired.</p>
+            <dl class="spec">
+              <dt>Input</dt><dd>unsigned transaction + page origin</dd>
+              <dt>Output</dt><dd>effect list, intent diff, rule hits</dd>
+              <dt>Latency</dt><dd>p50 under 400 ms, beta measurement</dd>
+              <dt>Runs</dt><dd>your machine (decode, simulate) · agent in TEE (diff)</dd>
+            </dl>
+            <div class="sample" aria-label="What you see"><span class="l"><span class="k">expected</span>  SOL −12.5 · USDC +2,431.18</span><span class="l"><span class="k">observed</span>  SOL −12.5 · <span class="pen">USDC account owner → 3kvc…rmjA</span></span></div>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="num">II</div>
+          <div class="body">
+            <h3>Match against intel</h3>
+            <p>Every counterparty address, program and origin is checked against the SlowMist malicious-address database, public STRIDE findings and a crowdsourced phishing-domain list refreshed every ten minutes. A program's age, verified source and upgrade authority are scored too, so a three-hour-old program with no source is flagged before anyone has reported it. A match explains itself: who flagged it, when, and how many reports.</p>
+            <dl class="spec">
+              <dt>Input</dt><dd>counterparties from reading I</dd>
+              <dt>Output</dt><dd>match, provenance, report count</dd>
+              <dt>Latency</dt><dd>under 120 ms · lists cached 24 h</dd>
+              <dt>Runs</dt><dd>agent in TEE · cached lists on your machine</dd>
+            </dl>
+            <div class="sample" aria-label="What you see"><span class="l"><span class="pen">3kvc…rmjA</span> · SlowMist · 2026-09-14 · drainer · 212 reports</span></div>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="num">III</div>
+          <div class="body">
+            <h3>Watch after the signature</h3>
+            <p>Approvals outlive the click. GUARDIAN keeps an index of every delegate and authority you have granted and alerts you on Telegram or email when one moves funds, grows, or appears on a list. Each alert carries a one-tap link that builds the Revoke instruction. You sign it. GUARDIAN never can.</p>
+            <dl class="spec">
+              <dt>Input</dt><dd>your public account state</dd>
+              <dt>Output</dt><dd>alert + prepared revoke transaction</dd>
+              <dt>Latency</dt><dd>within one slot cycle, about 2 s target</dd>
+              <dt>Runs</dt><dd>agent in TEE · public RPC reads only</dd>
+            </dl>
+            <div class="sample" aria-label="What you see"><span class="l">Delegate <span class="hi">B49K…wkS4</span> on your USDC moved 1,250.00 USDC at 14:02 UTC.</span><span class="l"><span class="k">Revoke →</span> <span class="hi">guardian.example/r/7vfb…JtQy</span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <figure class="dg dg-seq" aria-labelledby="seq-desc">
+        <p id="seq-desc" class="sr-only">Sequence diagram. The page builds a transaction and hands it to the wallet. The wallet passes the unsigned transaction to GUARDIAN, which decodes, simulates, diffs and matches it against intel; the diff step is the one marked in red. GUARDIAN returns a verdict with a rule id before the signature. After the signature, a watch step keeps reading delegates and authorities.</p>
+        <span class="node">Page</span>
+        <div class="arrow" aria-hidden="true"><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span><span class="cap"></span></div>
+        <span class="node">Wallet</span>
+        <div class="arrow" aria-hidden="true"><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span><span class="cap cap-1">unsigned tx</span></div>
+        <span class="node dbl" aria-hidden="true"><div>GUARDIAN<span class="steps"><span>decode</span><span>simulate</span><span class="diff">diff</span><span>intel</span></span></div></span>
+        <div class="arrow" aria-hidden="true"><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span><span class="cap cap-2">verdict + rule id</span></div>
+        <span class="node">Signature</span>
+        <div class="arrow dotted" aria-hidden="true"><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span><span class="cap cap-3">delegates, authorities</span></div>
+        <span class="node">Watch</span>
+      </figure>
+    </div>
+  </section>
+
+  <section id="rules" class="sec" aria-labelledby="rules-h">
+    <div class="sec-rule"><span class="sec-no">04</span></div>
+    <aside class="margin" aria-hidden="true">
+      <span class="eyebrow">04</span>
+      <span class="eyebrow">The rules</span>
+      <span class="footnote">Rule R-021 is the one that blocked case 1 in the Reading above.</span>
+    </aside>
+    <div class="text">
+      <h2 id="rules-h">The rules are the product. Read them.</h2>
+      <p class="lead">A detection engine you cannot read is a detection engine you have to trust. The rule below is the one that blocked case 1 above. Every rule has a severity, a condition on the decoded instruction, and the sentence the user sees. Sixty-one rules ship with build 0.4. They go public under Apache-2.0 in Q3 2027, with the fixtures behind the demo.</p>
+      <div class="code-head"><span class="eyebrow">rules/R-021.rule</span><span class="eyebrow">Apache-2.0 · Q3 2027</span></div>
+<pre class="code"><code><span class="ln">id: R-021</span><span class="ln">name: token.set_authority.to_unknown</span><span class="ln">severity: block</span><span class="ln">when:</span><span class="ln">  program: TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</span><span class="ln">  instruction: SetAuthority</span><span class="ln">  authority_type: AccountOwner</span><span class="ln">  new_authority: not_in [signer, verified_programs, user_known]</span><span class="ln say">say: "Instruction {index} hands your {mint} account to {new_authority}."</span><span class="ln">tests: fixtures/R-021/set_authority_drainer.json</span><span class="ln"># 23 cases · 0 false positives on the beta corpus</span></code></pre>
+      <p class="note rules-note">Bug bounty terms publish with the Q3 2027 release.</p>
+    </div>
+  </section>
+
+  <section id="act" class="act" aria-label="GUARDIAN never rejects a transaction. You do.">
+    <p>GUARDIAN never rejects a transaction. You do.</p>
+  </section>
+
+  <section id="trust" class="sec" aria-labelledby="trust-h">
+    <div class="sec-rule"><span class="sec-no">05</span></div>
+    <aside class="margin" aria-hidden="true">
+      <span class="eyebrow">05</span>
+      <span class="eyebrow">Trust</span>
+      <span class="footnote">Fail-open is deliberate: no agent, no verdict, your wallet as before.</span>
+    </aside>
+    <div class="text">
+      <h2 id="trust-h">What GUARDIAN can see, and what it can't.</h2>
+      <div class="cc">
+        <div class="cc-col">
+          <h3 class="eyebrow" id="can-h">Can</h3>
+          <ul aria-labelledby="can-h">
+            <li>Read your public address and on-chain state.</li>
+            <li>Decode and simulate the unsigned transaction your wallet is about to display.</li>
+            <li>Prepare a Revoke transaction for you to sign.</li>
+            <li>Send the alerts you asked for, to the channel you chose.</li>
+          </ul>
+        </div>
+        <div class="cc-col">
+          <h3 class="eyebrow" id="cannot-h">Cannot</h3>
+          <ul aria-labelledby="cannot-h">
+            <li>Read your seed phrase or private key. There is no field for it and no code path to it.</li>
+            <li>Sign, submit, modify or delay a transaction.</li>
+            <li>Move funds.</li>
+            <li>Stop you. The final decision is always yours; a Blocked verdict is evidence, not a lock.</li>
+            <li>See a program's future upgrade. A verified program can turn malicious after an upgrade, which is why GUARDIAN keeps watching after the signature.</li>
+          </ul>
+        </div>
+      </div>
+      <dl class="ruled block">
+        <div class="row"><dt>DATA PATH</dt><dd>Decoding and simulation happen on your machine, against the RPC you configure. The decoded transaction and its simulated effects, never a key, go to the agent, which runs inside a trusted execution environment and returns the verdict with its rule id. If the agent is unreachable, your wallet behaves as before and shows an "unverified" state. Fail-open is deliberate.</dd></div>
+        <div class="row"><dt>TEE</dt><dd>Each release publishes an attestation you can verify against the binary, so the code that read your transaction is the code that was published, and nobody can change it silently, GUARDIAN's operators included.</dd></div>
+        <div class="row"><dt>OPEN RULES</dt><dd>The detection rules and the decoder ship under Apache-2.0 in Q3 2027. The intent-diff grammar and the fixtures behind the demo above are public from the first release. The intel feeds and the TEE build are published as attestation reports, not source.</dd></div>
+        <div class="row"><dt>NOT A WALLET</dt><dd>GUARDIAN is an adapter for Phantom, Solflare and Backpack. Your wallet stays your wallet, your keys stay where they are. Remove it and your wallet works exactly as before.</dd></div>
+      </dl>
+
+      <figure class="dg dg-dp" aria-labelledby="dp-desc">
+        <p id="dp-desc" class="sr-only">Data-path diagram. Your wallet holds the private key, which stays there; a dashed line marked keys never cross separates it from everything else. On your machine, the adapter decodes the transaction, simulates it against your RPC and keeps cached lists for 24 hours. In a TEE, the agent runs the intent diff, the intel match and monitoring, with an attestation per release. The machine and the TEE sit inside a boundary labelled public data only. The unsigned transaction goes from the wallet to the adapter; the decoded transaction and simulated effects go to the agent; the verdict and rule id come back to the adapter; the verdict is shown in the wallet, which still asks you to sign.</p>
+        <span class="eyebrow e-wallet">Your wallet</span>
+        <div class="region wallet">
+          <span class="node box"><span class="t">Wallet</span><span class="ln hi">private key · stays here</span></span>
+        </div>
+        <div class="dp-keys" aria-hidden="true"><span>keys never cross</span></div>
+        <div class="dp-flow flow-1" aria-hidden="true">
+          <div class="arrow"><span class="cap">unsigned transaction</span><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span></div>
+          <div class="arrow back"><span class="cap">verdict shown · wallet still asks you</span><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span></div>
+        </div>
+        <div class="dp-public">
+          <span class="lbl" aria-hidden="true">public data only</span>
+          <span class="eyebrow e-adapter">Your machine</span>
+          <div class="region adapter">
+            <span class="node box"><span class="t">Adapter</span><span class="ln">decode</span><span class="ln">simulate · your RPC</span><span class="ln">cached lists · 24 h</span></span>
+          </div>
+          <div class="dp-flow flow-2" aria-hidden="true">
+            <div class="arrow"><span class="cap">decoded tx + simulated effects</span><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span></div>
+            <div class="arrow back"><span class="cap">verdict · rule id</span><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span></div>
+          </div>
+          <span class="eyebrow e-agent">TEE</span>
+          <div class="region agent">
+            <span class="node box dbl"><div><span class="t">Agent</span><span class="ln">intent diff</span><span class="ln">intel match</span><span class="ln">monitoring</span><span class="ln">attestation per release</span></div></span>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section id="comparison" class="sec" aria-labelledby="comparison-h">
+    <div class="sec-rule"><span class="sec-no">06</span></div>
+    <aside class="margin" aria-hidden="true">
+      <span class="eyebrow">06</span>
+      <span class="eyebrow">Comparison</span>
+      <span class="footnote">Keep your wallet warnings on. GUARDIAN is the second reader.</span>
+    </aside>
+    <div class="text">
+      <h2 id="comparison-h">Where the wallet's warning stops.</h2>
+      <div class="ledger-wrap">
+        <table class="ledger compare">
+          <caption class="sr-only">Capabilities compared: built-in wallet warnings, hosted screening APIs and GUARDIAN</caption>
+          <thead><tr><th scope="col" class="sticky">Capability</th><th scope="col">Built-in wallet warnings</th><th scope="col">Hosted screening APIs</th><th scope="col">GUARDIAN</th></tr></thead>
+          <tbody>
+            <tr><th scope="row" class="sticky">Decodes every instruction</th><td>partial¹</td><td class="yes">yes</td><td class="yes">yes</td></tr>
+            <tr><th scope="row" class="sticky">Simulates on your machine, against your RPC</th><td>—</td><td>—</td><td class="yes">yes</td></tr>
+            <tr><th scope="row" class="sticky">Diffs declared intent against the payload</th><td>—</td><td>—</td><td class="yes">yes</td></tr>
+            <tr><th scope="row" class="sticky">Threat intel with the provenance shown</th><td>partial²</td><td class="yes">yes</td><td class="yes">yes</td></tr>
+            <tr><th scope="row" class="sticky">Watches approvals after signing</th><td>—</td><td>—</td><td class="yes">yes</td></tr>
+            <tr><th scope="row" class="sticky">One-tap revoke links</th><td>—</td><td>—</td><td class="yes">yes</td></tr>
+            <tr><th scope="row" class="sticky">Rules you can read</th><td>—</td><td>—</td><td class="yes">Q3 2027</td></tr>
+            <tr><th scope="row" class="sticky">Runs in a TEE with published attestations</th><td>—</td><td>—</td><td class="yes">yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small foot">¹ For some transaction types. ² A label, without the source or the date.</p>
+      <p class="small foot muted">Keep your wallet warnings on. GUARDIAN runs in addition to them, not instead of them. Wallet teams ship good warnings; GUARDIAN is the second reader.</p>
+    </div>
+  </section>
+
+  <section id="pricing" class="sec" aria-labelledby="pricing-h">
+    <div class="sec-rule"><span class="sec-no">07</span></div>
+    <aside class="margin" aria-hidden="true">
+      <span class="eyebrow">07</span>
+      <span class="eyebrow">Pricing</span>
+      <span class="footnote">Billed on-chain, from the protected wallet. No card form.</span>
+    </aside>
+    <div class="text">
+      <h2 id="pricing-h">Pay in the unit you're protecting.</h2>
+      <table class="ledger pricing">
+        <caption class="sr-only">Pricing: Free, Pro and Team tiers compared feature by feature</caption>
+        <thead><tr>
+          <th scope="col"><span class="sr-only">Feature</span></th>
+          <th scope="col"><span class="tier">Free</span><span class="price">0 SOL</span></th>
+          <th scope="col"><span class="tier">Pro</span><span class="price">0.1 SOL per month</span></th>
+          <th scope="col"><span class="tier">Team</span><span class="price">custom</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><th scope="row">Simulation and decoded instruction list</th><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td></tr>
+          <tr><th scope="row">Known-malicious matching (SlowMist, phishing domains)</th><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td></tr>
+          <tr><th scope="row">Intent diff with rule ids</th><td>—</td><td class="yes">yes</td><td class="yes">yes</td></tr>
+          <tr><th scope="row">Real-time approval monitoring</th><td>—</td><td class="yes">yes</td><td class="yes">yes</td></tr>
+          <tr><th scope="row">Anomalous-approval alerts</th><td>—</td><td class="yes">yes</td><td class="yes">yes</td></tr>
+          <tr><th scope="row">Intel feed refresh</th><td>24 h</td><td>10 min</td><td>dedicated feed</td></tr>
+          <tr><th scope="row">Alerts</th><td>email</td><td>Telegram, email, revoke links</td><td>+ webhooks</td></tr>
+          <tr><th scope="row">Wallets</th><td>1</td><td>3</td><td>unlimited</td></tr>
+          <tr><th scope="row">Verdict API</th><td>—</td><td>—</td><td class="yes">yes</td></tr>
+          <tr><th scope="row">Support</th><td>community</td><td>48 h</td><td>priority</td></tr>
+          <tr class="cta"><th scope="row"><span class="sr-only">Sign up</span></th><td><a class="btn" href="#waitlist">Join the waitlist</a></td><td><a class="btn" href="#waitlist">Join the waitlist</a></td><td><a class="btn" href="#waitlist" data-team="1">Join the waitlist</a></td></tr>
+        </tbody>
+      </table>
+      <div class="tier-lists">
+        <div class="tier-list">
+          <h3><span class="tier">Free</span></h3><span class="price">0 SOL</span>
+          <dl class="ruled">
+            <div class="row"><dt>Simulation and decoded instruction list</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Known-malicious matching (SlowMist, phishing domains)</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Intent diff with rule ids</dt><dd>—</dd></div>
+            <div class="row"><dt>Real-time approval monitoring</dt><dd>—</dd></div>
+            <div class="row"><dt>Anomalous-approval alerts</dt><dd>—</dd></div>
+            <div class="row"><dt>Intel feed refresh</dt><dd>24 h</dd></div>
+            <div class="row"><dt>Alerts</dt><dd>email</dd></div>
+            <div class="row"><dt>Wallets</dt><dd>1</dd></div>
+            <div class="row"><dt>Verdict API</dt><dd>—</dd></div>
+            <div class="row"><dt>Support</dt><dd>community</dd></div>
+          </dl>
+          <a class="btn" href="#waitlist">Join the waitlist</a>
+        </div>
+        <div class="tier-list">
+          <h3><span class="tier">Pro</span></h3><span class="price">0.1 SOL per month</span>
+          <dl class="ruled">
+            <div class="row"><dt>Simulation and decoded instruction list</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Known-malicious matching (SlowMist, phishing domains)</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Intent diff with rule ids</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Real-time approval monitoring</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Anomalous-approval alerts</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Intel feed refresh</dt><dd>10 min</dd></div>
+            <div class="row"><dt>Alerts</dt><dd>Telegram, email, revoke links</dd></div>
+            <div class="row"><dt>Wallets</dt><dd>3</dd></div>
+            <div class="row"><dt>Verdict API</dt><dd>—</dd></div>
+            <div class="row"><dt>Support</dt><dd>48 h</dd></div>
+          </dl>
+          <a class="btn" href="#waitlist">Join the waitlist</a>
+        </div>
+        <div class="tier-list">
+          <h3><span class="tier">Team</span></h3><span class="price">custom</span>
+          <dl class="ruled">
+            <div class="row"><dt>Simulation and decoded instruction list</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Known-malicious matching (SlowMist, phishing domains)</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Intent diff with rule ids</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Real-time approval monitoring</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Anomalous-approval alerts</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Intel feed refresh</dt><dd>dedicated feed</dd></div>
+            <div class="row"><dt>Alerts</dt><dd>+ webhooks</dd></div>
+            <div class="row"><dt>Wallets</dt><dd>unlimited</dd></div>
+            <div class="row"><dt>Verdict API</dt><dd class="yes">yes</dd></div>
+            <div class="row"><dt>Support</dt><dd>priority</dd></div>
+          </dl>
+          <a class="btn" href="#waitlist" data-team="1">Join the waitlist</a>
+        </div>
+      </div>
+      <p class="small foot">Prices in SOL because the thing you are protecting is in SOL. Billed on-chain, from the protected wallet. No card: a card form on a security product is a phishing vector. Cancel by not paying. Free stays free after the beta. No GUARDIAN token. There will not be one.</p>
+    </div>
+  </section>
+
+  <section id="roadmap" class="sec" aria-labelledby="roadmap-h">
+    <div class="sec-rule"><span class="sec-no">08</span></div>
+    <aside class="margin" aria-hidden="true">
+      <span class="eyebrow">08</span>
+      <span class="eyebrow">Roadmap</span>
+      <span class="footnote">Dates are targets. This page changes when they slip.</span>
+    </aside>
+    <div class="text">
+      <h2 id="roadmap-h">What ships when.</h2>
+      <div class="timeline" role="list" aria-label="Roadmap by quarter">
+        <span class="here" aria-hidden="true">you are here</span>
+        <div class="tl-col" role="listitem">
+          <h3 class="eyebrow">Now → Q1 2027 · Closed beta</h3>
+          <ul>
+            <li><span class="g" aria-hidden="true">■</span><span><span class="sr-only">Shipped: </span>Simulation engine</span></li>
+            <li><span class="g" aria-hidden="true">■</span><span><span class="sr-only">Shipped: </span>Base intel: SlowMist, public STRIDE findings, phishing domains</span></li>
+            <li><span class="g" aria-hidden="true">◧</span><span><span class="sr-only">In progress: </span>Intent diff with rule ids</span></li>
+            <li><span class="g" aria-hidden="true">■</span><span><span class="sr-only">Shipped: </span>100 wallets onboarded</span></li>
+          </ul>
+        </div>
+        <div class="tl-col" role="listitem">
+          <h3 class="eyebrow">Q2 2027 · Monitoring</h3>
+          <ul>
+            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Real-time approval monitoring</span></li>
+            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Telegram and email alerts with revoke links</span></li>
+            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Phantom, Solflare and Backpack adapters</span></li>
+            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Pro opens</span></li>
+          </ul>
+        </div>
+        <div class="tl-col" role="listitem">
+          <h3 class="eyebrow">Q3 2027 · Open</h3>
+          <ul>
+            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Rules and decoder under Apache-2.0</span></li>
+            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Bug bounty</span></li>
+            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Sui and Eclipse</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="small tl-cap"><span class="mono">■</span> shipped · <span class="mono">◧</span> in progress · <span class="mono">□</span> planned. Updated 2026-10-20. Dates are targets, not promises. This page changes when they slip.</p>
+    </div>
+  </section>
+
+  <section id="faq" class="sec" aria-labelledby="faq-h">
+    <div class="sec-rule"><span class="sec-no">09</span></div>
+    <aside class="margin" aria-hidden="true">
+      <span class="eyebrow">09</span>
+      <span class="eyebrow">Questions</span>
+    </aside>
+    <div class="text">
+      <h2 id="faq-h">Questions a careful person asks.</h2>
+      <div class="faq">
+        <details class="faq-item"><summary>Does GUARDIAN need my seed phrase?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>No. It never asks and has no field for it. It reads the unsigned transaction your wallet is about to display and the public state of the chain.</p></div></details>
+        <details class="faq-item"><summary>Can it block a transaction without my consent?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>No. It shows a verdict with evidence; your wallet still asks you to sign. Blocked is advice, not a lock.</p></div></details>
+        <details class="faq-item"><summary>What happens if the service is down?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Fail-open is deliberate: your wallet behaves as before and shows an "unverified" state. Known-malicious matching keeps working from lists cached on your machine for 24 hours. You lose freshness, not your wallet.</p></div></details>
+        <details class="faq-item"><summary>Why a TEE?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>So the agent that sees your pending transactions cannot be modified silently, by anyone. Each release publishes an attestation you can verify against the binary.</p></div></details>
+        <details class="faq-item"><summary>What exactly is open source?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>The rule set and the decoder, under Apache-2.0 from Q3 2027. The intel feeds and the TEE build ship as attestation reports, not source, so an attacker cannot test against the exact matching logic.</p></div></details>
+        <details class="faq-item"><summary>What if GUARDIAN is wrong?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>You override with a one-line reason. The override is logged and becomes a test fixture, so the rule gets a counter-example and false positives go down for everyone.</p></div></details>
+        <details class="faq-item"><summary>Which wallets?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Phantom, Solflare and Backpack adapters ship in Q2 2027. Any wallet that exposes the unsigned transaction can be supported.</p></div></details>
+        <details class="faq-item"><summary>Does it slow down signing?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Simulation adds 180–400 ms in the beta build. The verdict renders before the wallet modal finishes animating.</p></div></details>
+        <details class="faq-item"><summary>Why 0.1 SOL and not dollars?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Because what you are protecting is denominated in SOL, and because a card form on a security product is a phishing vector we would rather not create. Billed on-chain from the protected wallet; cancel by not paying.</p></div></details>
+        <details class="faq-item"><summary>Is there a token?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>No. There will not be one. A security product that depends on its own token price has the wrong incentives.</p></div></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="waitlist" class="sec" aria-labelledby="waitlist-h">
+    <div class="sec-rule"><span class="sec-no">10</span></div>
+    <aside class="margin" aria-hidden="true">
+      <span class="eyebrow">10</span>
+      <span class="eyebrow">Waitlist</span>
+    </aside>
+    <div class="text">
+      <div class="wl">
+        <h2 id="waitlist-h">Join the next hundred.</h2>
+        <p class="muted">We add wallets in batches of 100. Leave an address; we tell you when yours is up, and nothing else.</p>
+        <div class="form-wrap">
+          <form class="waitlist wl-form" method="post" action="/api/waitlist" novalidate>
+            <div class="fields">
+              <div class="field">
+                <label class="eyebrow" for="wl-email">Email</label>
+                <input class="input" id="wl-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@domain.sol" required>
+              </div>
+              <div class="field">
+                <label class="eyebrow" for="wl-wallet">Wallet</label>
+                <div class="select-wrap">
+                  <select class="select" id="wl-wallet" name="wallet">
+                    <option value="phantom">Phantom</option>
+                    <option value="solflare">Solflare</option>
+                    <option value="backpack">Backpack</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" style="transform: rotate(180deg)"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg>
+                </div>
+              </div>
+            </div>
+            <label class="check"><input type="checkbox" id="team" name="team" value="1"> I'm asking for a team</label>
+            <div class="hp" aria-hidden="true"><label for="wl-company">Company</label><input id="wl-company" name="company" type="text" tabindex="-1" autocomplete="off"></div>
+            <button class="btn" type="submit">Join the waitlist</button>
+            <p class="form-msg" role="alert"></p>
+          </form>
+          <div class="form-done" hidden><p>You're on the list. We'll write once.</p></div>
+        </div>
+        <p class="small privacy">One email when your batch opens. No newsletter. Addresses are deleted when you join or when you ask.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer" id="footer">
+  <div class="container">
+    <div class="footer-cols">
+      <div>
+        <div class="lockup-stack" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none"><path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" stroke="currentColor" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/><rect x="48" y="8" width="8" height="8" fill="currentColor"/></svg>
+          <span class="wordmark">GUARDIAN</span>
+        </div>
+        <p class="promise">Non-custodial. Not a wallet. Never your keys.</p>
+      </div>
+      <div>
+        <h2 class="eyebrow">Contact</h2>
+        <ul>
+          <li><a href="mailto:hello@guardian.example">hello@guardian.example</a></li>
+          <li><a href="mailto:security@guardian.example">security@guardian.example</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="eyebrow">Legal</h2>
+        <ul>
+          <li>A Clear verdict describes a payload, not an investment.</li>
+          <li>Privacy policy and terms publish with the public beta.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="notice">GUARDIAN never asks for a seed phrase or private key. If something claiming to be GUARDIAN does, it is not GUARDIAN.</p>
+    <p class="colophon">Set in Newsreader, Geist and Geist Mono. Rules under Apache-2.0. Rules v0.4 · 61 rules · slot 441,906,318 · Updated 2026-10-20. © 2026 GUARDIAN.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  const WAITLIST_ENDPOINT = "/api/waitlist"; // TODO: point WAITLIST_ENDPOINT at the real service
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+  /* READING-JS — section 01, "The Reading" (BRIEF §10.3–§10.7): one setTimeout chain with token cancellation
+     inside the page's IIFE (no top-level return, no globals); the only rAF call is the one-frame transition reset. */
+  const rd = document.getElementById('reading');
+  if (rd) {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const stage = rd.querySelector('.stage'), panel = rd.querySelector('.panel');
+    const tabs = Array.from(rd.querySelectorAll('[role="tab"]'));
+    const q = (el, s) => Array.from(el.querySelectorAll(s));
+    const cases = q(panel, '.case');
+    const caseOf = tab => document.getElementById(tab.getAttribute('data-case'));
+    const selected = () => tabs.find(t => t.getAttribute('aria-selected') === 'true') || tabs[0];
+    let token = 0, pending = 0, resumeT = 0, noteT = 0, holdT = 0, paused = false, started = false;
+    let steps = [], stepIndex = 0, nextFn = null, cur = caseOf(selected()), curRow = null, io = null;
+
+    /* Cursor: a 1px rule at the top edge of the current row. Margin notes above it may still be
+       expanding (max-height), so their remaining growth is added to the row's offsetTop. */
+    function place(row) {
+      if (!row) return;
+      curRow = row;
+      let y = row.offsetTop;
+      q(cur, '.rows > li.is-stat .margin-note').forEach(n => {
+        if (n.offsetTop < y) y += Math.min(n.scrollHeight, 160) - n.offsetHeight;
+      });
+      cur.querySelector('.cursor').style.setProperty('--y', y + 'px');
+    }
+
+    /* The page never changes height: the stage reserves the tallest case, margin notes expanded. */
+    function reserve() {
+      const h = c => c.offsetHeight + q(c, '.margin-note').reduce((s, n) => s + Math.min(n.scrollHeight, 160) - n.offsetHeight, 0);
+      stage.style.minHeight = '';
+      stage.style.minHeight = stage.offsetHeight - cur.offsetHeight + Math.max(...cases.map(h)) + 'px';
+    }
+
+    /* Steps: {gap before fn, fn}. Row: move 200 → arrival 380 → status; then 300 → diff rows
+       one per 180 → 300 → verdict. */
+    function build(c) {
+      const rows = q(c, '.rows > li'), diffs = q(c, '.sim tbody tr'), s = [];
+      s.push({ gap: 0, fn: () => { c.classList.add('is-live'); place(rows[0]); } });
+      rows.forEach(r => {
+        s.push({ gap: 0, fn: () => place(r) });
+        s.push({ gap: 200, fn: () => r.classList.add('is-read') });
+        s.push({ gap: 380, fn: () => r.classList.add('is-stat') });
+      });
+      diffs.forEach((d, i) => s.push({ gap: i ? 180 : 300, fn: () => { c.classList.add('is-sim'); d.classList.add('is-in'); } }));
+      s.push({ gap: 300, fn: () => {
+        c.classList.add('is-done');
+        panel.setAttribute('data-state', 'done');
+        q(c, '.decide').forEach(b => { b.disabled = false; });
+      } });
+      return s;
+    }
+
+    function toggleRow(b, open) {
+      b.setAttribute('aria-expanded', String(open));
+      document.getElementById(b.getAttribute('aria-controls')).hidden = !open;
+    }
+
+    function reset(c) {
+      panel.classList.add('no-transition');
+      c.classList.remove('is-live', 'is-sim', 'is-done');
+      q(c, '.is-read, .is-stat, .is-in').forEach(el => el.classList.remove('is-read', 'is-stat', 'is-in'));
+      q(c, '.decide').forEach(b => { b.disabled = true; });
+      q(c, '.rows [aria-expanded="true"]').forEach(b => toggleRow(b, false));
+      panel.setAttribute('data-state', 'idle');
+      void panel.offsetHeight; /* flush the idle state while transitions are off */
+      requestAnimationFrame(() => panel.classList.remove('no-transition'));
+    }
+
+    function cancel() { token++; clearTimeout(pending); clearTimeout(resumeT); pending = 0; paused = false; }
+
+    function run(c, delay) {
+      cancel();
+      const my = ++token;
+      steps = build(c); stepIndex = 0;
+      nextFn = function next() {
+        if (my !== token || paused) return;
+        const s = steps[stepIndex];
+        if (!s) { pending = 0; return; }
+        pending = setTimeout(() => { if (my !== token) return; stepIndex++; s.fn(); next(); }, s.gap);
+      };
+      panel.setAttribute('data-state', 'reading');
+      pending = setTimeout(nextFn, delay);
+      sync(1500);
+    }
+
+    function finish(c) { build(c).forEach(s => s.fn()); } /* reduced motion: final state at once */
+
+    /* Pause while a row is expanded, keyboard focus is inside the READ column, or the page is
+       hidden; resume `delay` ms after the last of those clears. */
+    function sync(delay) {
+      clearTimeout(resumeT);
+      const a = document.activeElement;
+      const stop = document.hidden || !!cur.querySelector('.rows [aria-expanded="true"]') ||
+        (a && cur.querySelector('.read').contains(a) && a.matches(':focus-visible'));
+      if (stop) {
+        if (pending) { paused = true; clearTimeout(pending); pending = 0; }
+      } else if (paused) {
+        resumeT = setTimeout(() => { paused = false; nextFn(); }, delay);
+      }
+    }
+
+    function select(tab, delay) {
+      const c = caseOf(tab);
+      tabs.forEach(t => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      panel.setAttribute('aria-labelledby', tab.id);
+      cancel();
+      if (cur !== c) { reset(cur); cur.classList.remove('is-active'); }
+      reset(c); c.classList.add('is-active');
+      cur = c; curRow = null; started = true;
+      if (io) { io.disconnect(); io = null; }
+      if (reduced) finish(c); else run(c, delay);
+    }
+
+    function note(b) {
+      const n = b.closest('.toolbar').querySelector('.note');
+      clearTimeout(noteT);
+      n.textContent = b.getAttribute('data-note');
+      noteT = setTimeout(() => { n.textContent = ''; }, 4000);
+    }
+
+    /* Hold-to-sign: a continuous 1000ms press (pointer or Space/Enter) shows the note. */
+    function holdStart(b) {
+      if (b.disabled || holdT) return;
+      b.classList.add('is-holding');
+      holdT = setTimeout(() => { holdEnd(b); note(b); }, 1000);
+    }
+    function holdEnd(b) { clearTimeout(holdT); holdT = 0; b.classList.remove('is-holding'); }
+
+    rd.addEventListener('click', e => {
+      const t = e.target.closest('[role="tab"], .rows > li > button, .again, .decide:not(.hold)');
+      if (!t) return;
+      if (t.getAttribute('role') === 'tab') select(t, 120);
+      else if (t.classList.contains('again')) select(selected(), 120);
+      else if (t.classList.contains('decide')) note(t);
+      else { toggleRow(t, t.getAttribute('aria-expanded') !== 'true'); place(curRow); sync(1500); }
+    });
+
+    rd.querySelector('[role="tablist"]').addEventListener('keydown', e => {
+      const i = tabs.indexOf(e.target);
+      const n = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (i < 0 || n === undefined) return;
+      e.preventDefault();
+      const t = tabs[(n + tabs.length) % tabs.length];
+      t.focus(); select(t, 120);
+    });
+
+    q(rd, '.hold').forEach(b => {
+      b.addEventListener('pointerdown', e => { e.preventDefault(); holdStart(b); });
+      ['pointerup', 'pointerleave', 'pointercancel', 'blur'].forEach(t => b.addEventListener(t, () => holdEnd(b)));
+      b.addEventListener('keydown', e => {
+        if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); holdStart(b); }
+      });
+      b.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') holdEnd(b); });
+      b.addEventListener('contextmenu', e => e.preventDefault());
+    });
+
+    panel.addEventListener('focusin', () => sync(1500));
+    panel.addEventListener('focusout', () => setTimeout(sync, 0, 1500));
+    document.addEventListener('visibilitychange', () => sync(0));
+    addEventListener('resize', () => { reserve(); place(curRow); });
+    reserve();
+    if (document.fonts) document.fonts.ready.then(reserve);
+
+    if (reduced) finish(cur);
+    else {
+      /* Start once, at 40% visibility (less if the panel is taller than the viewport), after 600ms. */
+      const thr = Math.min(.4, Math.max(.1, innerHeight * .5 / panel.offsetHeight));
+      io = new IntersectionObserver(es => {
+        if (!started && es[0].intersectionRatio >= thr) { started = true; io.disconnect(); io = null; run(cur, 600); }
+      }, { threshold: thr });
+      io.observe(panel);
+    }
+  }
+
+  /* ---- Forms (BRIEF §12): validate on submit only, never fake a success ---- */
+  const COPY = {
+    bad: "That doesn't look like an email address. Check for a stray space.",
+    net: "Could not reach the waitlist. Nothing was saved. Try again, or write to hello@guardian.example."
+  };
+  function validEmail(v) {
+    const at = v.indexOf('@');
+    return at > 0 && !/\s/.test(v) && v.indexOf('.', at + 2) > at + 1 && v.indexOf('.') !== v.length - 1;
+  }
+  $$('form.waitlist').forEach(form => {
+    const email = $('input[type="email"]', form), msg = $('.form-msg', form), btn = $('button[type="submit"]', form);
+    const wrap = form.closest('.form-wrap'), done = $('.form-done', wrap);
+    function succeed() {
+      wrap.style.minHeight = wrap.offsetHeight + 'px';
+      form.classList.add('is-out');
+      setTimeout(() => { form.hidden = true; done.hidden = false; }, 200);
+    }
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const v = email.value;
+      msg.textContent = '';
+      if (!validEmail(v)) { email.setAttribute('aria-invalid', 'true'); msg.textContent = COPY.bad; email.focus(); return; }
+      email.removeAttribute('aria-invalid');
+      const hp = form.elements.company ? form.elements.company.value : '';
+      if (hp) { succeed(); return; }
+      const body = JSON.stringify({ email: v, wallet: form.elements.wallet ? form.elements.wallet.value : '', team: !!(form.elements.team && form.elements.team.checked), source: 'site', hp });
+      const label = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Sending…';
+      try {
+        const r = await fetch(WAITLIST_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+        if (!r.ok) throw new Error(String(r.status));
+        succeed();
+      } catch (err) {
+        msg.textContent = COPY.net;
+      } finally {
+        btn.disabled = false; btn.textContent = label;
+      }
+    });
+  });
+
+  /* ---- Mobile menu closes on link click ---- */
+  $$('.menu a').forEach(a => a.addEventListener('click', () => a.closest('details').removeAttribute('open')));
+
+  /* ---- Pricing: the Team button pre-ticks the Team checkbox ---- */
+  $$('[data-team]').forEach(a => a.addEventListener('click', () => { const c = $('#team'); if (c) c.checked = true; }));
+})();
+</script>
+</body>
+</html>

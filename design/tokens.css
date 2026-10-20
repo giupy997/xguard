@@ -1,0 +1,114 @@
+/* ============================================================================
+   GUARDIAN design tokens — "The Red Pen" (final, 2026-10-20)
+   Paste this block unchanged at the top of the inline <style> in index.html.
+   Contrast ratios below are computed (WCAG 2.x relative luminance), not estimated.
+   Rule of the system: the only chromatic color on the site is --pen, and it is
+   used only where something is wrong. Everything else is ink and paper.
+   ============================================================================ */
+:root {
+  color-scheme: dark;
+
+  /* ---- Ink: surfaces ------------------------------------------------------ */
+  --ink-0: #0A0A0B;        /* page background. Warm near-black, never #000 */
+  --ink-1: #121214;        /* raised surface: demo panel, code, inputs, message card */
+  --ink-2: #1A1A1D;        /* hover/active rows and tabs, expanded-row insets. Never decorative */
+  --rule: #2A2A2E;         /* decorative hairlines only (1.4:1, exempt from AA): section rules, table rows */
+  --rule-strong: #626268;  /* boundaries that must be perceivable (3.3:1 on ink-0, 3.1:1 on ink-1):
+                              input borders, ghost-button borders, meaningful diagram strokes, tab underline track */
+
+  /* ---- Paper: text -------------------------------------------------------- */
+  --paper: #EDEBE6;        /* primary text. 16.6:1 on ink-0 · 15.7:1 on ink-1 · 14.6:1 on ink-2 */
+  --paper-2: #A8A6A0;      /* secondary text, body on panels. 8.1:1 on ink-0 · 7.7:1 on ink-1 · 7.1:1 on ink-2 */
+  --paper-3: #85837E;      /* metadata, eyebrows, footnotes. 5.2:1 on ink-0 · 4.9:1 on ink-1 · 4.6:1 on ink-2.
+                              12px minimum. Prefer ink-0/ink-1 under it */
+  --paper-hi: #FFFFFF;     /* primary button hover fill only (ink-0 text: 19.8:1) */
+
+  /* ---- The red pen -------------------------------------------------------- */
+  --pen: #FF5A4E;          /* the only chromatic color. 6.4:1 on ink-0 · 6.1:1 on ink-1 · 5.6:1 on pen-wash.
+                              Text on a --pen fill is ALWAYS --ink-0 (6.4:1); --paper on --pen fails (2.6:1) */
+  --pen-wash: #2A1512;     /* solid tint behind a flagged row or a margin note. Opacity-free so it survives screenshots */
+
+  /* ---- Semantic aliases (use these in components) ------------------------- */
+  --bg: var(--ink-0);
+  --surface: var(--ink-1);
+  --surface-2: var(--ink-2);
+  --border: var(--rule);
+  --border-strong: var(--rule-strong);
+  --text: var(--paper);
+  --text-muted: var(--paper-2);
+  --text-faint: var(--paper-3);
+  --accent: var(--paper);          /* there is no brand accent color: CTAs are paper */
+  --accent-hover: var(--paper-hi);
+  --danger: var(--pen);
+  --danger-bg: var(--pen-wash);
+  --verdict-blocked: var(--pen);   /* filled chip, ink-0 text, 2px solid underline */
+  --verdict-caution: var(--pen);   /* outlined chip, pen text, 1px dotted underline */
+  --verdict-clear: var(--paper);   /* outlined chip, paper text, no underline */
+  --focus: var(--paper);           /* 2px solid, 3px offset, every interactive element */
+  --selection-bg: var(--paper);
+  --selection-fg: var(--ink-0);
+  --logo: var(--paper);            /* the mark is always paper on ink or ink on paper, never --pen */
+
+  /* ---- Typography --------------------------------------------------------- */
+  --font-display: "Newsreader", "Newsreader Fallback", Georgia, "Times New Roman", serif;
+  --font-body: "Geist", "Geist Fallback", Inter, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --t-eyebrow: 12px;   --lh-eyebrow: 1.4;  --ls-eyebrow: 0.14em;   /* Geist Mono 400, uppercase, paper-3 */
+  --t-mono: 13.5px;    --lh-mono: 1.6;                             /* Geist Mono 400: demo rows, code, tables */
+  --t-mono-sm: 12.5px;                                             /* mono under 400px viewport, margin notes */
+  --t-small: 14px;     --lh-small: 1.5;                            /* Geist 400: captions, footer, footnotes */
+  --t-body: 17px;      --lh-body: 1.6;                             /* Geist 400, measure 62ch */
+  --t-lead: 21px;      --lh-lead: 1.45;                            /* Geist 400, paper-2, measure 56ch */
+  --t-h3: 24px;        --lh-h3: 1.25; --ls-h3: -0.01em;            /* Geist 500 */
+  --t-tier: 32px;      --lh-tier: 1.1;                             /* Newsreader 450, pricing tier names */
+  --t-h2: clamp(32px, 4.6vw, 56px);   --lh-h2: 1.05; --ls-h2: -0.015em;  /* Newsreader 450, opsz 48 */
+  --t-h1: clamp(42px, 8vw, 104px);    --lh-h1: 0.98; --ls-h1: -0.025em;  /* Newsreader 450, opsz 48 */
+  --display-wght: 450;
+  --display-opsz: 48;                 /* capped: opsz 72 hairlines bloom on ink */
+  --measure: 62ch;
+  --measure-lead: 56ch;
+
+  /* ---- Layout ------------------------------------------------------------- */
+  --container: 1180px;
+  --gutter: 20px;          /* 320–599 */
+  --gutter-md: 40px;       /* 600–1023 */
+  --gutter-lg: 64px;       /* 1024+ */
+  --cols: 12;
+  --col-gap: 24px;
+  --margin-cols: 3;        /* the editorial margin: columns 1–3 on 1024+ */
+  --nav-h: 56px;
+  --sticky-top: 96px;      /* nav-h + 40px: sticky margin apparatus */
+  --scroll-margin: 72px;   /* scroll-margin-top on every section target */
+  --control-h: 48px;       /* inputs and primary buttons outside the nav */
+  --control-h-sm: 36px;    /* nav button, demo toolbar buttons */
+  --panel-min-h: 560px;    /* demo panel reserved height (desktop); 760px below 840px */
+
+  /* ---- Spacing (8px base) ------------------------------------------------- */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
+  --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 112px; --s-11: 128px; --s-12: 160px;
+  --section-pad: var(--s-10);     /* 112px desktop between sections */
+  --section-pad-sm: 72px;         /* mobile */
+  --block-gap: var(--s-7);        /* 48px between sub-blocks desktop */
+  --block-gap-sm: var(--s-6);     /* 32px mobile */
+
+  /* ---- Radii -------------------------------------------------------------- */
+  --r-chip: 2px;
+  --r-control: 4px;        /* buttons, inputs, tabs */
+  --r-panel: 4px;          /* demo panel, code block, message card */
+
+  /* ---- Motion (opacity and transform only) -------------------------------- */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --d-fast: 160ms;         /* links, buttons, row opacity, diff row fade */
+  --d-base: 200ms;         /* verdict fade, margin note, FAQ caret, cursor move, form crossfade */
+  --d-slow: 240ms;         /* the red underline drawing under an argument */
+  --d-draw: 300ms;         /* hairline draw-in under demo headings */
+  --d-stop: 400ms;         /* the hero full stop fading in */
+  --d-dwell: 380ms;        /* reading cursor dwell per row (580ms per row with the 200ms move) */
+  --d-hold: 1000ms;        /* "Sign anyway" hold-to-confirm */
+
+  /* ---- Z-index ------------------------------------------------------------ */
+  --z-nav: 20;
+  --z-menu: 30;
+  --z-skip: 40;
+}

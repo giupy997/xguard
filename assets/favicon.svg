@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!--
+    GUARDIAN favicon, 16-32px cut of the Open G.
+    Tile: ink-0 rounded square (radius 12/64 = 3px at 16px). Mark: paper, inset to a 40-unit box
+    so the strokes stay 2px at 16px; the point and the gap are each 8 units (2px); the mouth is 12 units (3px).
+    Colors are hard-coded on purpose: a favicon cannot inherit currentColor.
+    Reference in <head> as: <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,...">
+  -->
+  <rect width="64" height="64" rx="12" fill="#0A0A0B"/>
+  <path d="M32 16H20A4 4 0 0 0 16 20V44A4 4 0 0 0 20 48H44A4 4 0 0 0 48 44V36H32" fill="none" stroke="#EDEBE6" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/>
+  <rect x="40" y="12" width="8" height="8" fill="#EDEBE6"/>
+</svg>

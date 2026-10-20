@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-labelledby="guardian-mark-title">
+  <title id="guardian-mark-title">GUARDIAN</title>
+  <!--
+    GUARDIAN mark: "The Open G".
+    A squared G whose loop never closes. The corner that would close it is lifted out
+    and held as a single square point: the sentence stays open until it has been read.
+    Geometry (64-unit grid, stroke 8, butt caps, miter joins):
+      outer bounds 8..56 on both axes; corner radius 6 on the centerline (10 outer, 2 inner)
+      top stroke ends at x=40 (butt); point at x 48..56, y 8..16; gap = 8 = one stroke width
+      crossbar enters from the right at y=36 and stops at x=34; right stem spans y 32..52 (square top)
+      mouth between point and stem = 16 units
+    Everything on a 2-unit grid so it renders crisp at 16, 20, 32, 64 and 200 px.
+    Color: currentColor only. Paper (#EDEBE6) on ink, or ink (#0A0A0B) on paper. Never the red pen.
+  -->
+  <path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" stroke="currentColor" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/>
+  <rect class="point" x="48" y="8" width="8" height="8" fill="currentColor"/>
+</svg>
