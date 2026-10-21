@@ -1,4 +1,11 @@
-# GUARDIAN
+# xguard
+
+This repository holds two things:
+
+- **`agent/`**: the xguard agent, an always-on security agent for macOS that watches continuously and lets you decide. See [agent/README.md](agent/README.md).
+- **The landing page and brand system** below, built before the product was renamed. It still says GUARDIAN and still describes the earlier Solana-only idea.
+
+## Landing page (GUARDIAN, earlier direction)
 
 Landing page and brand system for GUARDIAN, a non-custodial defense agent for Solana holders.
 GUARDIAN decodes and simulates every pending transaction before you sign, compares what the page
