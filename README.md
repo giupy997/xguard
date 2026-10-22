@@ -1,43 +1,30 @@
 # xguard
 
-This repository holds two things:
-
-- **`agent/`**: the xguard agent, an always-on security agent for macOS that watches continuously and lets you decide. See [agent/README.md](agent/README.md).
-- **The landing page and brand system** below, built before the product was renamed. It still says GUARDIAN and still describes the earlier Solana-only idea.
-
-## Landing page (GUARDIAN, earlier direction)
-
-Landing page and brand system for GUARDIAN, a non-custodial defense agent for Solana holders.
-GUARDIAN decodes and simulates every pending transaction before you sign, compares what the page
-says with what the payload does, and tells you when they disagree. It never sees your keys.
-
-## Contents
+An always-on security agent for your Mac. It watches continuously; you decide. Free, with no account and no subscription.
 
 | Path | What it is |
 |---|---|
-| `index.html` | The landing page. One self-contained file: inline CSS and JS, Google Fonts only, no build step. |
-| `brand.html` | Brand guidelines: the mark, lockups, misuse, color, type, voice, components. |
-| `assets/` | `logo-mark.svg`, `logo-lockup.svg`, `favicon.svg`. |
-| `design/BRIEF.md` | The design brief the site is built from ("The Red Pen" direction). |
-| `design/ADDENDUM.md` | Overrides to the brief: placeholders, omitted links, integration notes. |
-| `design/tokens.css` | Design tokens (colors with verified contrast, type scale, spacing, motion). |
+| `agent/` | The xguard agent (Python, macOS). See [agent/README.md](agent/README.md). |
+| `index.html` | The website, one self-contained file: inline CSS and JS, Google Fonts only, no build step. |
+| `assets/`, `design/`, `brand.html` | Design tokens, the brief and the brand guidelines from the earlier GUARDIAN direction. The brand page still shows the old name and mark; it has not been redone for xguard yet. |
 
-## Run locally
+## Install
 
-Any static server works:
+Requires macOS 13 or later and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-python3 -m http.server 4173
+uv tool install "git+https://github.com/giupy997/xguard.git#subdirectory=agent"
+xguard scan
 ```
 
-Then open http://localhost:4173/ and http://localhost:4173/brand.html.
+## Preview the site
 
-## Before launch
+```bash
+python3 -m http.server 4175
+```
 
-- The waitlist form posts to `/api/waitlist`, which does not exist yet. Until it does, the form shows a network error by design; it never fakes a success.
-- Domains use the placeholder `guardian.example`.
-- Every figure marked VERIFY in `design/BRIEF.md` §15 (loss figures, rule counts, latencies, roadmap years, fixture keys) must be confirmed or replaced.
+Then open http://localhost:4175/.
 
 ## Design rule
 
-The only chromatic color on the site is the one used to say no. Red marks something wrong; everything else is ink and paper.
+The only chromatic color on the site is the one used to say something is wrong. Red marks a problem; everything else is ink and paper.

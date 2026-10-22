@@ -3,21 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GUARDIAN — Nothing gets signed unread.</title>
-<meta name="description" content="A non-custodial defense agent for Solana. GUARDIAN decodes and simulates every pending transaction, compares what the page says with what the payload does, and tells you when they disagree. It never sees your keys.">
+<title>xguard — It watches. You decide.</title>
+<meta name="description" content="xguard is a free, always-on security agent for your Mac. It runs read-only checks every few minutes, explains what it finds in plain language, and changes nothing until you approve it. No account, no subscription.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0A0A0B">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2064%2064%22%20width=%2264%22%20height=%2264%22%3E%3Crect%20width=%2264%22%20height=%2264%22%20rx=%2212%22%20fill=%22%230A0A0B%22/%3E%3Cpath%20d=%22M32%2016H20A4%204%200%200%200%2016%2020V44A4%204%200%200%200%2020%2048H44A4%204%200%200%200%2048%2044V36H32%22%20fill=%22none%22%20stroke=%22%23EDEBE6%22%20stroke-width=%228%22%20stroke-linecap=%22butt%22%20stroke-linejoin=%22miter%22/%3E%3Crect%20x=%2240%22%20y=%2212%22%20width=%228%22%20height=%228%22%20fill=%22%23EDEBE6%22/%3E%3C/svg%3E">
-<meta property="og:title" content="GUARDIAN — Nothing gets signed unread.">
-<meta property="og:description" content="Non-custodial defense agent for Solana. Decodes, simulates and diffs every transaction before you sign. Never your keys.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20width%3D%2264%22%20height%3D%2264%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%230A0A0B%22%2F%3E%3Cpath%20d%3D%22M18%2018L46%2046M18%2046L33%2031%22%20stroke%3D%22%23EDEBE6%22%20stroke-width%3D%228%22%20stroke-linecap%3D%22butt%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%2216%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22%23EDEBE6%22%2F%3E%3C%2Fsvg%3E">
+<meta property="og:title" content="xguard — It watches. You decide.">
+<meta property="og:description" content="A free, always-on security agent for macOS. Read-only checks, plain-language explanations, nothing changes until you approve it.">
 <meta property="og:type" content="website">
-<!-- og:image: none at launch (no raster available). Add a 1200×630 PNG of the stacked lockup on ink later. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@48,450&family=Geist:wght@400..500&family=Geist+Mono:wght@400&display=swap">
 <style>
 /* ============================================================================
-   GUARDIAN design tokens — "The Red Pen" (final, 2026-10-20)
+   xguard design tokens — "The Red Pen" (2026-10-22)
    Paste this block unchanged at the top of the inline <style> in index.html.
    Contrast ratios below are computed (WCAG 2.x relative luminance), not estimated.
    Rule of the system: the only chromatic color on the site is --pen, and it is
@@ -79,7 +78,7 @@
   --t-body: 17px;      --lh-body: 1.6;                             /* Geist 400, measure 62ch */
   --t-lead: 21px;      --lh-lead: 1.45;                            /* Geist 400, paper-2, measure 56ch */
   --t-h3: 24px;        --lh-h3: 1.25; --ls-h3: -0.01em;            /* Geist 500 */
-  --t-tier: 32px;      --lh-tier: 1.1;                             /* Newsreader 450, pricing tier names */
+  --t-tier: 32px;      --lh-tier: 1.1;                             /* Newsreader 450, large mono-free display */
   --t-h2: clamp(32px, 4.6vw, 56px);   --lh-h2: 1.05; --ls-h2: -0.015em;  /* Newsreader 450, opsz 48 */
   --t-h1: clamp(42px, 8vw, 104px);    --lh-h1: 0.98; --ls-h1: -0.025em;  /* Newsreader 450, opsz 48 */
   --display-wght: 450;
@@ -234,7 +233,7 @@ p + p { margin-top: var(--s-4); }
 .lockup { display: inline-flex; align-items: center; gap: 10px; color: var(--logo); text-decoration: none; }
 .lockup svg { width: 20px; height: 20px; }
 .lockup .point { transition: transform var(--d-base) var(--ease); }
-.lockup:hover .point { transform: translate(6.4px, -6.4px); } /* 2px at the 20px render size */
+.lockup:hover .point { transform: translate(6.4px, -6.4px); } /* the lifted arm lifts a little more: 2px at 20px */
 .wordmark { font: 500 13px / 1 var(--font-body); letter-spacing: .16em; text-transform: uppercase; font-variant-ligatures: none; }
 .nav-links { display: none; align-items: center; gap: var(--s-6); }
 .nav-links > a:not(.btn) { font: 500 var(--t-small) / 1 var(--font-body); color: var(--paper-2); text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 2px; transition: color var(--d-fast) var(--ease), text-underline-offset var(--d-fast) var(--ease), text-decoration-color var(--d-fast) var(--ease); }
@@ -268,7 +267,6 @@ p + p { margin-top: var(--s-4); }
 .hero-eyebrow span { display: inline; white-space: nowrap; }
 .hero-eyebrow .dot::after { content: " ·"; }
 .hero h1 { margin-bottom: .5em; }
-@media (max-width: 399.98px) { .hero h1 { max-width: 5.6em; } } /* "Nothing gets / signed / unread.": 3 lines at 320 (§9.3) */
 .stop { color: var(--pen); animation: stop var(--d-stop) var(--ease) 200ms both; }
 @keyframes stop { from { opacity: 0; } to { opacity: 1; } }
 /* The error slot overlays the gap above the proof line instead of reserving 24px of air. */
@@ -359,30 +357,6 @@ p + p { margin-top: var(--s-4); }
 .faq-item[open] > summary .caret { transform: none; }
 .faq-item .a { padding: var(--s-3) 0 var(--s-5); color: var(--paper-2); }
 
-/* ---- Inputs and forms (BRIEF §8.2, §12) ---- */
-.field { display: grid; gap: var(--s-2); min-width: 0; }
-.input, .select { width: 100%; height: var(--control-h); padding: 0 14px; background: var(--ink-1); border: 1px solid var(--rule-strong); border-radius: var(--r-control); font: 400 var(--t-body) / 1 var(--font-body); color: var(--paper); transition: border-color var(--d-fast) var(--ease); }
-.input::placeholder { color: var(--paper-3); opacity: 1; }
-.input:focus, .select:focus { border-color: var(--paper); }
-.input[aria-invalid="true"] { border-color: var(--pen); }
-.select-wrap { position: relative; }
-.select { appearance: none; -webkit-appearance: none; padding-right: 40px; }
-.select-wrap .caret { position: absolute; right: 14px; top: 50%; margin-top: -5px; color: var(--paper-2); pointer-events: none; transform: rotate(180deg); }
-.check { display: flex; align-items: center; gap: var(--s-3); font: 400 var(--t-small) / var(--lh-small) var(--font-body); color: var(--paper-2); cursor: pointer; }
-.check input { width: 18px; height: 18px; margin: 0; accent-color: var(--paper); cursor: pointer; }
-.hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
-.form-wrap { position: relative; }
-.form-row { display: grid; grid-template-columns: 1fr; gap: var(--s-3); max-width: 520px; }
-.form-msg { min-height: 24px; margin-top: var(--s-2); font: 400 var(--t-small) / 24px var(--font-body); color: var(--pen); max-width: none; }
-.form-wrap form { transition: opacity var(--d-base) var(--ease); }
-.form-wrap form.is-out { opacity: 0; pointer-events: none; }
-.form-done { animation: fadein var(--d-base) var(--ease) both; }
-.form-done[hidden] { display: none; }
-.form-done:focus { outline: none; }
-.form-done p { font: 500 var(--t-lead) / var(--lh-lead) var(--font-body); color: var(--paper); }
-@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
-@media (min-width: 600px) { .form-row { grid-template-columns: minmax(0, 1fr) auto; } }
-
 /* ============================================================================
    Sections
    ============================================================================ */
@@ -392,7 +366,6 @@ p + p { margin-top: var(--s-4); }
   .closing { margin-top: var(--block-gap); }
   .lead.cols { max-width: none; columns: 2; column-gap: var(--s-7); }
 }
-
 /* 03 — how it works */
 .layers { border-bottom: 1px solid var(--rule); }
 .layer { display: grid; grid-template-columns: 1fr; row-gap: var(--s-3); padding: var(--s-6) 0 40px; border-top: 1px solid var(--rule); }
@@ -414,10 +387,6 @@ p + p { margin-top: var(--s-4); }
   .layer { grid-template-columns: 160px 1fr; column-gap: var(--col-gap); row-gap: 0; padding: 40px 0 48px; }
   .spec-row { grid-template-columns: 96px minmax(0, 1fr); column-gap: var(--s-5); }
 }
-
-/* 04 — rules */
-.rules-note { margin-top: var(--s-4); }
-
 /* sparse act */
 .act { padding: var(--s-9) 0; scroll-margin-top: var(--scroll-margin); }
 .act p { font-family: var(--font-display); font-weight: var(--display-wght); font-size: var(--t-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); font-optical-sizing: none; font-variation-settings: "opsz" var(--display-opsz); color: var(--paper); max-width: 20ch; }
@@ -425,7 +394,6 @@ p + p { margin-top: var(--s-4); }
   .act { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); padding: var(--s-12) 0; }
   .act p { grid-column: 4 / 12; max-width: none; }
 }
-
 /* 05 — trust: can / cannot as two aligned ruled lists */
 .cc { display: grid; grid-template-columns: 1fr; row-gap: var(--s-6); }
 .cc-col { display: grid; grid-template-rows: auto; min-width: 0; }
@@ -438,87 +406,8 @@ p + p { margin-top: var(--s-4); }
   .cc-col ul { display: grid; grid-row: 2 / -1; grid-template-rows: subgrid; }
   .cc-col li:last-child { border-bottom: 0; }
 }
-
-/* 06 — comparison */
-.compare { min-width: 640px; table-layout: fixed; }
-.compare th:first-child { width: 40%; }
-.compare thead th:not(:first-child) { width: 20%; }
-.compare td:last-child { color: var(--paper); }          /* GUARDIAN is the subject column: weight, not color */
-.compare thead th:last-child { color: var(--paper-2); }
-.ledger-wrap:focus-visible { outline-offset: 2px; }
 .foot { margin-top: var(--s-4); max-width: var(--measure); }
 .foot + .foot { margin-top: var(--s-3); }
-
-/* 07 — pricing */
-.pricing { min-width: 720px; display: none; }
-.pricing thead th { vertical-align: bottom; border-top: 0; }
-.pricing thead th:first-child { width: 34%; }
-.pricing .tier { display: block; font: 450 var(--t-tier) / var(--lh-tier) var(--font-display); font-optical-sizing: none; font-variation-settings: "opsz" 32; letter-spacing: -.01em; text-transform: none; color: var(--paper); }
-.pricing .price { display: block; margin-top: var(--s-2); font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: 0; text-transform: none; color: var(--paper-2); }
-.pricing .cta td { padding-top: var(--s-5); padding-bottom: var(--s-5); }
-.pricing .cta .btn { width: 100%; padding: 0 var(--s-3); }
-.tier-list { padding-top: var(--s-5); border-top: 1px solid var(--rule); }
-.tier-list + .tier-list { margin-top: var(--s-6); }
-.tier-list .tier { display: block; font: 450 var(--t-tier) / var(--lh-tier) var(--font-display); font-optical-sizing: none; font-variation-settings: "opsz" 32; letter-spacing: -.01em; color: var(--paper); }
-.tier-list .price { display: block; margin: var(--s-2) 0 var(--s-5); font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); color: var(--paper-2); }
-.tier-list .ruled .row { grid-template-columns: 1fr auto; column-gap: var(--s-4); padding: 12px 0; }
-.tier-list .ruled dt { font: 400 15px / 1.5 var(--font-body); color: var(--paper); }
-.tier-list .ruled dd { font: 400 var(--t-mono) / 1.5 var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--paper-2); }
-.tier-list .btn { margin-top: var(--s-5); width: 100%; }
-@media (min-width: 840px) {
-  /* Equal tier columns; cells wrap instead of widening the table past the text block. */
-  .pricing { display: table; min-width: 0; table-layout: fixed; }
-  .pricing thead th:first-child { width: 34%; }
-  .pricing thead th:not(:first-child) { width: 22%; }
-  .pricing td { overflow-wrap: anywhere; }
-  .tier-lists { display: none; }
-}
-
-/* 08 — roadmap: the timeline */
-.timeline { position: relative; display: grid; grid-template-columns: 1fr; row-gap: var(--s-6); padding-left: 28px; }
-.timeline::before { content: ""; position: absolute; left: 3px; top: 0; bottom: 0; width: 1px; background: var(--rule-strong); }
-.tl-col { position: relative; min-width: 0; }
-.tl-col::before { content: ""; position: absolute; left: -28px; top: 7px; width: 7px; height: 1px; background: var(--paper-3); }
-.tl-col .eyebrow { color: var(--paper-2); margin-bottom: var(--s-3); }
-.tl-col li { display: grid; grid-template-columns: 20px 1fr; column-gap: var(--s-2); padding: 10px 0; border-top: 1px solid var(--rule); font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); color: var(--paper-2); }
-.tl-col li:last-child { border-bottom: 1px solid var(--rule); }
-.tl-col li .g { color: var(--paper); }
-.here { position: relative; display: flex; align-items: center; gap: var(--s-2); margin: 0 0 var(--s-4) -28px; font: 400 var(--t-mono-sm) / 1 var(--font-mono); color: var(--paper); white-space: nowrap; }
-.here::before { content: ""; width: 8px; height: 8px; background: var(--paper); flex: none; }
-.tl-cap { margin-top: var(--s-6); }
-.tl-legend { margin-top: var(--s-6); }
-.tl-legend + .tl-cap { margin-top: var(--s-2); }
-@media (min-width: 1024px) { .tl-legend { display: none; } .tl-legend + .tl-cap { margin-top: var(--s-6); } }
-@media (min-width: 840px) {
-  /* Rows are shared across the three columns (subgrid) so every hairline runs straight across. */
-  .timeline { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(4, auto); column-gap: var(--s-5); padding: 0; row-gap: 0; }
-  .timeline::before { left: 0; right: 0; top: 52px; bottom: auto; height: 1px; width: auto; }
-  .timeline::after { content: ""; position: absolute; right: 0; top: 49px; width: 1px; height: 7px; background: var(--paper-3); } /* the end tick */
-  .tl-col { grid-row: 1 / -1; display: grid; grid-template-rows: subgrid; padding-top: 72px; }
-  .tl-col ul { grid-row: 1 / -1; display: grid; grid-template-rows: subgrid; }
-  .tl-col::before { left: 0; top: 49px; width: 1px; height: 7px; }
-  .tl-col .eyebrow { position: absolute; left: 0; right: 0; top: 0; margin: 0; white-space: normal; }
-  .here { position: absolute; left: 36%; top: 48px; margin: 0; padding-right: var(--s-2); background: var(--ink-0); }
-}
-
-/* 10 — waitlist */
-.wl { max-width: 560px; margin: 0 auto; text-align: center; }
-.wl h2 { max-width: none; margin-left: auto; margin-right: auto; }
-.wl > p { margin: 0 auto; }
-.wl-form { margin-top: 40px; text-align: left; }
-.wl-form .fields { display: grid; grid-template-columns: 1fr; gap: var(--s-4); }
-.wl-form .check { margin-top: var(--s-4); }
-.wl-form .btn { width: 100%; margin-top: var(--s-5); }
-.wl-form .form-msg { margin-top: var(--s-3); }
-.wl .privacy { margin-top: var(--s-4); max-width: none; }
-.wl .form-done { padding: var(--s-6) 0; text-align: center; }
-.wl .form-done p { margin: 0 auto; }
-@media (min-width: 600px) { .wl-form .fields { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 1024px) {
-  #waitlist .text { grid-column: 1 / -1; grid-row: 2; }
-  #waitlist .margin { grid-row: 2; }
-}
-
 /* ============================================================================
    Diagrams (BRIEF §11): HTML + CSS, SVG only for arrowheads and the pen ellipse
    ============================================================================ */
@@ -533,127 +422,6 @@ p + p { margin-top: var(--s-4); }
 .node.dbl { padding: 3px; }
 .node.dbl > div { border: 1px solid var(--rule); border-radius: 2px; padding: var(--s-2) var(--s-3); }
 @media (min-width: 1024px) { .dg { margin-top: var(--block-gap); } }
-
-/* 11.1 declared vs actual */
-.dg-dva { display: grid; grid-template-columns: 1fr; row-gap: var(--s-5); min-height: 340px; }
-.dg-dva .payload { font-size: var(--t-mono-sm); line-height: 28px; color: var(--paper-2); }
-.dg-dva .payload li { display: flex; column-gap: 20px; row-gap: 4px; align-items: baseline; flex-wrap: wrap; }
-.dg-dva .payload .i { color: var(--paper-3); width: 1ch; flex: none; }
-.ring { position: relative; display: inline-block; padding: 0 2px; color: var(--paper); }
-/* The ellipse circumscribes the glyph box: about 20px clear at the ends, 6px at the corners. */
-.ring svg { position: absolute; left: -18px; top: -2px; width: calc(100% + 36px); height: calc(100% + 4px); overflow: visible; pointer-events: none; }
-.ring ellipse { fill: none; stroke: var(--pen); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
-.dg-dva .pen-note { color: var(--pen); white-space: nowrap; }
-@media (max-width: 839.98px) {
-  .dg-dva .arrow { flex-direction: column; width: 8px; height: 56px; margin-left: 20px; }
-  .dg-dva .arrow .line { width: 1px; min-width: 0; min-height: 8px; }
-  .dg-dva .arrow svg { transform: rotate(90deg); }
-}
-@media (min-width: 840px) {
-  /* The arrow runs from the button to the payload it hides, so the two halves read as one statement. */
-  .dg-dva { grid-template-columns: max-content minmax(56px, 1fr) max-content; column-gap: var(--s-5); align-items: start; min-height: 176px; }
-  /* centred on the fake button: eyebrow line 16.8 + gap 12 + half the 44px button, minus half the 8px arrow */
-  .dg-dva .arrow { margin-top: calc(var(--t-eyebrow) * var(--lh-eyebrow) + 12px + 18px); height: 8px; }
-  .dg-dva .payload { padding-top: 8px; } /* payload line 1 shares the button's centre line */
-  .dg-dva .pen-note { margin-left: var(--s-2); }
-}
-
-/* 11.2 sequence */
-.dg-seq { display: grid; grid-template-columns: 1fr; justify-items: start; min-height: 520px; }
-.dg-seq .arrow { display: grid; grid-template-columns: 8px 1fr; column-gap: var(--s-4); align-items: center; height: 56px; width: 100%; margin-left: 20px; }
-.dg-seq .arrow .ar { display: flex; flex-direction: column; align-items: center; height: 56px; width: 8px; color: var(--rule-strong); }
-.dg-seq .arrow .ar .line { width: 1px; min-width: 0; min-height: 8px; }
-.dg-seq .arrow.dotted .ar .line { width: 0; border-top: 0; border-left: 1px dotted currentColor; height: 100%; }
-.dg-seq .arrow .ar svg { transform: rotate(90deg); }
-.dg-seq .cap { color: var(--paper-3); }
-.dg-seq .lat { margin: var(--s-2) 0 0 20px; color: var(--paper-3); }
-.steps { display: flex; flex-direction: column; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--rule); font-size: var(--t-mono-sm); color: var(--paper-2); }
-.steps span { padding: 4px 0; }
-.steps .diff { align-self: flex-start; padding: 3px 8px; margin: 2px 0; border: 1px solid var(--pen); border-radius: 2px; color: var(--pen); }
-@media (min-width: 1024px) {
-  /* Row 1: nodes and arrows. Row 2: each caption centred under its own arrow, the latency under GUARDIAN. */
-  .dg-seq { grid-template-columns: auto minmax(48px, 1fr) auto minmax(48px, 1fr) auto minmax(48px, 1fr) auto minmax(48px, 1fr) auto; grid-template-rows: auto auto; align-items: center; min-height: 0; padding-bottom: var(--s-2); }
-  .dg-seq > .node { grid-row: 1; }
-  .dg-seq .lat { grid-row: 2; grid-column: 5; justify-self: center; margin: 0; padding-top: var(--s-2); white-space: nowrap; }
-  .dg-seq .arrow { display: contents; }
-  .dg-seq .arrow .ar { grid-row: 1; flex-direction: row; height: auto; width: 100%; }
-  .dg-seq .arrow .ar .line { width: auto; min-height: 0; flex: 1; height: 1px; }
-  .dg-seq .arrow.dotted .ar .line { border-left: 0; border-top: 1px dotted currentColor; width: auto; height: 0; }
-  .dg-seq .arrow .ar svg { transform: none; }
-  .dg-seq .cap { grid-row: 2; justify-self: center; padding-top: var(--s-2); white-space: nowrap; text-align: center; }
-  .dg-seq .cap-0 { grid-column: 2; }
-  .dg-seq .cap-1 { grid-column: 4; }
-  .dg-seq .cap-2 { grid-column: 6; }
-  .dg-seq .cap-3 { grid-column: 8; }
-  .steps { flex-direction: row; align-items: center; }
-  .steps span { padding: 2px 8px; border-left: 1px solid var(--rule); }
-  .steps span:first-child { padding-left: 0; border-left: 0; }
-  .steps .diff { align-self: auto; margin: 0 4px; padding: 2px 8px; border-left: 1px solid var(--pen); }
-  .steps .diff + span { border-left: 0; padding-left: 4px; }
-}
-@media (min-width: 1024px) and (max-width: 1319.98px) {   /* text block under 879px: compact nodes */
-  .dg-seq .node { padding: 10px 12px; }
-  .dg-seq .node.dbl > div { padding: var(--s-2); }
-  .dg-seq { grid-template-columns: auto minmax(32px, 1fr) auto minmax(32px, 1fr) auto minmax(32px, 1fr) auto minmax(32px, 1fr) auto; }
-  .steps { font-size: 12px; }
-  .steps span { padding: 2px 6px; }
-  .dg-seq .cap { font-size: 12px; white-space: normal; max-width: 12ch; }
-}
-@media (min-width: 1024px) and (max-width: 1179.98px) {
-  .dg-seq { grid-template-columns: auto minmax(16px, 1fr) auto minmax(16px, 1fr) auto minmax(16px, 1fr) auto minmax(16px, 1fr) auto; }
-}
-
-/* 11.3 data path */
-.dg-dp { display: grid; grid-template-columns: 1fr; row-gap: var(--s-5); min-height: 700px; }
-.dg-dp .box { display: block; width: 100%; max-width: 320px; white-space: normal; }
-.dg-dp .box .t { display: block; margin-bottom: 6px; color: var(--paper); }
-.dg-dp .box .ln { display: block; font-size: var(--t-mono-sm); color: var(--paper-2); }
-.dg-dp .box .ln.hi { color: var(--paper); }
-.dg-dp .region { position: relative; min-width: 0; }
-.dp-keys { position: relative; display: flex; align-items: center; gap: var(--s-3); color: var(--paper-3); }
-.dp-keys::before, .dp-keys::after { content: ""; flex: 1; border-top: 1px dashed var(--paper-3); }
-.dp-flow { display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--s-5); align-items: end; }
-.dp-flow .arrow { flex-direction: column; align-items: flex-start; gap: 6px; height: auto; width: auto; }
-.dp-flow .arrow .ar { display: flex; flex-direction: column; align-items: center; width: 8px; height: 48px; color: var(--rule-strong); }
-.dp-flow .arrow .ar .line { width: 1px; min-width: 0; min-height: 8px; }
-.dp-flow .arrow .ar svg { transform: rotate(90deg); }
-.dp-flow .arrow.back .ar { flex-direction: column-reverse; }
-.dp-flow .arrow.back .ar svg { transform: rotate(-90deg); }
-.dp-flow .cap { color: var(--paper-3); max-width: 100%; }
-.dp-public { position: relative; display: grid; grid-template-columns: 1fr; row-gap: var(--s-5); padding: var(--s-6) var(--s-4) var(--s-4); border: 1px dashed var(--paper-3); border-radius: var(--r-control); }
-.dp-public > .lbl { position: absolute; left: 12px; top: -10px; padding: 0 6px; background: var(--ink-0); color: var(--paper-3); }
-.dp-public .e-agent { order: 4; }
-.dp-public .region.agent { order: 5; }
-@media (min-width: 840px) {
-  /* The adapter keeps one-line labels; wallet and agent boxes are capped so both arrow tracks get
-     room for two-line captions. */
-  .dg-dp { grid-template-columns: auto 40px minmax(0, 1fr) auto minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: 0; row-gap: 0; min-height: 260px; align-items: start; }
-  .dg-dp .adapter .box .ln { white-space: nowrap; }
-  .dg-dp .wallet .box, .dg-dp .agent .box { max-width: 144px; }
-  .dg-dp .eyebrow { grid-row: 1; padding: 28px 0 12px; }
-  .dg-dp .region { grid-row: 2; }
-  .dg-dp .e-wallet, .dg-dp .region.wallet { grid-column: 1; }
-  .dg-dp .box { width: auto; max-width: none; }
-  .dp-keys { grid-column: 2; grid-row: 1 / 3; flex-direction: column; justify-self: center; height: 100%; min-height: 240px; padding-top: 10px; }
-  .dp-keys::before, .dp-keys::after { border-top: 0; border-left: 1px dashed var(--paper-3); }
-  .dp-keys span { writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
-  .dp-flow { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; align-items: center; align-self: stretch; padding: 0 12px; }
-  .dg-dp .flow-1 { grid-column: 2 / 4; grid-row: 2; padding-left: 52px; }
-  .dp-flow .arrow { width: auto; gap: 4px; }
-  .dp-flow .arrow .ar { flex-direction: row; width: 100%; height: auto; }
-  .dp-flow .arrow .ar .line { width: auto; flex: 1; height: 1px; min-height: 0; }
-  .dp-flow .arrow .ar svg { transform: none; }
-  .dp-flow .arrow.back { flex-direction: column-reverse; }
-  .dp-flow .arrow.back .ar { flex-direction: row-reverse; }
-  .dp-flow .arrow.back .ar svg { transform: rotate(180deg); }
-  .dp-public { grid-column: 4 / 7; grid-row: 1 / 3; display: grid; grid-template-columns: subgrid; grid-template-rows: subgrid; padding: 0 14px 14px; row-gap: 0; }
-  .dp-public .e-adapter { grid-column: 1; grid-row: 1; }
-  .dp-public .e-agent { grid-column: 3; grid-row: 1; }
-  .dp-public .region.adapter { grid-column: 1; grid-row: 2; }
-  .dp-public .flow-2 { grid-column: 2; grid-row: 2; }
-  .dp-public .region.agent { grid-column: 3; grid-row: 2; }
-}
-
 /* ============================================================================
    Footer (BRIEF §9.15, ADDENDUM §3)
    ============================================================================ */
@@ -681,435 +449,72 @@ p + p { margin-top: var(--s-4); }
   .footer-cols > :nth-child(3) { grid-column: 7 / -1; }
   .notice { margin-left: calc((100% + var(--col-gap)) / 4); }
 }
-
 /* ============================================================================
-   READING-CSS — section 01, "The Reading" (BRIEF §8.3, §8.8, §10; ADDENDUM §7–§8)
-   Every selector is scoped under #reading. Shared base classes are used, never defined.
-   Motion: opacity and transform only, plus max-height on the margin note and width on
-   the hold bar (both allowed by BRIEF §7.1). Red (--pen) marks only what is wrong.
+   xguard additions: install command, recorded session, flow diagram, commands
    ============================================================================ */
+.install-cmd { margin-top: var(--s-2); }
+.cmd-row { display: grid; grid-template-columns: 1fr; gap: var(--s-3); }
+.cmd-row .code { min-width: 0; }
+.cmd-row .copy { height: var(--control-h); }
+.code .k, .term .k { color: var(--paper-3); }
+.code .hi, .term .hi, .hi { color: var(--paper); }
+.code .pen, .term .pen { color: var(--pen); }
+.cmd .ln::before, .term .ln::before, .steps-code .ln::before { content: none; }   /* no line numbers in terminals */
+.cmd, .steps-code { white-space: normal; }
+.cmd code, .steps-code code, .term code { min-width: 0; }   /* wrap on phones instead of scrolling */
+.cmd .ln, .term .ln, .steps-code .ln { white-space: pre-wrap; overflow-wrap: anywhere; }
+.proof .mono { color: var(--paper); }
+@media (min-width: 600px) { .cmd-row { grid-template-columns: minmax(0, 1fr) auto; align-items: start; } }
 
-/* The hero → 01 step is tighter than the other sections so the tab strip sits in the first view. */
-@media (min-width: 1024px) { #reading.sec { padding-top: var(--s-8); } }
-#reading .text > .lead { margin-bottom: var(--s-5); }
+.stage { margin-top: var(--s-2); }
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--rule); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs [role="tab"] { flex: none; scroll-snap-align: start; display: inline-flex; align-items: center; gap: var(--s-2); height: 44px; padding: 0 var(--s-4) 0 0; margin-right: var(--s-5); background: none; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; font: 400 var(--t-mono) / 1 var(--font-mono); color: var(--paper-2); cursor: pointer; white-space: nowrap; }
+.tabs [role="tab"] .n { color: var(--paper-3); }
+.tabs [role="tab"]:hover { color: var(--paper); }
+.tabs [role="tab"][aria-selected="true"] { color: var(--paper); border-bottom-color: var(--paper); }
+.term { position: relative; margin-top: var(--s-4); }
+.term .case { margin: 0; min-height: 320px; background: var(--ink-1); border: 1px solid var(--rule); border-radius: var(--r-panel); padding: 20px 24px; overflow-x: auto; font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono); font-variant-numeric: tabular-nums; color: var(--paper-2); }
+.term .case { white-space: normal; }   /* the newlines between .ln blocks collapse */
+.term .case code { font: inherit; display: block; }
+.term .ln { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
+.term .ln { opacity: 0; transition: opacity var(--d-fast) var(--ease); }
+.term .ln.is-in { opacity: 1; }
+.caption { margin-top: var(--s-4); max-width: var(--measure); }
+@media (max-width: 599.98px) { .term .case { min-height: 360px; padding: 16px; } .tabs [role="tab"] { margin-right: var(--s-4); } }
 
-/* ---- Tabs (§8.8) -------------------------------------------------------- */
-/* 840+: five columns (the first wider for its longer second line), every label set on two lines at the same break, numeral hanging,
-   labels sitting on the track. Below 840: one scrolling line (see Responsive). */
-#reading .tabs { position: relative; display: grid; grid-template-columns: minmax(0, 1.45fr) repeat(4, minmax(0, 1fr)); align-items: end; }
-#reading .tabs::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--rule); }
-#reading [role="tab"] {
-  position: relative;
-  appearance: none;
-  margin: 0;
-  padding: var(--s-3) var(--s-3) var(--s-3) calc(var(--s-3) + 2ch);
-  text-indent: -2ch;
-  background: none;
-  border: 0;
-  border-radius: var(--r-control) var(--r-control) 0 0;
-  font: 400 var(--t-mono) / var(--lh-mono) var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  color: var(--paper-2);
-  text-align: left;
-  cursor: pointer;
-  transition: color var(--d-fast) var(--ease);
-}
-#reading [role="tab"]:first-child { padding-left: 2ch; }          /* flush with the panel edge */
-#reading [role="tab"] .l2 { display: block; text-indent: 0; }
-#reading [role="tab"]::after {     /* the 2px paper underline of the selected tab */
-  content: "";
-  position: absolute;
-  left: var(--s-3); right: var(--s-3); bottom: 0;
-  height: 2px;
-  z-index: 1;
-}
-#reading [role="tab"]:first-child::after { left: 0; }
-#reading [role="tab"]:hover { background: var(--ink-2); color: var(--paper); }
-#reading [role="tab"][aria-selected="true"] { color: var(--paper); }
-#reading [role="tab"][aria-selected="true"]::after { background: var(--paper); }
-#reading [role="tab"] .n { color: var(--paper-3); }
-#reading [role="tab"]:hover .n { color: var(--paper-2); }
+.cmd-h { margin-top: var(--block-gap-sm); }
+.cmds dt { color: var(--paper); }
+.cmds dd .mono { color: var(--paper); }
+@media (min-width: 840px) { .cmds .row { grid-template-columns: 260px 1fr; } }
+@media (min-width: 1024px) { .cmd-h { margin-top: var(--block-gap); } }
 
-/* ---- Panel (§10.2) ------------------------------------------------------ */
-/* A fixed stage: the script sets min-height to the tallest case (notes expanded, insets closed), so
-   switching cases never changes the page height. The case fills the stage and the toolbar always sits
-   on its floor, so a shorter case shows a wider gap above the toolbar, never a hole under it. */
-#reading .panel {
-  --note-max: 120px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: var(--panel-min-h);
-  margin-top: var(--s-4);
-  padding: var(--s-5);
-  background: var(--ink-1);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-panel);
-  container-type: inline-size;
-  font-family: var(--font-mono);
-  font-size: var(--t-mono);
-  line-height: var(--lh-mono);
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
-  color: var(--paper-2);
+.flow { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
+.flow .node { white-space: normal; max-width: 100%; }
+.flow .node .sub { display: block; margin-top: 4px; font-size: var(--t-mono-sm); color: var(--paper-2); }
+.flow .arrow { flex-direction: column; align-items: flex-start; gap: 6px; margin: var(--s-2) 0 var(--s-2) 20px; }
+.flow .arrow .line { width: 1px; min-width: 0; height: 24px; flex: none; }
+.flow .arrow.dotted .line { height: 24px; border-top: 0; border-left: 1px dotted currentColor; }
+.flow .arrow svg { transform: rotate(90deg); margin-left: -4px; }
+.flow .arrow .cap { color: var(--paper-3); margin-left: var(--s-3); }
+@media (min-width: 840px) {
+  .flow { display: grid; grid-template-columns: auto minmax(88px, 1fr) auto minmax(88px, 1fr) auto minmax(88px, 1fr) auto; align-items: center; }
+  .flow .node { max-width: 190px; }
+  .flow .arrow { position: relative; display: flex; flex-direction: row; align-items: center; gap: 0; margin: 0 var(--s-2); min-width: 0; }
+  .flow .arrow .line { width: auto; flex: 1; height: 1px; }
+  .flow .arrow.dotted .line { height: 0; border-left: 0; border-top: 1px dotted currentColor; }
+  .flow .arrow svg { transform: none; margin: 0; }
+  .flow .arrow .cap { position: absolute; left: 0; right: 8px; top: calc(50% + 10px); margin: 0; text-align: center; white-space: normal; font-size: 11.5px; line-height: 1.3; }
+  .dg-flow { padding-bottom: var(--s-6); }
 }
-#reading .panel:focus-visible { outline-offset: 2px; }
-#reading .case { display: flex; flex-direction: column; }
-#reading .case.is-active { flex: 1 0 auto; }
-/* All five cases are in the DOM. The active one is in flow; the others are laid out invisibly at the
-   same width (absolutely positioned) so the script can measure them. */
-#reading .case:not(.is-active) {
-  position: absolute;
-  top: var(--s-5); left: var(--s-5); right: var(--s-5);
-  visibility: hidden;
-  pointer-events: none;
-  user-select: none;
-}
-#reading .panel.no-transition *, #reading .panel.no-transition *::before, #reading .panel.no-transition *::after { transition: none !important; }
-
-/* Order: DECLARED, READ, SIMULATION, VERDICT, toolbar. From a 600px panel, the verdict moves under
-   DECLARED, beside the row it explains (DOM: .top > .left(declared, verdict) + .read). */
-#reading .top, #reading .left { display: contents; }
-#reading .declared { order: 1; }
-#reading .read { order: 2; margin-top: var(--s-5); }
-#reading .sim { order: 3; margin-top: var(--s-5); }
-#reading .verdict { order: 4; margin-top: var(--s-5); }
-#reading .toolbar { order: 5; }
-#reading .region { min-width: 0; }
-@container (min-width: 600px) {
-  #reading .top { display: grid; grid-template-columns: 5fr 7fr; column-gap: var(--s-6); align-items: start; order: 1; }
-  #reading .left { display: block; min-width: 0; }
-  #reading .read { margin-top: 0; }
-  #reading .verdict { margin-top: var(--s-6); }
-  #reading .sim { margin-top: var(--s-6); }
-}
-
-/* Region headings: a mono eyebrow with a hairline that draws in once per case start. */
-#reading .panel h3.eyebrow {
-  margin: 0 0 var(--s-3);
-  font: 400 var(--t-eyebrow) / var(--lh-eyebrow) var(--font-mono);
-  letter-spacing: var(--ls-eyebrow);
-  text-transform: uppercase;
-  color: var(--paper-3);
-}
-#reading .panel h3.eyebrow::after {
-  content: "";
-  display: block;
-  height: 1px;
-  margin-top: var(--s-2);
-  background: var(--rule);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--d-draw) var(--ease);
-}
-#reading .case.is-live h3.eyebrow::after { transform: scaleX(1); }
-
-/* ---- DECLARED: lowercase mono keys, so only the region headings read as headings ---------------- */
-#reading .decl { margin: 0; }
-#reading .decl > div { padding: var(--s-2) 0; border-bottom: 1px solid var(--rule); }
-#reading .decl > div:first-child { padding-top: 0; }
-#reading .decl dt { font-size: var(--t-mono-sm); line-height: var(--lh-small); color: var(--paper-3); }
-#reading .decl dd { margin: 2px 0 0; color: var(--paper); overflow-wrap: anywhere; }
-@container (min-width: 760px) {
-  #reading .decl > div { display: grid; grid-template-columns: 88px minmax(0, 1fr); column-gap: var(--s-3); align-items: baseline; }
-  #reading .decl dd { margin: 0; }
-}
-#reading .dim { color: var(--paper-3); }
-#reading .fake {                   /* the page's button, as the user saw it: non-interactive */
-  display: inline-flex;
-  align-items: center;
-  height: 44px;
-  padding: 0 var(--s-4);
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--r-control);
-  font: 500 var(--t-small) / 1 var(--font-body);
-  color: var(--paper);
-  white-space: nowrap;
-}
-
-/* ALERT card (case D) */
-#reading .card { padding: var(--s-4); background: var(--ink-2); border: 1px solid var(--rule); border-radius: var(--r-panel); }
-#reading .card p { margin: 0; }
-#reading .card-meta { font-size: var(--t-mono-sm); line-height: var(--lh-small); color: var(--paper-3); }
-#reading .card-body { margin: var(--s-2) 0 var(--s-3); font: 400 15px / 1.5 var(--font-body); color: var(--paper); }
-#reading .card-line { margin-bottom: var(--s-3); color: var(--paper); overflow-wrap: anywhere; }
-
-/* ---- READ ----------------------------------------------------------------- */
-#reading .read { position: relative; }
-#reading .read h3.eyebrow { margin-bottom: 0; }          /* its hairline is row 1's top edge */
-#reading .rows { list-style: none; margin: 0; padding: 0; }
-#reading .rows > li {
-  position: relative;
-  isolation: isolate;
-  border-top: 1px solid var(--rule);
-  transition: opacity var(--d-fast) var(--ease);
-}
-#reading .rows > li:first-child { border-top: 0; }
-#reading .rows > li:last-child { border-bottom: 1px solid var(--rule); }
-/* Rows dim only while a reading is running, never at rest and never under focus (contrast, §14). */
-#reading .case.is-live:not(.is-done) .rows > li:not(.is-read):not(:focus-within) { opacity: .35; }
-/* The flagged row's wash bleeds 12px past the column so its text never touches the edge. */
-#reading .rows > li[data-flag]::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 0 -12px;
-  background: var(--pen-wash);
-  opacity: 0;
-  transition: opacity var(--d-fast) var(--ease);
-}
-#reading .rows > li[data-flag].is-stat::before { opacity: 1; }
-/* Row: index · body (name, arguments) · status mark; GUARDIAN's reading of the line beneath. */
-#reading .rows > li > button {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) auto;
-  grid-template-areas: "idx body mark" "idx why why";
-  width: 100%;
-  margin: 0;
-  padding: var(--s-2) 0;
-  background: none;
-  border: 0;
-  border-radius: 0;
-  font: inherit;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-#reading .rows .idx { grid-area: idx; color: var(--paper-3); }
-#reading .rows .body { grid-area: body; min-width: 0; }
-#reading .rows .name { display: block; color: var(--paper); }
-#reading .rows .args { display: block; color: var(--paper-2); overflow-wrap: anywhere; }
-#reading .rows .mark {
-  grid-area: mark;
-  padding-left: var(--s-3);
-  font-size: var(--t-mono-sm);
-  line-height: calc(var(--t-mono) * var(--lh-mono));
-  color: var(--paper-2);
-  text-align: right;
-}
-#reading .rows > li[data-flag] .mark { color: var(--pen); }
-#reading .rows .why {
-  grid-area: why;
-  margin-top: 2px;
-  font-size: var(--t-mono-sm);
-  line-height: var(--lh-small);
-  color: var(--paper-3);
-  overflow-wrap: anywhere;
-}
-/* Wide panel: the status cell is one column beside the instruction, "✓ expected" on one line (§10.3);
-   a flagged row's "blocked" takes the whole cell. */
-@container (min-width: 760px) {
-  #reading .rows > li > button { grid-template-columns: 28px minmax(0, 1fr) 28px minmax(0, 15ch); grid-template-areas: "idx body mark why"; }
-  #reading .rows .mark { text-align: left; }
-  #reading .rows > li[data-flag] .mark { grid-area: auto; grid-row: 1; grid-column: 3 / 5; }
-  #reading .rows .why { margin-top: 0; padding-top: 1px; }   /* 1px: baseline with the mark at 21.6px lines */
-}
-#reading .rows .mark, #reading .rows .why { visibility: hidden; opacity: 0; transition: opacity var(--d-fast) var(--ease); }
-#reading .rows > li.is-stat .mark, #reading .rows > li.is-stat .why { visibility: visible; opacity: 1; }
-
-/* The flagged argument and its pen underline */
-#reading .flag { position: relative; white-space: nowrap; }
-#reading .flag::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: -3px;
-  height: 0;
-  border-top: 2px solid var(--pen);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--d-slow) var(--ease);
-}
-#reading li[data-flag="caution"] .flag::after { border-top-width: 1px; border-top-style: dotted; bottom: -2px; }
-#reading li.is-stat .flag::after { transform: scaleX(1); }
-
-/* Margin note under a flagged row */
-#reading .margin-note {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  visibility: hidden;
-  font-size: var(--t-mono-sm);
-  line-height: var(--lh-small);
-  color: var(--pen);
-  transition: max-height var(--d-base) var(--ease), opacity var(--d-base) var(--ease);
-}
-#reading .margin-note > p { margin: 0; max-width: none; padding: 0 0 var(--s-3) 28px; overflow-wrap: anywhere; }
-#reading li.is-stat .margin-note, #reading .panel.measuring .margin-note { max-height: var(--note-max); }
-#reading li.is-stat .margin-note { opacity: 1; visibility: visible; }
-
-/* Expanded-row inset */
-#reading .inset {
-  margin: 0 0 var(--s-3) 28px;
-  padding: var(--s-3);
-  background: var(--ink-2);
-  border-radius: var(--r-control);
-  font-size: var(--t-mono-sm);
-  line-height: var(--lh-small);
-  color: var(--paper-2);
-}
-#reading .inset[hidden] { display: none; }
-#reading .inset dl { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 2px var(--s-3); margin: 0; }
-#reading .inset dt { color: var(--paper-2); }
-#reading .inset dd { margin: 0; color: var(--paper); overflow-wrap: anywhere; }
-#reading .inset dd > span { display: block; }
-#reading .inset .dim { color: var(--paper-2); }
-
-/* The reading cursor: a 1px paper rule at the top edge of the current row, the caret at its left
-   end sitting on the rule, pointing up (§3.8, §10.2). */
-#reading .cursor {
-  position: absolute;
-  left: 0; right: 0; top: 0;
-  height: 1px;
-  background: var(--paper);
-  transform: translateY(var(--y, 0px));
-  transition: transform var(--d-base) var(--ease);
-  display: none;
-  pointer-events: none;
-  z-index: 1;
-}
-#reading .case.is-live:not(.is-sim) .cursor { display: block; }
-#reading .cursor .caret { position: absolute; left: 0; bottom: 1px; color: var(--paper); }
-
-/* ---- SIMULATION ----------------------------------------------------------- */
-#reading .sim { position: relative; }
-#reading .sim table { width: 100%; min-width: 440px; border-collapse: separate; border-spacing: 0; }
-#reading .sim th {               /* lowercase mono column keys (§10.2): asset · expected · observed */
-  padding: 0 var(--s-4) var(--s-2) 0;
-  font-size: var(--t-mono-sm);
-  font-weight: 400;
-  line-height: var(--lh-small);
-  text-align: left;
-  color: var(--paper-3);
-}
-#reading .sim th:nth-child(1) { width: 28%; }
-#reading .sim th:nth-child(2) { width: 30%; }
-#reading .sim td {
-  padding: var(--s-1) var(--s-4) var(--s-1) 0;
-  border-top: 1px solid var(--rule);
-  vertical-align: top;
-  color: var(--paper-2);
-}
-#reading .sim td:first-child { color: var(--paper); }
-#reading .sim tr:last-child td { border-bottom: 1px solid var(--rule); }
-#reading .sim tbody tr {           /* height reserved: visibility, not display */
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(4px);
-  transition: opacity var(--d-fast) var(--ease), transform var(--d-fast) var(--ease);
-}
-#reading .sim tbody tr.is-in { opacity: 1; visibility: visible; transform: none; }
-#reading .sim .pen { color: var(--pen); }
-/* Fixture provenance: on the SIMULATION heading line in a wide panel, under the table otherwise. */
-#reading .fx { margin: var(--s-2) 0 0; max-width: none; font-size: var(--t-mono-sm); line-height: var(--lh-small); color: var(--paper-3); overflow-wrap: anywhere; }
-@container (min-width: 760px) {
-  #reading .fx { position: absolute; top: 0; right: 0; margin: 0; line-height: var(--lh-eyebrow); }
-}
-
-/* ---- VERDICT ------------------------------------------------------------------ */
-#reading .v { visibility: hidden; opacity: 0; transition: opacity var(--d-base) var(--ease); }
-#reading .case.is-done .v { visibility: visible; opacity: 1; }
-#reading .v-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); margin: 0 0 var(--s-3); color: var(--paper); }
-#reading .v-head .also { color: var(--paper-3); }
-#reading .v-say { margin: 0; max-width: var(--measure); font: 400 var(--t-body) / var(--lh-body) var(--font-body); color: var(--paper); }
-
-/* ---- Toolbar: always on the stage floor ------------------------------------------ */
-#reading .toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--s-3);
-  margin-top: auto;
-  padding-top: var(--s-4);
-  border-top: 1px solid var(--rule);
-}
-#reading .verdict { margin-bottom: var(--s-5); }   /* the minimum gap above the floor (stacked order) */
-@container (min-width: 600px) { #reading .verdict { margin-bottom: 0; } #reading .sim { margin-bottom: var(--s-5); } }
-#reading .toolbar .btn, #reading .toolbar .btn-ghost { position: relative; height: var(--control-h-sm); overflow: hidden; }
-#reading .toolbar .sub { margin-left: var(--s-2); font: 400 var(--t-eyebrow) / 1 var(--font-mono); font-variant-numeric: tabular-nums; }
-#reading .toolbar .btn-ghost .sub { color: var(--paper-3); }
-#reading .toolbar .btn-ghost:disabled .sub { color: inherit; }
-#reading .hold { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
-#reading .hold::after {            /* the hold bar: width 0→100% over 1s while pressed */
-  content: "";
-  position: absolute;
-  left: 0; bottom: 0;
-  height: 2px;
-  width: 0;
-  background: var(--paper);
-}
-#reading .hold.is-holding::after { width: 100%; transition: width var(--d-hold) linear; }
-#reading .note {                   /* height reserved for the longest note: it never shifts the page */
-  order: 3;
-  flex-basis: 100%;
-  min-height: calc(2 * var(--lh-small) * var(--t-mono-sm));
-  font-size: var(--t-mono-sm);
-  line-height: var(--lh-small);
-  color: var(--paper-3);
-}
-#reading .toolbar .again { order: 2; }
-@container (min-width: 760px) {    /* one row: decisions, the note, then Read again on the right */
-  #reading .note { order: 1; flex: 1 1 0; min-width: 0; }
-}
-@container (max-width: 599.98px) {
-  #reading .toolbar { gap: var(--s-2); }
-  #reading .toolbar .btn, #reading .toolbar .btn-ghost { flex: 1 1 auto; padding: 0 var(--s-3); }
-  #reading .toolbar .again { flex-basis: 100%; }
-  #reading .note { min-height: calc(3 * var(--lh-small) * var(--t-mono-sm)); }
-}
-
-/* ---- Caption and verdict definitions ------------------------------------------- */
-#reading .caption { margin: var(--s-4) 0 0; max-width: none; font-size: var(--t-mono-sm); line-height: var(--lh-small); color: var(--paper-3); }
-#reading .defs { margin-top: var(--block-gap); }
-
-/* ---- Responsive ---------------------------------------------------------------- */
-@media (max-width: 839.98px) {
-  #reading .panel { min-height: 760px; }
-  #reading .defs { margin-top: var(--block-gap-sm); }
-  /* Below 840 the strip is a single line of tabs that scrolls horizontally, snapping, bleeding to
-     the viewport edges; the page never overflows. */
-  #reading .tabs {
-    --tabs-bleed: var(--gutter-md);
-    display: flex;
-    margin: 0 calc(-1 * var(--tabs-bleed));
-    padding: 0 calc(var(--tabs-bleed) - 12px);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: calc(var(--tabs-bleed) - 12px);
-    scrollbar-width: none;
-  }
-  #reading .tabs::after, #reading .tabs::-webkit-scrollbar { display: none; }
-  #reading [role="tab"], #reading [role="tab"]:first-child { flex: 0 0 auto; padding: var(--s-3); text-indent: 0; white-space: nowrap; scroll-snap-align: start; border-bottom: 1px solid var(--rule); }
-  #reading [role="tab"]::after, #reading [role="tab"]:first-child::after { left: var(--s-3); bottom: -1px; }
-  #reading [role="tab"] .l2 { display: inline; }
-  #reading [role="tab"]:focus-visible { outline-offset: -3px; }
-}
-@media (max-width: 599.98px) {
-  #reading .tabs { --tabs-bleed: var(--gutter); }
-  #reading .panel { --note-max: 160px; padding: var(--s-4); }   /* notes wrap to five lines on phones */
-  #reading .case:not(.is-active) { top: var(--s-4); left: var(--s-4); right: var(--s-4); }
-  /* The simulation fits the phone: fixed columns, cells wrap, the red OBSERVED column stays visible. */
-  #reading .sim table { min-width: 0; table-layout: fixed; }
-  #reading .sim th:nth-child(1) { width: 35%; }
-  #reading .sim th:nth-child(2) { width: 29%; }
-  #reading .sim th, #reading .sim td { padding-right: 6px; overflow-wrap: break-word; }
-}
-@media (max-width: 359.98px) { #reading .sim table { font-size: var(--t-eyebrow); } } /* 12px: "instruction" and "+2,431.18" stay whole */
-@media (max-width: 479.98px) {
-  /* The status mark joins the reading line so the instruction keeps the full width. */
-  #reading .rows > li > button { grid-template-areas: "idx body body" "idx why mark"; }
-  #reading .rows .mark { margin-top: 2px; line-height: var(--lh-small); }
-}
-@media (max-width: 399.98px) {
-  #reading .panel, #reading [role="tab"] { font-size: var(--t-mono-sm); }
-}
+@media (min-width: 1024px) and (max-width: 1199.98px) { .flow .node { padding: 10px 12px; } .flow .node .sub { font-size: 11.5px; } }
 
 /* ============================================================================
-   Reduced motion (BRIEF §7.3) — last
+   Reduced motion, last
    ============================================================================ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; transition-duration: 1ms !important; }
-  .cursor { display: none !important; }
-  #reading .hold::after { display: none; }   /* the hold still takes 1s; only the bar is gone */
+  .term .ln { opacity: 1 !important; }
 }
 </style>
 </head>
@@ -1118,28 +523,28 @@ p + p { margin-top: var(--s-4); }
 
 <header class="nav">
   <div class="container">
-    <a class="lockup" href="#top" aria-label="GUARDIAN, back to top">
-      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" stroke="currentColor" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/><rect class="point" x="48" y="8" width="8" height="8" fill="currentColor"/></svg>
-      <span class="wordmark">GUARDIAN</span>
+    <a class="lockup" href="#top" aria-label="xguard, back to top">
+      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M12 12L52 52M12 52L34 30" stroke="currentColor" stroke-width="8" stroke-linecap="butt"/><rect class="point" x="44" y="12" width="8" height="8" fill="currentColor"/></svg>
+      <span class="wordmark">xguard</span>
     </a>
     <nav class="nav-links" aria-label="Site">
+      <a href="#checks">What it checks</a>
       <a href="#how">How it works</a>
       <a href="#trust">Trust</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#rules">Rules</a>
-      <span class="status">Rules v0.4 · 61 rules</span>
-      <a class="btn btn-sm" href="#waitlist">Join the waitlist</a>
+      <a href="https://github.com/giupy997/xguard">GitHub</a>
+      <span class="status">v0.1.0 · macOS · free</span>
+      <a class="btn btn-sm" href="#install">Install</a>
     </nav>
     <details class="menu">
       <summary aria-label="Menu">Menu <svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary>
       <nav class="menu-panel" aria-label="Site">
         <div class="container">
+          <a href="#checks">What it checks</a>
           <a href="#how">How it works</a>
           <a href="#trust">Trust</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#rules">Rules</a>
-          <span class="status">Rules v0.4 · 61 rules</span>
-          <a class="btn" href="#waitlist">Join the waitlist</a>
+          <a href="https://github.com/giupy997/xguard">GitHub</a>
+          <span class="status">v0.1.0 · macOS · free</span>
+          <a class="btn" href="#install">Install</a>
         </div>
       </nav>
     </details>
@@ -1149,31 +554,24 @@ p + p { margin-top: var(--s-4); }
 <main id="main" class="container">
 
   <section id="hero" class="hero" aria-labelledby="hero-h">
-    <p class="eyebrow hero-eyebrow"><span>Non-custodial</span> <span>defense agent</span> <span class="dot">for Solana</span> <span class="gap dot">Private beta</span> <span>100 wallets</span></p>
+    <p class="eyebrow hero-eyebrow"><span>Security agent</span> <span class="dot">for macOS</span> <span class="gap dot">Free</span> <span class="dot">no account</span> <span>no subscription</span></p>
     <div class="hero-body">
-      <h1 id="hero-h">Nothing gets signed unread<span class="stop">.</span></h1>
-      <p class="lead">GUARDIAN decodes and simulates every Solana transaction before you sign, compares what the page says with what the payload does, and tells you in one sentence when they disagree. It never sees your keys.</p>
-      <div class="form-wrap">
-        <form class="waitlist" method="post" action="/api/waitlist" novalidate>
-          <div class="form-row">
-            <div class="field">
-              <label class="sr-only" for="hero-email">Email</label>
-              <input class="input" id="hero-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@domain.sol" aria-describedby="hero-email-msg" required>
-            </div>
-            <button class="btn" type="submit">Join the waitlist</button>
-          </div>
-          <div class="hp" aria-hidden="true"><label for="hero-hp">Leave this field empty</label><input id="hero-hp" name="hp_ref" type="text" tabindex="-1" autocomplete="off"></div>
-          <p class="form-msg" id="hero-email-msg" role="alert"></p>
-        </form>
-        <div class="form-done" hidden tabindex="-1"><p>You’re on the list. We’ll write once.</p></div>
+      <h1 id="hero-h">It watches. You decide<span class="stop">.</span></h1>
+      <p class="lead">xguard runs read-only checks on your Mac every few minutes, tells you when something changes or looks wrong, and explains it in plain language. Nothing changes until you approve it, and every change it makes can be undone.</p>
+      <div class="install-cmd">
+        <div class="code-head"><span class="eyebrow path">Terminal</span><span class="eyebrow">one command · needs <a class="link" href="https://docs.astral.sh/uv/getting-started/installation/">uv</a></span></div>
+        <div class="cmd-row">
+<pre class="code cmd" tabindex="0" role="region" aria-label="Install command"><code><span class="ln"><span class="k">$ </span>uv tool install "git+https://github.com/giupy997/xguard.git#subdirectory=agent"</span></code></pre>
+          <button class="btn-ghost copy" type="button" data-copy='uv tool install "git+https://github.com/giupy997/xguard.git#subdirectory=agent"'>Copy</button>
+        </div>
       </div>
-      <p class="small proof">Phantom, Solflare, Backpack · Free tier stays free · One email, when your wallet is up.</p>
+      <p class="small proof">macOS 13 or later · Python is handled by uv · no admin rights needed · then run <span class="mono hi">xguard scan</span></p>
       <dl class="custody">
-        <div><dt class="eyebrow k">Keys touched</dt><dd class="v">0</dd></div>
-        <div><dt class="eyebrow k">Data read</dt><dd class="v">public on-chain only</dd></div>
-        <div><dt class="eyebrow k">Simulation</dt><dd class="v">your machine, your RPC</dd></div>
-        <div><dt class="eyebrow k">Rules</dt><dd class="v">Apache-2.0, Q3 2027</dd></div>
-        <div><dt class="eyebrow k">Execution</dt><dd class="v">TEE-attested</dd></div>
+        <div><dt class="eyebrow k">Price</dt><dd class="v">free, no tiers</dd></div>
+        <div><dt class="eyebrow k">Account</dt><dd class="v">none</dd></div>
+        <div><dt class="eyebrow k">Checks</dt><dd class="v">read-only</dd></div>
+        <div><dt class="eyebrow k">Actions</dt><dd class="v">only with your approval</dd></div>
+        <div><dt class="eyebrow k">Undo</dt><dd class="v">xguard restore</dd></div>
       </dl>
     </div>
   </section>
@@ -1182,513 +580,97 @@ p + p { margin-top: var(--s-4); }
     <div class="sec-rule"><span class="sec-no">01</span></div>
     <aside class="margin" aria-hidden="true">
       <span class="eyebrow">01</span>
-      <span class="eyebrow">A transaction, read aloud</span>
-      <span class="footnote">Case 1 · 4 instructions · 61 rules evaluated · hits R-021, R-041, R-050.</span>
+      <span class="eyebrow">A scan, read aloud</span>
+      <span class="footnote">Recorded on a real Mac, 2026-10-21. Only the user name is changed.</span>
     </aside>
     <div class="text">
-      <h2 id="reading-h">A transaction, read aloud.</h2>
-      <p class="lead">Five shapes of transaction, replayed from the beta fixtures. Left is what the page and the wallet told the user. Right is what GUARDIAN read in the payload.</p>
-
+      <h2 id="reading-h">A scan, read aloud.</h2>
+      <p class="lead">This is what the first scan found on a developer’s MacBook, what xguard said about one finding, and what happened when the owner approved the fix. Four commands, start to finish.</p>
       <div class="stage">
-      <div role="tablist" aria-label="Recorded cases" class="tabs">
-        <button type="button" role="tab" id="tab-a" aria-selected="true" aria-controls="reading-panel" tabindex="0" data-case="lookalike-swap"><span class="n" aria-hidden="true">1</span> Swap ·<span class="l2"> lookalike Jupiter</span></button>
-        <button type="button" role="tab" id="tab-b" aria-selected="false" aria-controls="reading-panel" tabindex="-1" data-case="airdrop-assign"><span class="n" aria-hidden="true">2</span> Airdrop<span class="l2"> claim</span></button>
-        <button type="button" role="tab" id="tab-c" aria-selected="false" aria-controls="reading-panel" tabindex="-1" data-case="unlimited-approve"><span class="n" aria-hidden="true">3</span> Unlimited<span class="l2"> approval</span></button>
-        <button type="button" role="tab" id="tab-d" aria-selected="false" aria-controls="reading-panel" tabindex="-1" data-case="after-signature"><span class="n" aria-hidden="true">4</span> After the<span class="l2"> signature</span></button>
-        <button type="button" role="tab" id="tab-e" aria-selected="false" aria-controls="reading-panel" tabindex="-1" data-case="clear-swap"><span class="n" aria-hidden="true">5</span> Swap ·<span class="l2"> jup.ag</span></button>
+        <div class="tabs" role="tablist" aria-label="Recorded session">
+          <button role="tab" id="tab-scan" aria-selected="true" aria-controls="term" data-case="case-scan" tabindex="0"><span class="n">1</span> scan</button>
+          <button role="tab" id="tab-show" aria-selected="false" aria-controls="term" data-case="case-show" tabindex="-1"><span class="n">2</span> show</button>
+          <button role="tab" id="tab-approve" aria-selected="false" aria-controls="term" data-case="case-approve" tabindex="-1"><span class="n">3</span> approve</button>
+          <button role="tab" id="tab-after" aria-selected="false" aria-controls="term" data-case="case-after" tabindex="-1"><span class="n">4</span> next scan</button>
+        </div>
+        <div id="term" class="term" role="tabpanel" aria-labelledby="tab-scan">
+<pre class="case is-active" id="case-scan"><code><span class="ln"><span class="k">$ </span><span class="hi">xguard scan</span></span>
+<span class="ln">4 new finding(s):</span>
+<span class="ln">     1  <span class="pen">MEDIUM  </span> The macOS firewall is off</span>
+<span class="ln">     2  <span class="pen">MEDIUM  </span> Startup item ai.openclaw.gateway needs a look</span>
+<span class="ln">     3  <span class="k">LOW     </span> SSH key id_ed25519 has no passphrase</span>
+<span class="ln">     4  <span class="k">LOW     </span> SSH key id_ed25519_signing has no passphrase</span>
+<span class="ln">Details: xguard show &lt;id&gt;</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">$ </span><span class="hi">xguard status</span></span>
+<span class="ln">xguard 0.1.0</span>
+<span class="ln">Data: /Users/me/.xguard</span>
+<span class="ln">Last scan: just now</span>
+<span class="ln">Open findings: 4 (worst: medium)</span>
+<span class="ln">Claude triage: on (claude-opus-5-5)</span>
+<span class="ln">Background agent: not installed</span></code></pre>
+<pre class="case" id="case-show" hidden><code><span class="ln"><span class="k">$ </span><span class="hi">xguard show 2</span></span>
+<span class="ln"><span class="pen">MEDIUM  </span> Startup item ai.openclaw.gateway needs a look</span>
+<span class="ln"><span class="k">Status: open · monitor: persistence · first seen just now</span></span>
+<span class="ln"> </span>
+<span class="ln">This runs automatically when you log in or the Mac starts: it runs a node script.</span>
+<span class="ln"> </span>
+<span class="ln"><span class="hi">What xguard thinks</span></span>
+<span class="ln">  A launch agent for OpenClaw, installed with npm. It restarts itself and keeps</span>
+<span class="ln">  a gateway on port 18789, but it exits with a configuration error every time.</span>
+<span class="ln">  Risk: needs review. If you don’t use OpenClaw, stop it; nothing else depends on it.</span>
+<span class="ln">  Suggested: disable</span>
+<span class="ln"> </span>
+<span class="ln"><span class="hi">Evidence</span></span>
+<span class="ln">  <span class="k">program:</span>    /opt/homebrew/bin/node</span>
+<span class="ln">  <span class="k">arguments:</span>  [".../node_modules/openclaw/dist/index.js", "gateway", "--port", "18789"]</span>
+<span class="ln">  <span class="k">plist:</span>      ~/Library/LaunchAgents/ai.openclaw.gateway.plist</span>
+<span class="ln">  <span class="k">keep_alive:</span> true</span>
+<span class="ln"> </span>
+<span class="ln"><span class="hi">What you can do</span></span>
+<span class="ln">  xguard approve 2 disable   Stop it and move it to the xguard quarantine (reversible)</span>
+<span class="ln">  xguard dismiss 2           It is expected, stop reporting it</span></code></pre>
+<pre class="case" id="case-approve" hidden><code><span class="ln"><span class="k">$ </span><span class="hi">xguard approve 2 disable</span></span>
+<span class="ln">Stop it and move it to the xguard quarantine: Startup item ai.openclaw.gateway needs a look? [y/N] <span class="hi">y</span></span>
+<span class="ln">Stopped ai.openclaw.gateway and moved its launch file to ~/.xguard/quarantine/2.</span>
+<span class="ln">It will not start again. Run `xguard restore 2` to undo.</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">$ </span><span class="hi">xguard findings --all</span></span>
+<span class="ln">     1  <span class="pen">MEDIUM  </span> The macOS firewall is off</span>
+<span class="ln">     2  <span class="pen">MEDIUM  </span> Startup item ai.openclaw.gateway needs a look  <span class="k">(acted)</span></span>
+<span class="ln">     3  <span class="k">LOW     </span> SSH key id_ed25519 has no passphrase</span>
+<span class="ln">     4  <span class="k">LOW     </span> SSH key id_ed25519_signing has no passphrase</span></code></pre>
+<pre class="case" id="case-after" hidden><code><span class="ln"><span class="k">$ </span><span class="hi">xguard scan</span></span>
+<span class="ln">Nothing new.</span>
+<span class="ln">3 still open.</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">$ </span><span class="hi">xguard log 2</span></span>
+<span class="ln">2026-10-21 16:14:02     #2  detected       {"severity": "medium", "title": "Startup item ai.openclaw.gateway needs a look"}</span>
+<span class="ln">2026-10-21 16:21:40     #2  action         {"action": "disable", "result": "Stopped ai.openclaw.gateway ..."}</span></code></pre>
+        </div>
       </div>
-
-      <div id="reading-panel" role="tabpanel" aria-labelledby="tab-a" class="panel" data-state="idle" tabindex="0">
-
-        <!-- CASE A — Swap · lookalike Jupiter -->
-        <div class="case is-active" id="lookalike-swap" data-foot="Case 1 · 4 instructions · 61 rules evaluated · hits R-021, R-041, R-050.">
-          <div class="top">
-            <div class="left">
-              <div class="region declared">
-                <h3 class="eyebrow">DECLARED</h3>
-                <dl class="decl">
-                  <div><dt>origin</dt><dd>jup-ag.app</dd></div>
-                  <div><dt>button</dt><dd><span class="fake" aria-hidden="true">Swap</span><span class="sr-only">the page’s button label: Swap</span></dd></div>
-                  <div><dt>wallet said</dt><dd>Swap 12.5 SOL → ~2,431 USDC</dd></div>
-                  <div><dt>signer</dt><dd><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd></div>
-                </dl>
-              </div>
-              <div class="region verdict">
-                <h3 class="eyebrow">VERDICT</h3>
-                <div class="v">
-                  <p class="v-head"><span class="chip chip-blocked">BLOCKED</span><span class="rid">· R-021</span><span class="also">· R-041 · R-050</span></p>
-                  <p class="v-say">Instruction 4 hands your USDC account to a flagged address. The swap pays out into an account that is no longer yours.</p>
-                </div>
-              </div>
-            </div>
-            <div class="region read">
-              <h3 class="eyebrow">READ</h3>
-              <ol class="rows">
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-a-1">
-                    <span class="idx">1</span>
-                    <span class="body"><span class="name">ComputeBudget.<wbr>SetComputeUnitLimit</span><span class="args">units: 200,000</span></span>
-                    <span class="mark">✓</span><span class="why">expected</span>
-                  </button>
-                  <div id="rd-a-1" class="inset" hidden><dl><dt>program</dt><dd>ComputeBudget111111111111111111111111111111</dd><dt>accounts</dt><dd>none</dd></dl></div>
-                </li>
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-a-2">
-                    <span class="idx">2</span>
-                    <span class="body"><span class="name">ComputeBudget.<wbr>SetComputeUnitPrice</span><span class="args">5,000 µlamports per unit</span></span>
-                    <span class="mark">✓</span><span class="why">expected</span>
-                  </button>
-                  <div id="rd-a-2" class="inset" hidden><dl><dt>program</dt><dd>ComputeBudget111111111111111111111111111111</dd><dt>accounts</dt><dd>none</dd></dl></div>
-                </li>
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-a-3">
-                    <span class="idx">3</span>
-                    <span class="body"><span class="name">Jupiter v6.<wbr>sharedAccountsRoute</span><span class="args">in: 12.5 SOL · min out: 2,419.02 USDC · via Orca Whirlpool</span></span>
-                    <span class="mark">✓</span><span class="why">program verified · route matches the quote</span>
-                  </button>
-                  <div id="rd-a-3" class="inset" hidden><dl>
-                    <dt>program</dt><dd>JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4</dd>
-                    <dt>accounts</dt><dd><span class="dim">31 accounts, showing 4</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> user transfer authority · signer</span><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> source token account · writable</span><span><span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> destination token account · writable</span><span>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA token program</span></dd>
-                  </dl></div>
-                </li>
-                <li data-flag="blocked">
-                  <button type="button" aria-expanded="false" aria-controls="rd-a-4">
-                    <span class="idx">4</span>
-                    <span class="body"><span class="name">Token.<wbr>SetAuthority</span><span class="args">account: <span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> (your USDC) · authority_type: AccountOwner · new_authority: <span class="flag"><span class="addr" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span></span></span></span>
-                    <span class="mark">blocked</span>
-                  </button>
-                  <div id="rd-a-4" class="inset" hidden><dl>
-                    <dt>program</dt><dd>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</dd>
-                    <dt>accounts</dt><dd><span><span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> token account (yours) · writable</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> current owner · signer</span></dd>
-                    <dt>data</dt><dd>authority_type = 2 (AccountOwner) · new_authority = <span class="addr" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span></dd>
-                  </dl></div>
-                  <div class="margin-note"><p>R-021 · <span class="addr" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span> · SlowMist malicious-address DB · added 2026-09-14 · drainer · 212 reports</p></div>
-                </li>
-              </ol>
-              <div class="cursor" aria-hidden="true"><svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></div>
-            </div>
-          </div>
-          <div class="region sim">
-            <h3 class="eyebrow">SIMULATION</h3>
-            <div class="sim-wrap">
-              <table>
-                <caption class="sr-only">Simulation: expected against observed balance and authority changes</caption>
-                <thead><tr><th scope="col">asset</th><th scope="col">expected</th><th scope="col">observed</th></tr></thead>
-                <tbody>
-                  <tr><td>SOL</td><td>−12.5</td><td>−12.5</td></tr>
-                  <tr><td>USDC</td><td>+2,431.18</td><td class="pen">+2,431.18 · into an account no longer yours</td></tr>
-                  <tr><td>authority · USDC account owner</td><td>you</td><td class="pen"><span class="addr" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="fx">fixture R-021/set_authority_drainer.json · slot 441,512,770</p>
-          </div>
-          <div class="toolbar">
-            <button type="button" class="btn decide" data-note="Demo · in the extension this returns your decision to the wallet. Nothing was sent." disabled>Reject</button>
-            <button type="button" class="btn-ghost hold decide" aria-describedby="hold-help" data-note="Override logged with your reason · it becomes fixture R-021/override_001.json" disabled>Sign anyway <span class="sub">hold 1 s</span></button>
-            <button type="button" class="btn-ghost again">Read again</button>
-            <span class="note" role="status"></span>
-          </div>
-        </div>
-
-        <!-- CASE B — Airdrop claim -->
-        <div class="case" id="airdrop-assign" data-foot="Case 2 · 2 instructions · 61 rules evaluated · hit R-014.">
-          <div class="top">
-            <div class="left">
-              <div class="region declared">
-                <h3 class="eyebrow">DECLARED</h3>
-                <dl class="decl">
-                  <div><dt>origin</dt><dd>claim-jto-season3.xyz</dd></div>
-                  <div><dt>button</dt><dd><span class="fake" aria-hidden="true">Claim 1,400 JTO</span><span class="sr-only">the page’s button label: Claim 1,400 JTO</span></dd></div>
-                  <div><dt>wallet said</dt><dd>Interact with program <span class="addr" title="Cfk2Q5AUQhwKqoJ8YjQsQQusLGW7qU5ihowe9JobABzW">Cfk2…ABzW</span></dd></div>
-                  <div><dt>signer</dt><dd><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd></div>
-                </dl>
-              </div>
-              <div class="region verdict">
-                <h3 class="eyebrow">VERDICT</h3>
-                <div class="v">
-                  <p class="v-head"><span class="chip chip-blocked">BLOCKED</span><span class="rid">· R-014</span></p>
-                  <p class="v-say">Instruction 2 gives a three-hour-old program ownership of your wallet. No airdrop pays out.</p>
-                </div>
-              </div>
-            </div>
-            <div class="region read">
-              <h3 class="eyebrow">READ</h3>
-              <ol class="rows">
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-b-1">
-                    <span class="idx">1</span>
-                    <span class="body"><span class="name">Memo</span><span class="args">"Season 3 rewards"</span></span>
-                    <span class="mark">✓</span><span class="why">no effect</span>
-                  </button>
-                  <div id="rd-b-1" class="inset" hidden><dl><dt>program</dt><dd>MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr</dd><dt>accounts</dt><dd><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> · signer</span></dd></dl></div>
-                </li>
-                <li data-flag="blocked">
-                  <button type="button" aria-expanded="false" aria-controls="rd-b-2">
-                    <span class="idx">2</span>
-                    <span class="body"><span class="name">System.<wbr>Assign</span><span class="args">account: <span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> (your wallet) · owner: <span class="flag"><span class="addr" title="Cfk2Q5AUQhwKqoJ8YjQsQQusLGW7qU5ihowe9JobABzW">Cfk2…ABzW</span></span></span></span>
-                    <span class="mark">blocked</span>
-                  </button>
-                  <div id="rd-b-2" class="inset" hidden><dl>
-                    <dt>program</dt><dd>11111111111111111111111111111111</dd>
-                    <dt>accounts</dt><dd><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> assigned account · signer · writable</span></dd>
-                    <dt>data</dt><dd>owner = <span class="addr" title="Cfk2Q5AUQhwKqoJ8YjQsQQusLGW7qU5ihowe9JobABzW">Cfk2…ABzW</span></dd>
-                  </dl></div>
-                  <div class="margin-note"><p>R-014 · <span class="addr" title="Cfk2Q5AUQhwKqoJ8YjQsQQusLGW7qU5ihowe9JobABzW">Cfk2…ABzW</span> · deployed 3 h ago · no verified source · upgrade authority live · Assign makes it the owner of your wallet account</p></div>
-                </li>
-              </ol>
-              <div class="cursor" aria-hidden="true"><svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></div>
-            </div>
-          </div>
-          <div class="region sim">
-            <h3 class="eyebrow">SIMULATION</h3>
-            <div class="sim-wrap">
-              <table>
-                <caption class="sr-only">Simulation: expected against observed balance and authority changes</caption>
-                <thead><tr><th scope="col">asset</th><th scope="col">expected</th><th scope="col">observed</th></tr></thead>
-                <tbody>
-                  <tr><td>SOL</td><td>−0.000005 (fee)</td><td>−0.000005</td></tr>
-                  <tr><td>JTO</td><td>+1,400</td><td class="pen">+0</td></tr>
-                  <tr><td>authority · wallet owner</td><td>System Program</td><td class="pen"><span class="addr" title="Cfk2Q5AUQhwKqoJ8YjQsQQusLGW7qU5ihowe9JobABzW">Cfk2…ABzW</span></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="fx">fixture R-014/assign_airdrop_claim.json · slot 441,688,409</p>
-          </div>
-          <div class="toolbar">
-            <button type="button" class="btn decide" data-note="Demo · in the extension this returns your decision to the wallet. Nothing was sent." disabled>Reject</button>
-            <button type="button" class="btn-ghost hold decide" aria-describedby="hold-help" data-note="Override logged with your reason · it becomes fixture R-014/override_001.json" disabled>Sign anyway <span class="sub">hold 1 s</span></button>
-            <button type="button" class="btn-ghost again">Read again</button>
-            <span class="note" role="status"></span>
-          </div>
-        </div>
-
-        <!-- CASE C — Unlimited approval -->
-        <div class="case" id="unlimited-approve" data-foot="Case 3 · 2 instructions · 61 rules evaluated · hit R-003.">
-          <div class="top">
-            <div class="left">
-              <div class="region declared">
-                <h3 class="eyebrow">DECLARED</h3>
-                <dl class="decl">
-                  <div><dt>origin</dt><dd>trade.finance-dex.io</dd></div>
-                  <div><dt>button</dt><dd><span class="fake" aria-hidden="true">Enable USDC</span><span class="sr-only">the page’s button label: Enable USDC</span></dd></div>
-                  <div><dt>wallet said</dt><dd>Approve USDC</dd></div>
-                  <div><dt>signer</dt><dd><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd></div>
-                </dl>
-              </div>
-              <div class="region verdict">
-                <h3 class="eyebrow">VERDICT</h3>
-                <div class="v">
-                  <p class="v-head"><span class="chip chip-caution">CAUTION</span><span class="rid">· R-003</span></p>
-                  <p class="v-say">Unlimited delegate to an unknown wallet. If you proceed, GUARDIAN watches it and keeps a revoke link ready.</p>
-                </div>
-              </div>
-            </div>
-            <div class="region read">
-              <h3 class="eyebrow">READ</h3>
-              <ol class="rows">
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-c-1">
-                    <span class="idx">1</span>
-                    <span class="body"><span class="name">ComputeBudget.<wbr>SetComputeUnitLimit</span><span class="args">units: 50,000</span></span>
-                    <span class="mark">✓</span><span class="why">expected</span>
-                  </button>
-                  <div id="rd-c-1" class="inset" hidden><dl><dt>program</dt><dd>ComputeBudget111111111111111111111111111111</dd><dt>accounts</dt><dd>none</dd></dl></div>
-                </li>
-                <li data-flag="caution">
-                  <button type="button" aria-expanded="false" aria-controls="rd-c-2">
-                    <span class="idx">2</span>
-                    <span class="body"><span class="name">Token.<wbr>Approve</span><span class="args">account: <span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> (your USDC) · delegate: <span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span> · amount: <span class="flag">18446744073709551615</span></span></span>
-                    <span class="mark">caution</span>
-                  </button>
-                  <div id="rd-c-2" class="inset" hidden><dl>
-                    <dt>program</dt><dd>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</dd>
-                    <dt>accounts</dt><dd><span><span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> token account (yours) · writable</span><span><span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span> delegate</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> owner · signer</span></dd>
-                    <dt>data</dt><dd>amount = 18446744073709551615 (u64::MAX)</dd>
-                  </dl></div>
-                  <div class="margin-note"><p>R-003 · amount = u64::MAX, unlimited · delegate is a wallet, not a program · 2 transactions on record · no list match</p></div>
-                </li>
-              </ol>
-              <div class="cursor" aria-hidden="true"><svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></div>
-            </div>
-          </div>
-          <div class="region sim">
-            <h3 class="eyebrow">SIMULATION</h3>
-            <div class="sim-wrap">
-              <table>
-                <caption class="sr-only">Simulation: expected against observed balance and delegate changes</caption>
-                <thead><tr><th scope="col">asset</th><th scope="col">expected</th><th scope="col">observed</th></tr></thead>
-                <tbody>
-                  <tr><td>USDC</td><td>0</td><td>0</td></tr>
-                  <tr><td>delegate</td><td>none</td><td class="pen"><span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span> · up to the full balance</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="fx">fixture R-003/approve_u64_max.json · slot 433,050,302</p>
-          </div>
-          <div class="toolbar">
-            <button type="button" class="btn decide" data-note="Demo · in the extension this returns your decision to the wallet. Nothing was sent." disabled>Reject</button>
-            <button type="button" class="btn-ghost hold decide" aria-describedby="hold-help" data-note="Override logged with your reason · it becomes fixture R-003/override_001.json" disabled>Sign anyway <span class="sub">hold 1 s</span></button>
-            <button type="button" class="btn-ghost again">Read again</button>
-            <span class="note" role="status"></span>
-          </div>
-        </div>
-
-        <!-- CASE D — After the signature -->
-        <div class="case" id="after-signature" data-foot="Case 4 · 3 approvals indexed · listed 2026-10-20 · hit R-041.">
-          <div class="top">
-            <div class="left">
-              <div class="region declared">
-                <h3 class="eyebrow">ALERT</h3>
-                <div class="card">
-                  <p class="card-meta">GUARDIAN · Telegram · 14:02 UTC</p>
-                  <p class="card-body">Delegate <span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span> on your USDC account was added to the SlowMist malicious-address list 2 hours ago. The approval you signed 41 days ago is unlimited.</p>
-                  <p class="card-line">Revoke → guardian.example/r/<span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></p>
-                  <p class="card-meta">one tap builds the Revoke instruction · you sign it</p>
-                </div>
-              </div>
-              <div class="region verdict">
-                <h3 class="eyebrow">VERDICT</h3>
-                <div class="v">
-                  <p class="v-head"><span class="chip chip-caution">CAUTION</span><span class="rid">· R-041</span></p>
-                  <p class="v-say">A delegate you approved 41 days ago was listed two hours ago. The revoke transaction is built; it moves nothing until you sign it.</p>
-                </div>
-              </div>
-            </div>
-            <div class="region read">
-              <h3 class="eyebrow">APPROVALS INDEX</h3>
-              <ol class="rows">
-                <li data-flag="caution">
-                  <button type="button" aria-expanded="false" aria-controls="rd-d-1">
-                    <span class="idx">1</span>
-                    <span class="body"><span class="name">USDC · delegate</span><span class="args"><span class="flag"><span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span></span> · unlimited · granted 41 d ago</span></span>
-                    <span class="mark">caution</span>
-                  </button>
-                  <div id="rd-d-1" class="inset" hidden><dl>
-                    <dt>account</dt><dd>token account <span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span></dd>
-                    <dt>data</dt><dd>delegated_amount = 18446744073709551615 · approved in tx from case 3</dd>
-                  </dl></div>
-                  <div class="margin-note"><p>R-041 · <span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span> · SlowMist malicious-address DB · added 2026-10-20 12:01 UTC · 17 reports</p></div>
-                </li>
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-d-2">
-                    <span class="idx">2</span>
-                    <span class="body"><span class="name">USDC · close authority</span><span class="args">none</span></span>
-                    <span class="mark">✓</span><span class="why">nothing to watch</span>
-                  </button>
-                  <div id="rd-d-2" class="inset" hidden><dl><dt>account</dt><dd>token account <span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span></dd><dt>data</dt><dd>close_authority = none · owner = <span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd></dl></div>
-                </li>
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-d-3">
-                    <span class="idx">3</span>
-                    <span class="body"><span class="name">wallet · owner</span><span class="args">System Program</span></span>
-                    <span class="mark">✓</span><span class="why">nothing to watch</span>
-                  </button>
-                  <div id="rd-d-3" class="inset" hidden><dl><dt>account</dt><dd><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd><dt>data</dt><dd>owner = 11111111111111111111111111111111 (System Program)</dd></dl></div>
-                </li>
-              </ol>
-              <div class="cursor" aria-hidden="true"><svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></div>
-            </div>
-          </div>
-          <div class="region sim">
-            <h3 class="eyebrow">REVOKE, PREPARED</h3>
-            <div class="sim-wrap">
-              <table>
-                <caption class="sr-only">The prepared Revoke transaction: each field before and after</caption>
-                <thead><tr><th scope="col">field</th><th scope="col">before</th><th scope="col">after</th></tr></thead>
-                <tbody>
-                  <tr><td>instruction</td><td>—</td><td>Token.<wbr>Revoke · account: <span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span></td></tr>
-                  <tr><td>delegate</td><td class="pen"><span class="addr" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span></td><td>none</td></tr>
-                  <tr><td>fee</td><td>—</td><td>0.000005 SOL · you sign it</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="fx">fixture R-041/delegate_listed.json · slot 441,906,318</p>
-          </div>
-          <div class="toolbar">
-            <button type="button" class="btn decide" data-note="Demo · in the extension this opens your wallet with the Revoke instruction prepared." disabled>Revoke <span class="sub">0.000005 SOL</span></button>
-            <button type="button" class="btn-ghost decide" data-note="Demo · the delegate stays on the watch list." disabled>Keep the approval</button>
-            <button type="button" class="btn-ghost again">Read again</button>
-            <span class="note" role="status"></span>
-          </div>
-        </div>
-
-        <!-- CASE E — Swap · jup.ag -->
-        <div class="case" id="clear-swap" data-foot="Case 5 · 7 instructions · 61 rules evaluated · 0 findings.">
-          <div class="top">
-            <div class="left">
-              <div class="region declared">
-                <h3 class="eyebrow">DECLARED</h3>
-                <dl class="decl">
-                  <div><dt>origin</dt><dd>jup.ag <span class="dim">· verified origin</span></dd></div>
-                  <div><dt>button</dt><dd><span class="fake" aria-hidden="true">Swap</span><span class="sr-only">the page’s button label: Swap</span></dd></div>
-                  <div><dt>wallet said</dt><dd>Swap 2 SOL → ~310.2 USDC</dd></div>
-                  <div><dt>signer</dt><dd><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></dd></div>
-                </dl>
-              </div>
-              <div class="region verdict">
-                <h3 class="eyebrow">VERDICT</h3>
-                <div class="v">
-                  <p class="v-head"><span class="chip chip-clear">CLEAR</span><span class="rid">· 0 findings</span></p>
-                  <p class="v-say">Does what it says. Received amount within 0.3% of the quote.</p>
-                </div>
-              </div>
-            </div>
-            <div class="region read">
-              <h3 class="eyebrow">READ</h3>
-              <ol class="rows">
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-e-1">
-                    <span class="idx">1–2</span>
-                    <span class="body"><span class="name">ComputeBudget.<wbr>SetComputeUnitLimit · SetComputeUnitPrice</span><span class="args">units: 400,000 · 10,000 µlamports per unit</span></span>
-                    <span class="mark">✓</span><span class="why">expected</span>
-                  </button>
-                  <div id="rd-e-1" class="inset" hidden><dl><dt>program</dt><dd>ComputeBudget111111111111111111111111111111</dd><dt>accounts</dt><dd>none</dd></dl></div>
-                </li>
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-e-2">
-                    <span class="idx">3</span>
-                    <span class="body"><span class="name">AssociatedToken.<wbr>CreateIdempotent</span><span class="args">wSOL account <span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> · owner: you</span></span>
-                    <span class="mark">✓</span><span class="why">owner is you</span>
-                  </button>
-                  <div id="rd-e-2" class="inset" hidden><dl>
-                    <dt>program</dt><dd>ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL</dd>
-                    <dt>accounts</dt><dd><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> payer · signer · writable</span><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> associated token account · writable</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> owner</span><span>So11111111111111111111111111111111111111112 mint</span></dd>
-                  </dl></div>
-                </li>
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-e-3">
-                    <span class="idx">4</span>
-                    <span class="body"><span class="name">System.<wbr>Transfer</span><span class="args">2 SOL → <span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> (your wSOL account)</span></span>
-                    <span class="mark">✓</span><span class="why">destination is yours · wraps SOL for the route</span>
-                  </button>
-                  <div id="rd-e-3" class="inset" hidden><dl>
-                    <dt>program</dt><dd>11111111111111111111111111111111</dd>
-                    <dt>accounts</dt><dd><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> from · signer · writable</span><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> to · writable</span></dd>
-                  </dl></div>
-                </li>
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-e-4">
-                    <span class="idx">5</span>
-                    <span class="body"><span class="name">Token.<wbr>SyncNative</span><span class="args"><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span></span></span>
-                    <span class="mark">✓</span><span class="why">expected</span>
-                  </button>
-                  <div id="rd-e-4" class="inset" hidden><dl><dt>program</dt><dd>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</dd><dt>accounts</dt><dd><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> native token account · writable</span></dd></dl></div>
-                </li>
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-e-5">
-                    <span class="idx">6</span>
-                    <span class="body"><span class="name">Jupiter v6.<wbr>sharedAccountsRoute</span><span class="args">in: 2 SOL · min out: 308.65 USDC · via Orca Whirlpool</span></span>
-                    <span class="mark">✓</span><span class="why">program verified · route matches the quote</span>
-                  </button>
-                  <div id="rd-e-5" class="inset" hidden><dl>
-                    <dt>program</dt><dd>JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4</dd>
-                    <dt>accounts</dt><dd><span class="dim">31 accounts, showing 4</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> user transfer authority · signer</span><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> source token account · writable</span><span><span class="addr" title="EMhrmyE8Dh1jhwsUpq5irLjS4TJcFgr1WGCyaow4w3BW">EMhr…w3BW</span> destination token account · writable</span><span>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA token program</span></dd>
-                  </dl></div>
-                </li>
-                <li>
-                  <button type="button" aria-expanded="false" aria-controls="rd-e-6">
-                    <span class="idx">7</span>
-                    <span class="body"><span class="name">Token.<wbr>CloseAccount</span><span class="args"><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> → rent to <span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></span></span>
-                    <span class="mark">✓</span><span class="why">destination is you</span>
-                  </button>
-                  <div id="rd-e-6" class="inset" hidden><dl>
-                    <dt>program</dt><dd>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</dd>
-                    <dt>accounts</dt><dd><span><span class="addr" title="ErdTDAc9UWqKQ73zGUeDHcxfByBNS5JgNxr8gqECoH6w">ErdT…oH6w</span> account to close · writable</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> destination · writable</span><span><span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span> owner · signer</span></dd>
-                  </dl></div>
-                </li>
-              </ol>
-              <div class="cursor" aria-hidden="true"><svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></div>
-            </div>
-          </div>
-          <div class="region sim">
-            <h3 class="eyebrow">SIMULATION</h3>
-            <div class="sim-wrap">
-              <table>
-                <caption class="sr-only">Simulation: expected against observed balance, authority and delegate changes</caption>
-                <thead><tr><th scope="col">asset</th><th scope="col">expected</th><th scope="col">observed</th></tr></thead>
-                <tbody>
-                  <tr><td>SOL</td><td>−2.00</td><td>−2.0021 · fee and priority</td></tr>
-                  <tr><td>USDC</td><td>+310.20</td><td>+310.19 · within 0.3% of the quote</td></tr>
-                  <tr><td>authority</td><td>no changes</td><td>no changes</td></tr>
-                  <tr><td>delegates</td><td>none</td><td>none</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="fx">fixture clear/jup_ag_swap.json · slot 441,874,615</p>
-          </div>
-          <div class="toolbar">
-            <button type="button" class="btn decide" data-note="Demo · in the extension the wallet’s own Approve button is released." disabled>Continue to wallet</button>
-            <button type="button" class="btn-ghost again">Read again</button>
-            <span class="note" role="status"></span>
-          </div>
-        </div>
-
-      </div>
-
-      <p id="verdict-live" class="sr-only" aria-live="polite"></p>
-      <span id="hold-help" class="sr-only">Hold Space or Enter, or press and hold, for one second.</span>
-
-      <p class="caption mono">Replayed from beta fixtures · build 0.4 · addresses are fixture keys, not live accounts · full keys in the rule repository test fixtures.</p>
-
-      <dl class="ruled defs">
-        <div class="row"><dt class="mono"><span class="chip chip-blocked">BLOCKED</span></dt><dd>A match against a malicious-address list, or an undeclared instruction that changes ownership, authority or delegation. The wallet still asks you to sign.</dd></div>
-        <div class="row"><dt class="mono"><span class="chip chip-caution">CAUTION</span></dt><dd>A reversible but undeclared change, an unlimited approval, or a counterparty with no history. Whatever you proceed with, GUARDIAN keeps watching.</dd></div>
-        <div class="row"><dt class="mono"><span class="chip chip-clear">CLEAR</span></dt><dd>The payload matches the declared intent, every program is verified, no authority or delegate changes. A Clear verdict is a statement about the payload, not about the token you are buying.</dd></div>
-      </dl>
-      </div>
+      <p class="note caption">The explanation under “What xguard thinks” comes from Claude, and only when you give xguard an Anthropic key. Without one, the finding, the evidence and the actions are the same; the explanation is simply absent.</p>
     </div>
-    <noscript><style>
-      /* No JS: case A (the pre-rendered active case) shows its final state. Scoped to .is-active so
-         nothing leaks through the hidden sibling cases. */
-      #reading .is-active .rows > li[data-flag]::before { opacity: 1; }
-      #reading .is-active .rows .mark, #reading .is-active .rows .why, #reading .is-active .margin-note,
-      #reading .is-active .sim tbody tr, #reading .is-active .v { visibility: visible; opacity: 1; transform: none; }
-      #reading .is-active .margin-note { max-height: none; }
-      #reading .is-active .flag::after, #reading .is-active h3.eyebrow::after { transform: scaleX(1); }
-      #reading .tabs [role="tab"]:not([aria-selected="true"]), #reading .toolbar { display: none; }
-      #reading .cursor { display: none; }
-    </style></noscript>
   </section>
 
-  <section id="threat" class="sec" aria-labelledby="threat-h">
+  <section id="checks" class="sec" aria-labelledby="checks-h">
     <div class="sec-rule"><span class="sec-no">02</span></div>
     <aside class="margin" aria-hidden="true">
       <span class="eyebrow">02</span>
-      <span class="eyebrow">The threat</span>
-      <span class="footnote">Instruction names as decoded by build 0.4. Rule ids are stable.</span>
+      <span class="eyebrow">What it checks</span>
+      <span class="footnote">Five monitors in v0.1.0. All read-only. None needs admin rights.</span>
     </aside>
     <div class="text">
-      <h2 id="threat-h">Your wallet shows you a button. The chain executes the payload.</h2>
-      <p class="lead cols">A Solana transaction is a list of instructions. The page shows you a button. Your wallet shows you a summary. Neither one is the payload, and drainers live in that gap. In 2024, wallet drainers took roughly $494M across chains (ScamSniffer, 2024 annual report). Every one of those transactions was signed by its victim.</p>
-      <h3>Six instructions that empty wallets</h3>
+      <h2 id="checks-h">Five things that go wrong on a Mac, checked every few minutes.</h2>
+      <p class="lead">These are not exotic attacks. They are the ordinary ways a Mac ends up exposed: a protection switched off and forgotten, a program that quietly starts at every login, an installer that Gatekeeper would have refused, a key anyone can copy.</p>
       <dl class="ruled">
-        <div class="row"><dt>System.Assign<span class="rid">R-014</span></dt><dd>Hands ownership of your wallet account to another program. Dressed up as “Claim airdrop”.</dd></div>
-        <div class="row"><dt>Token.SetAuthority<span class="rid">R-021</span></dt><dd>Changes who owns a token account, or who can mint. Dressed up as “Swap”.</dd></div>
-        <div class="row"><dt>Token.Approve<span class="arg">amount: 18446744073709551615</span><span class="rid">R-003</span></dt><dd>An unlimited delegate: that number is <span class="mono">u64::MAX</span>. Dressed up as “Enable trading”. Drained later, when you have stopped paying attention.</dd></div>
-        <div class="row"><dt>Token.CloseAccount<span class="arg">destination ≠ you</span><span class="rid">R-008</span></dt><dd>Closes a token account and sends the balance and the rent to someone else. Dressed up as “Reclaim rent from empty accounts”.</dd></div>
-        <div class="row"><dt>Durable nonce<span class="arg">delayed broadcast</span><span class="rid">R-033</span></dt><dd>A transaction you signed in March, broadcast in June, when the balance is worth taking. Dressed up as “Verify wallet ownership”.</dd></div>
-        <div class="row"><dt>Lookalike origin<span class="arg">real route</span><span class="rid">R-050</span></dt><dd>A real Jupiter route built by <span class="mono">jup-ag.app</span> instead of <span class="mono">jup.ag</span>, with one instruction appended at the end. Dressed up as the site you meant to visit.</dd></div>
+        <div class="row"><dt>posture<span class="rid">FileVault · firewall · Gatekeeper · SIP · updates</span></dt><dd>The five protections macOS ships with, and whether each one is on. Turning them on needs your password, so xguard shows the exact steps and never runs them.</dd></div>
+        <div class="row"><dt>persistence<span class="rid">LaunchAgents · LaunchDaemons</span></dt><dd>Programs that start by themselves. This is how most Mac malware survives a restart. Flagged when a program is unsigned, missing, hidden, runs from a temporary folder, runs an inline shell command, or appeared since the last scan.</dd></div>
+        <div class="row"><dt>network<span class="rid">listening sockets</span></dt><dd>Your programs accepting connections from the whole network, not just from this Mac. Flagged when the program is unsigned or started listening since the last scan.</dd></div>
+        <div class="row"><dt>downloads<span class="rid">last 30 days</span></dt><dd>Installers, apps, disk images and scripts in your Downloads folder. Each one is checked against Gatekeeper’s own verdict, and flagged if it lost the quarantine flag that makes macOS check it when opened.</dd></div>
+        <div class="row"><dt>ssh<span class="rid">~/.ssh</span></dt><dd>Private keys that other users on the Mac can read, and keys without a passphrase, which anyone who copies the file can use.</dd></div>
       </dl>
-      <p class="closing">None of these need your seed phrase. They need your signature, once.</p>
-
-      <figure class="dg dg-dva" aria-labelledby="dva-desc">
-        <p id="dva-desc" class="sr-only">Diagram. What the page shows: a single button labelled Swap. What the payload does: four instructions, SetComputeUnitLimit, SetComputeUnitPrice, Jupiter sharedAccountsRoute and Token.SetAuthority to 3kvc…rmjA. The fourth is circled in red and marked not declared, rule R-021.</p>
-        <div>
-          <span class="eyebrow">What the page shows</span>
-          <span class="fake-btn" aria-hidden="true">Swap</span>
-        </div>
-        <div class="arrow" aria-hidden="true"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></div>
-        <div>
-          <span class="eyebrow">What the payload does</span>
-          <ol class="payload" aria-hidden="true">
-            <li><span class="i">1</span>ComputeBudget.SetComputeUnitLimit</li>
-            <li><span class="i">2</span>ComputeBudget.SetComputeUnitPrice</li>
-            <li><span class="i">3</span>Jupiter v6.sharedAccountsRoute</li>
-            <li><span class="i">4</span><span class="ring">Token.SetAuthority → <span class="addr" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span><svg viewBox="0 0 100 100" preserveAspectRatio="none"><ellipse cx="50" cy="50" rx="49" ry="48"/></svg></span><span class="pen-note">not declared · R-021</span></li>
-          </ol>
-        </div>
-      </figure>
+      <p class="closing">The first scan records what is already there and reports only what looks wrong on its own. After that, anything new stays reported until you review it.</p>
     </div>
   </section>
 
@@ -1697,380 +679,180 @@ p + p { margin-top: var(--s-4); }
     <aside class="margin" aria-hidden="true">
       <span class="eyebrow">03</span>
       <span class="eyebrow">How it works</span>
-      <span class="footnote">p50 decode and simulate latency is a beta measurement. The alert latency is a target.</span>
+      <span class="footnote">A scan takes about a second. The default interval is ten minutes.</span>
     </aside>
     <div class="text">
-      <h2 id="how-h">Three readings before the signature. One after.</h2>
+      <h2 id="how-h">It watches on its own. It never acts on its own.</h2>
       <div class="layers">
         <div class="layer">
-          <div class="num">I</div>
+          <span class="num" aria-hidden="true">I</span>
           <div class="body">
-            <h3>Simulate and diff</h3>
-            <p>GUARDIAN decodes the unsigned transaction instruction by instruction and runs <span class="mono">simulateTransaction</span> on the RPC you configure, with signature verification off and the blockhash replaced, so the result reflects the chain as it is now, not a third party’s summary. It records every balance change, every authority change, every account closed or assigned, then diffs that against the declared intent. If the page says “Swap” and the simulation shows your USDC account changing owner, the verdict is Blocked, with the instruction number and the rule that fired.</p>
+            <h3>Baseline</h3>
+            <p>On the first run, each monitor records what is already on the Mac: the startup items, the programs listening, the state of each protection. Only things that are wrong on their own are reported, so the first list is short and worth reading.</p>
             <dl class="spec">
-              <div class="spec-row"><dt>Input</dt><dd>unsigned transaction + page origin</dd></div>
-              <div class="spec-row"><dt>Output</dt><dd>effect list, intent diff, rule hits</dd></div>
-              <div class="spec-row"><dt>Latency</dt><dd>p50 under 400 ms, beta measurement</dd></div>
-              <div class="spec-row"><dt>Runs</dt><dd>your machine (decode, simulate) · agent in TEE (diff)</dd></div>
+              <div class="spec-row"><dt>Reads</dt><dd>launch configurations, code signatures, Gatekeeper verdicts, your own sockets, file permissions</dd></div>
+              <div class="spec-row"><dt>Writes</dt><dd>one SQLite file in ~/.xguard</dd></div>
+              <div class="spec-row"><dt>Needs</dt><dd>no admin rights, no network</dd></div>
             </dl>
-            <span class="eyebrow sample-h" aria-hidden="true">What you see</span>
-            <div class="sample"><span class="l"><span class="k">expected</span>  SOL −12.5 · USDC +2,431.18</span><span class="l"><span class="k">observed</span>  SOL −12.5 · <span class="pen">USDC account owner → <span class="addr" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span></span></span></div>
           </div>
         </div>
         <div class="layer">
-          <div class="num">II</div>
+          <span class="num" aria-hidden="true">II</span>
           <div class="body">
-            <h3>Match against intel</h3>
-            <p>Every counterparty address, program and origin is checked against the SlowMist malicious-address database, public STRIDE findings and a crowdsourced phishing-domain list refreshed every ten minutes. A program’s age, verified source and upgrade authority are scored too, so a three-hour-old program with no source is flagged before anyone has reported it. A match explains itself: who flagged it, when, and how many reports.</p>
+            <h3>Watch</h3>
+            <p>Every ten minutes the checks run again. A new startup item, a program that just opened a port, a downloaded installer that Gatekeeper rejects: each becomes a finding with a severity, the evidence, and the actions available. Serious ones also arrive as a macOS notification. A finding that disappears is marked resolved; one you dismiss stays dismissed.</p>
             <dl class="spec">
-              <div class="spec-row"><dt>Input</dt><dd>counterparties from reading I</dd></div>
-              <div class="spec-row"><dt>Output</dt><dd>match, provenance, report count</dd></div>
-              <div class="spec-row"><dt>Latency</dt><dd>under 120 ms · lists cached 24 h</dd></div>
-              <div class="spec-row"><dt>Runs</dt><dd>agent in TEE · cached lists on your machine</dd></div>
+              <div class="spec-row"><dt>Runs</dt><dd>in the background, as a launch agent you install with one command and remove with another</dd></div>
+              <div class="spec-row"><dt>Alerts</dt><dd>Notification Center, for medium severity and above</dd></div>
             </dl>
-            <span class="eyebrow sample-h" aria-hidden="true">What you see</span>
-            <div class="sample"><span class="l"><span class="addr pen" title="3kvcMxEvn847ybfqd8X5srMEzoL6DFMuNbyURiX4rmjA">3kvc…rmjA</span> · SlowMist · 2026-09-14 · drainer · 212 reports</span></div>
           </div>
         </div>
         <div class="layer">
-          <div class="num">III</div>
+          <span class="num" aria-hidden="true">III</span>
           <div class="body">
-            <h3>Watch after the signature</h3>
-            <p>Approvals outlive the click. GUARDIAN keeps an index of every delegate and authority you have granted and alerts you on Telegram or email when one moves funds, grows, or appears on a list. Each alert carries a one-tap link that builds the Revoke instruction. You sign it. GUARDIAN never can.</p>
+            <h3>Decide</h3>
+            <p><span class="mono">xguard show</span> explains a finding and lists what you can do. If you give xguard an Anthropic API key, Claude reads the finding and writes the explanation in plain language, in your language, and suggests at most one of the listed actions. You approve, dismiss, or do nothing. Approved actions are logged and, where possible, reversible with <span class="mono">xguard restore</span>.</p>
             <dl class="spec">
-              <div class="spec-row"><dt>Input</dt><dd>your public account state</dd></div>
-              <div class="spec-row"><dt>Output</dt><dd>alert + prepared revoke transaction</dd></div>
-              <div class="spec-row"><dt>Latency</dt><dd>within one slot cycle, about 2 s target</dd></div>
-              <div class="spec-row"><dt>Runs</dt><dd>agent in TEE · public RPC reads only</dd></div>
+              <div class="spec-row"><dt>Claude</dt><dd>optional · sees one finding at a time · evidence is passed as untrusted data · cannot run anything</dd></div>
+              <div class="spec-row"><dt>Actions</dt><dd>quarantine a file or startup item (reversible) · fix key permissions (reversible) · quit one of your processes</dd></div>
+              <div class="spec-row"><dt>Admin</dt><dd>anything that needs your password is shown as instructions, never run</dd></div>
             </dl>
-            <span class="eyebrow sample-h" aria-hidden="true">What you see</span>
-            <div class="sample"><span class="l">Delegate <span class="addr hi" title="B49KpszWVuN2V1J7mZaKVt5KYJLownRcXyYBYMvkwkS4">B49K…wkS4</span> on your USDC moved 1,250.00 USDC at 14:02 UTC.</span><span class="l"><span class="k">Revoke →</span> <span class="hi">guardian.example/r/<span class="addr" title="7vfbPS4Dro8L7SavGjQjd3CpwyoFGS2aDgufVnu4JtQy">7vfb…JtQy</span></span></span></div>
           </div>
         </div>
       </div>
 
-      <figure class="dg dg-seq" aria-labelledby="seq-desc">
-        <p id="seq-desc" class="sr-only">Sequence diagram. The page builds a transaction and hands it to the wallet. The wallet passes the unsigned transaction to GUARDIAN, which decodes, simulates, diffs and matches it against intel; the diff step is the one marked in red. GUARDIAN returns a verdict with a rule id before the signature, p50 under 400 ms. After the signature, a watch step keeps reading delegates and authorities.</p>
-        <span class="node">Page</span>
-        <div class="arrow" aria-hidden="true"><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span><span class="cap cap-0">builds tx</span></div>
-        <span class="node">Wallet</span>
-        <div class="arrow" aria-hidden="true"><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span><span class="cap cap-1">unsigned tx</span></div>
-        <span class="node dbl" aria-hidden="true"><div>GUARDIAN<span class="steps"><span>decode</span><span>simulate</span><span class="diff">diff</span><span>intel</span></span></div></span>
-        <span class="lat" aria-hidden="true">p50 under 400 ms</span>
-        <div class="arrow" aria-hidden="true"><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span><span class="cap cap-2">verdict + rule id</span></div>
-        <span class="node">Signature</span>
-        <div class="arrow dotted" aria-hidden="true"><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span><span class="cap cap-3">delegates, authorities</span></div>
-        <span class="node">Watch</span>
+      <figure class="dg dg-flow" aria-labelledby="flow-desc">
+        <p id="flow-desc" class="sr-only">Flow diagram. Five monitors feed a local store of findings. From the store, an optional step asks Claude to explain a new finding; a notification goes to you. You decide: approve, dismiss or ignore. An approved action runs and is logged, and can be undone.</p>
+        <div class="flow" aria-hidden="true">
+          <span class="node">monitors ×5</span>
+          <span class="arrow"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg><span class="cap">read-only</span></span>
+          <span class="node">findings<br><span class="sub">~/.xguard · local</span></span>
+          <span class="arrow"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg><span class="cap">explain · notify</span></span>
+          <span class="node dbl"><div>you<br><span class="sub">approve · dismiss · ignore</span></div></span>
+          <span class="arrow dotted"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg><span class="cap">only if approved</span></span>
+          <span class="node">action<br><span class="sub">logged · xguard restore</span></span>
+        </div>
       </figure>
     </div>
   </section>
 
-  <section id="rules" class="sec" aria-labelledby="rules-h">
-    <div class="sec-rule"><span class="sec-no">04</span></div>
-    <aside class="margin" aria-hidden="true">
-      <span class="eyebrow">04</span>
-      <span class="eyebrow">The rules</span>
-      <span class="footnote">Severity block renders as Blocked; severity caution as Caution. Tests: fixtures/R-021/.</span>
-    </aside>
-    <div class="text">
-      <h2 id="rules-h">The rules are the product. Read them.</h2>
-      <p class="lead">A detection engine you cannot read is a detection engine you have to trust. The rule below is the one that blocked case 1 above. Every rule has a severity, a condition on the decoded instruction, and the sentence the user sees. Sixty-one rules ship with build 0.4. They go public under Apache-2.0 in Q3 2027, with the fixtures behind the demo.</p>
-      <div class="code-head"><span class="eyebrow path">rules/R-021.rule</span><span class="eyebrow">Apache-2.0 · Q3 2027</span></div>
-<pre class="code" tabindex="0" role="region" aria-label="Rule R-021 source"><code><span class="ln">id: R-021</span><span class="ln">name: token.set_authority.to_unknown</span><span class="ln">severity: block</span><span class="ln">when:</span><span class="ln">  program: TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</span><span class="ln">  instruction: SetAuthority</span><span class="ln">  authority_type: AccountOwner</span><span class="ln">  new_authority: not_in [signer, verified_programs, user_known]</span><span class="ln say">say: "Instruction {index} hands your {mint} account to {new_authority}."</span><span class="ln">tests: fixtures/R-021/set_authority_drainer.json</span><span class="ln"># 23 cases · 0 false positives on the beta corpus</span></code></pre>
-      <p class="note rules-note">Bug bounty terms publish with the Q3 2027 release.</p>
-    </div>
-  </section>
-
   <section id="act" class="act" aria-labelledby="act-line">
-    <p id="act-line">GUARDIAN never rejects a transaction. You do.</p>
+    <p id="act-line">Nothing changes until you say so.</p>
   </section>
 
   <section id="trust" class="sec" aria-labelledby="trust-h">
-    <div class="sec-rule"><span class="sec-no">05</span></div>
+    <div class="sec-rule"><span class="sec-no">04</span></div>
     <aside class="margin" aria-hidden="true">
-      <span class="eyebrow">05</span>
+      <span class="eyebrow">04</span>
       <span class="eyebrow">Trust</span>
-      <span class="footnote">Fail-open is deliberate: no agent, no verdict, your wallet as before.</span>
+      <span class="footnote">The code is public. Read it before you run it.</span>
     </aside>
     <div class="text">
-      <h2 id="trust-h">What GUARDIAN can see, and what it can’t.</h2>
+      <h2 id="trust-h">What xguard can do, and what it can’t.</h2>
       <div class="cc">
         <div class="cc-col">
           <h3 class="eyebrow" id="can-h">Can</h3>
           <ul aria-labelledby="can-h">
-            <li>Read your public address and on-chain state.</li>
-            <li>Decode and simulate the unsigned transaction your wallet is about to display.</li>
-            <li>Prepare a Revoke transaction for you to sign.</li>
-            <li>Send the alerts you asked for, to the channel you chose.</li>
+            <li>Read launch configurations, code signatures, Gatekeeper verdicts, your listening sockets and the permissions of your SSH keys.</li>
+            <li>Keep findings, baselines and an audit log in one SQLite file in your home folder.</li>
+            <li>Send a macOS notification when a serious finding appears.</li>
+            <li>Move a file or a startup item you own into its quarantine, and move it back.</li>
+            <li>Ask Claude to explain one finding, if and only if you provide a key.</li>
           </ul>
         </div>
         <div class="cc-col">
           <h3 class="eyebrow" id="cannot-h">Cannot</h3>
           <ul aria-labelledby="cannot-h">
-            <li>Read your seed phrase or private key. There is no field for it and no code path to it.</li>
-            <li>Sign, submit, modify or delay a transaction.</li>
-            <li>Move funds.</li>
-            <li>Stop you. The final decision is always yours; a Blocked verdict is evidence, not a lock.</li>
-            <li>See a program’s future upgrade. A verified program can turn malicious after an upgrade, which is why GUARDIAN keeps watching after the signature.</li>
+            <li>Run anything as administrator. There is no code path that asks for your password.</li>
+            <li>Change anything before you approve it. Not a file, not a setting, not a process.</li>
+            <li>Send your files anywhere. Without a key, it makes no network requests at all.</li>
+            <li>Read the contents of your documents. It reads metadata, signatures and permissions.</li>
+            <li>Let Claude act. The model returns text; xguard discards any suggested action that the finding does not already list.</li>
           </ul>
         </div>
       </div>
       <dl class="ruled block">
-        <div class="row"><dt>DATA PATH</dt><dd>Decoding and simulation happen on your machine, against the RPC you configure. The decoded transaction and its simulated effects, never a key, go to the agent, which runs inside a trusted execution environment and returns the verdict with its rule id. If the agent is unreachable, your wallet behaves as before and shows an “unverified” state. Fail-open is deliberate.</dd></div>
-        <div class="row"><dt>TEE</dt><dd>Each release publishes an attestation you can verify against the binary, so the code that read your transaction is the code that was published, and nobody can change it silently, GUARDIAN’s operators included.</dd></div>
-        <div class="row"><dt>OPEN RULES</dt><dd>The detection rules and the decoder ship under Apache-2.0 in Q3 2027. The intent-diff grammar and the fixtures behind the demo above are public from the first release. The intel feeds and the TEE build are published as attestation reports, not source.</dd></div>
-        <div class="row"><dt>NOT A WALLET</dt><dd>GUARDIAN is an adapter for Phantom, Solflare and Backpack. Your wallet stays your wallet, your keys stay where they are. Remove it and your wallet works exactly as before.</dd></div>
+        <div class="row"><dt>DATA</dt><dd>Everything xguard knows lives in <span class="mono">~/.xguard</span>: a SQLite database, the audit log and the quarantine folder. Delete the folder and xguard forgets everything. There is no account, no telemetry and no update check.</dd></div>
+        <div class="row"><dt>CLAUDE</dt><dd>When you set an Anthropic API key, each new finding is sent once, as a single JSON object, to the Claude API under your own account. File names, labels and arguments can be written by an attacker, so the prompt treats them as untrusted data, and the reply is validated before it is shown. Roughly a cent per finding, billed by Anthropic to you, never to xguard.</dd></div>
+        <div class="row"><dt>ADMIN</dt><dd>Turning on FileVault or the firewall, stopping a system-wide daemon, re-enabling SIP: these need your password, so xguard prints the exact steps and leaves them to you. A security tool that asks for your password is a security tool you have to trust completely. This one doesn’t ask.</dd></div>
+        <div class="row"><dt>LIMITS</dt><dd>xguard is not an antivirus and does not scan file contents for malware signatures. Without admin rights, the network check sees only your own processes. It has no threat-intelligence feed yet: its judgments come from signatures, locations and change over time.</dd></div>
       </dl>
-
-      <figure class="dg dg-dp" aria-labelledby="dp-desc">
-        <p id="dp-desc" class="sr-only">Data-path diagram. Your wallet holds the private key, which stays there; a dashed line marked keys never cross separates it from everything else. On your machine, the adapter decodes the transaction, simulates it against your RPC and keeps cached lists for 24 hours. In a TEE, the agent runs the intent diff, the intel match and monitoring, with an attestation per release. The machine and the TEE sit inside a boundary labelled public data only. The unsigned transaction goes from the wallet to the adapter; the decoded transaction and simulated effects go to the agent; the verdict and rule id come back to the adapter; the verdict is shown in the wallet, which still asks you to sign.</p>
-        <span class="eyebrow e-wallet">Your wallet</span>
-        <div class="region wallet">
-          <span class="node box"><span class="t">Wallet</span><span class="ln hi">private key · stays here</span></span>
-        </div>
-        <div class="dp-keys" aria-hidden="true"><span>keys never cross</span></div>
-        <div class="dp-flow flow-1" aria-hidden="true">
-          <div class="arrow"><span class="cap">unsigned transaction</span><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span></div>
-          <div class="arrow back"><span class="cap">verdict shown · wallet still asks you</span><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span></div>
-        </div>
-        <div class="dp-public">
-          <span class="lbl" aria-hidden="true">public data only</span>
-          <span class="eyebrow e-adapter">Your machine</span>
-          <div class="region adapter">
-            <span class="node box"><span class="t">Adapter</span><span class="ln">decode</span><span class="ln">simulate · your RPC</span><span class="ln">cached lists · 24 h</span></span>
-          </div>
-          <div class="dp-flow flow-2" aria-hidden="true">
-            <div class="arrow"><span class="cap">decoded tx + simulated effects</span><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span></div>
-            <div class="arrow back"><span class="cap">verdict · rule id</span><span class="ar"><span class="line"></span><svg viewBox="0 0 8 8" width="8" height="8"><path d="M1 1l5 3-5 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span></div>
-          </div>
-          <span class="eyebrow e-agent">TEE</span>
-          <div class="region agent">
-            <span class="node box dbl"><div><span class="t">Agent</span><span class="ln">intent diff</span><span class="ln">intel match</span><span class="ln">monitoring</span><span class="ln">attestation per release</span></div></span>
-          </div>
-        </div>
-      </figure>
     </div>
   </section>
 
-  <section id="comparison" class="sec" aria-labelledby="comparison-h">
+  <section id="free" class="sec" aria-labelledby="free-h">
+    <div class="sec-rule"><span class="sec-no">05</span></div>
+    <aside class="margin" aria-hidden="true">
+      <span class="eyebrow">05</span>
+      <span class="eyebrow">Free</span>
+      <span class="footnote">No tiers, no trial, no card form.</span>
+    </aside>
+    <div class="text">
+      <h2 id="free-h">Free. No account. No subscription.</h2>
+      <p class="lead">A security tool that stops protecting you when a payment fails has the wrong incentives. xguard has no paid tier, no account and no subscription, and that is not a launch offer.</p>
+      <dl class="ruled">
+        <div class="row"><dt>PRICE</dt><dd>Nothing. Every check and every action is included. There is no “Pro”.</dd></div>
+        <div class="row"><dt>ACCOUNT</dt><dd>None. You install it and run it. xguard does not know who you are and has no server to tell.</dd></div>
+        <div class="row"><dt>THE ONE COST</dt><dd>If you turn on explanations, you pay Anthropic for your own API use. A finding costs about a cent to explain, and a quiet Mac produces a handful of findings a month. Leave the key unset and the cost is zero.</dd></div>
+        <div class="row"><dt>CODE</dt><dd>Public on <a class="link" href="https://github.com/giupy997/xguard">GitHub</a>, with the tests. Read it, run it, change it.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="install" class="sec" aria-labelledby="install-h">
     <div class="sec-rule"><span class="sec-no">06</span></div>
     <aside class="margin" aria-hidden="true">
       <span class="eyebrow">06</span>
-      <span class="eyebrow">Comparison</span>
-      <span class="footnote">Compared by capability, not by vendor. No competitor is named.</span>
+      <span class="eyebrow">Install</span>
+      <span class="footnote">Remove it with uv tool uninstall xguard. Your findings stay in ~/.xguard until you delete the folder.</span>
     </aside>
     <div class="text">
-      <h2 id="comparison-h">Where the wallet’s warning stops.</h2>
-      <div class="ledger-wrap" tabindex="0" role="region" aria-label="Comparison table">
-        <table class="ledger compare">
-          <caption class="sr-only">Capabilities compared: built-in wallet warnings, hosted screening APIs and GUARDIAN</caption>
-          <thead><tr><th scope="col" class="sticky">Capability</th><th scope="col">Built-in wallet warnings</th><th scope="col">Hosted screening APIs</th><th scope="col">GUARDIAN</th></tr></thead>
-          <tbody>
-            <tr><th scope="row" class="sticky">Decodes every instruction</th><td>partial¹</td><td class="yes">yes</td><td class="yes">yes</td></tr>
-            <tr><th scope="row" class="sticky">Simulates on your machine, against your RPC</th><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td class="yes">yes</td></tr>
-            <tr><th scope="row" class="sticky">Diffs declared intent against the payload</th><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td class="yes">yes</td></tr>
-            <tr><th scope="row" class="sticky">Threat intel with the provenance shown</th><td>partial²</td><td class="yes">yes</td><td class="yes">yes</td></tr>
-            <tr><th scope="row" class="sticky">Watches approvals after signing</th><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td class="yes">yes</td></tr>
-            <tr><th scope="row" class="sticky">One-tap revoke links</th><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td class="yes">yes</td></tr>
-            <tr><th scope="row" class="sticky">Rules you can read</th><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td class="yes">Q3 2027</td></tr>
-            <tr><th scope="row" class="sticky">Runs in a TEE with published attestations</th><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td class="yes">yes</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="small foot">¹ For some transaction types. ² A label, without the source or the date.</p>
-      <p class="small foot muted">Keep your wallet warnings on. GUARDIAN runs in addition to them, not instead of them. Wallet teams ship good warnings; GUARDIAN is the second reader.</p>
-    </div>
-  </section>
-
-  <section id="pricing" class="sec" aria-labelledby="pricing-h">
-    <div class="sec-rule"><span class="sec-no">07</span></div>
-    <aside class="margin" aria-hidden="true">
-      <span class="eyebrow">07</span>
-      <span class="eyebrow">Pricing</span>
-      <span class="footnote">Billed on-chain, from the protected wallet. No card form.</span>
-    </aside>
-    <div class="text">
-      <h2 id="pricing-h">Pay in the unit you’re protecting.</h2>
-      <table class="ledger pricing">
-        <caption class="sr-only">Pricing: Free, Pro and Team tiers compared feature by feature</caption>
-        <thead><tr>
-          <th scope="col"><span class="sr-only">Feature</span></th>
-          <th scope="col"><span class="tier">Free</span><span class="price">0 SOL</span></th>
-          <th scope="col"><span class="tier">Pro</span><span class="price">0.1 SOL per month</span></th>
-          <th scope="col"><span class="tier">Team</span><span class="price">custom</span></th>
-        </tr></thead>
-        <tbody>
-          <tr><th scope="row">Simulation and decoded instruction list</th><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td></tr>
-          <tr><th scope="row">Known-malicious matching (SlowMist, phishing domains)</th><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td></tr>
-          <tr><th scope="row">Intent diff with rule ids</th><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td class="yes">yes</td><td class="yes">yes</td></tr>
-          <tr><th scope="row">Real-time approval monitoring</th><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td class="yes">yes</td><td class="yes">yes</td></tr>
-          <tr><th scope="row">Anomalous-approval alerts</th><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td class="yes">yes</td><td class="yes">yes</td></tr>
-          <tr><th scope="row">Intel feed refresh</th><td>24 h</td><td>10 min</td><td>dedicated feed</td></tr>
-          <tr><th scope="row">Alerts</th><td>email</td><td>Telegram, email, revoke links</td><td>+ webhooks</td></tr>
-          <tr><th scope="row">Wallets</th><td>1</td><td>3</td><td>unlimited</td></tr>
-          <tr><th scope="row">Verdict API</th><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td><span aria-hidden="true">—</span><span class="sr-only">no</span></td><td class="yes">yes</td></tr>
-          <tr><th scope="row">Support</th><td>community</td><td>48 h</td><td>priority</td></tr>
-          <tr class="cta"><th scope="row"><span class="sr-only">Sign up</span></th><td><a class="btn" href="#waitlist">Join the waitlist<span class="sr-only">, Free</span></a></td><td><a class="btn" href="#waitlist">Join the waitlist<span class="sr-only">, Pro</span></a></td><td><a class="btn" href="#waitlist" data-team="1">Join the waitlist<span class="sr-only">, Team</span></a></td></tr>
-        </tbody>
-      </table>
-      <div class="tier-lists">
-        <div class="tier-list">
-          <h3><span class="tier">Free</span></h3><span class="price">0 SOL</span>
-          <dl class="ruled">
-            <div class="row"><dt>Simulation and decoded instruction list</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Known-malicious matching (SlowMist, phishing domains)</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Intent diff with rule ids</dt><dd><span aria-hidden="true">—</span><span class="sr-only">no</span></dd></div>
-            <div class="row"><dt>Real-time approval monitoring</dt><dd><span aria-hidden="true">—</span><span class="sr-only">no</span></dd></div>
-            <div class="row"><dt>Anomalous-approval alerts</dt><dd><span aria-hidden="true">—</span><span class="sr-only">no</span></dd></div>
-            <div class="row"><dt>Intel feed refresh</dt><dd>24 h</dd></div>
-            <div class="row"><dt>Alerts</dt><dd>email</dd></div>
-            <div class="row"><dt>Wallets</dt><dd>1</dd></div>
-            <div class="row"><dt>Verdict API</dt><dd><span aria-hidden="true">—</span><span class="sr-only">no</span></dd></div>
-            <div class="row"><dt>Support</dt><dd>community</dd></div>
-          </dl>
-          <a class="btn" href="#waitlist">Join the waitlist<span class="sr-only">, Free</span></a>
-        </div>
-        <div class="tier-list">
-          <h3><span class="tier">Pro</span></h3><span class="price">0.1 SOL per month</span>
-          <dl class="ruled">
-            <div class="row"><dt>Simulation and decoded instruction list</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Known-malicious matching (SlowMist, phishing domains)</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Intent diff with rule ids</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Real-time approval monitoring</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Anomalous-approval alerts</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Intel feed refresh</dt><dd>10 min</dd></div>
-            <div class="row"><dt>Alerts</dt><dd>Telegram, email, revoke links</dd></div>
-            <div class="row"><dt>Wallets</dt><dd>3</dd></div>
-            <div class="row"><dt>Verdict API</dt><dd><span aria-hidden="true">—</span><span class="sr-only">no</span></dd></div>
-            <div class="row"><dt>Support</dt><dd>48 h</dd></div>
-          </dl>
-          <a class="btn" href="#waitlist">Join the waitlist<span class="sr-only">, Pro</span></a>
-        </div>
-        <div class="tier-list">
-          <h3><span class="tier">Team</span></h3><span class="price">custom</span>
-          <dl class="ruled">
-            <div class="row"><dt>Simulation and decoded instruction list</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Known-malicious matching (SlowMist, phishing domains)</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Intent diff with rule ids</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Real-time approval monitoring</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Anomalous-approval alerts</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Intel feed refresh</dt><dd>dedicated feed</dd></div>
-            <div class="row"><dt>Alerts</dt><dd>+ webhooks</dd></div>
-            <div class="row"><dt>Wallets</dt><dd>unlimited</dd></div>
-            <div class="row"><dt>Verdict API</dt><dd class="yes">yes</dd></div>
-            <div class="row"><dt>Support</dt><dd>priority</dd></div>
-          </dl>
-          <a class="btn" href="#waitlist" data-team="1">Join the waitlist<span class="sr-only">, Team</span></a>
-        </div>
-      </div>
-      <p class="small foot">Prices in SOL because the thing you are protecting is in SOL. Billed on-chain, from the protected wallet. No card: a card form on a security product is a phishing vector. Cancel by not paying. Free stays free after the beta. No GUARDIAN token. There will not be one.</p>
-    </div>
-  </section>
-
-  <section id="roadmap" class="sec" aria-labelledby="roadmap-h">
-    <div class="sec-rule"><span class="sec-no">08</span></div>
-    <aside class="margin" aria-hidden="true">
-      <span class="eyebrow">08</span>
-      <span class="eyebrow">Roadmap</span>
-      <span class="footnote">■ shipped · ◧ in progress · □ planned.</span>
-    </aside>
-    <div class="text">
-      <h2 id="roadmap-h">What ships when.</h2>
-      <div class="timeline" role="list" aria-label="Roadmap by quarter">
-        <div class="tl-col" role="listitem">
-          <h3 class="eyebrow">Now → Q1 2027 · Closed beta</h3>
-          <span class="here" aria-hidden="true">you are here</span>
-          <ul>
-            <li><span class="g" aria-hidden="true">■</span><span><span class="sr-only">Shipped: </span>Simulation engine</span></li>
-            <li><span class="g" aria-hidden="true">■</span><span><span class="sr-only">Shipped: </span>Base intel: SlowMist, public STRIDE findings, phishing domains</span></li>
-            <li><span class="g" aria-hidden="true">◧</span><span><span class="sr-only">In progress: </span>Intent diff with rule ids</span></li>
-            <li><span class="g" aria-hidden="true">■</span><span><span class="sr-only">Shipped: </span>100 wallets onboarded</span></li>
-          </ul>
-        </div>
-        <div class="tl-col" role="listitem">
-          <h3 class="eyebrow">Q2 2027 · Monitoring</h3>
-          <ul>
-            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Real-time approval monitoring</span></li>
-            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Telegram and email alerts with revoke links</span></li>
-            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Phantom, Solflare and Backpack adapters</span></li>
-            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Pro opens</span></li>
-          </ul>
-        </div>
-        <div class="tl-col" role="listitem">
-          <h3 class="eyebrow">Q3 2027 · Open</h3>
-          <ul>
-            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Rules and decoder under Apache-2.0</span></li>
-            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Bug bounty</span></li>
-            <li><span class="g" aria-hidden="true">□</span><span><span class="sr-only">Planned: </span>Sui and Eclipse</span></li>
-          </ul>
-        </div>
-      </div>
-      <p class="small tl-legend" aria-hidden="true"><span class="mono">■</span> shipped · <span class="mono">◧</span> in progress · <span class="mono">□</span> planned.</p>
-      <p class="small tl-cap">Updated 2026-10-20. Dates are targets, not promises. This page changes when they slip.</p>
+      <h2 id="install-h">Three commands. The third one is optional.</h2>
+      <p class="lead">You need macOS 13 or later and <a class="link" href="https://docs.astral.sh/uv/getting-started/installation/">uv</a>, which installs Python for you if the Mac has none.</p>
+      <div class="code-head"><span class="eyebrow path">Terminal</span><span class="eyebrow">about a minute</span></div>
+<pre class="code steps-code" tabindex="0" role="region" aria-label="Install steps"><code><span class="ln"><span class="k"># 1 · install</span></span>
+<span class="ln">uv tool install "git+https://github.com/giupy997/xguard.git#subdirectory=agent"</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k"># 2 · first scan: records the baseline, reports what looks wrong</span></span>
+<span class="ln">xguard scan</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k"># 3 · optional: keep watching in the background, every ten minutes</span></span>
+<span class="ln">xguard install-agent</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k"># optional: plain-language explanations from Claude, with your own key</span></span>
+<span class="ln">export ANTHROPIC_API_KEY=sk-ant-…</span></code></pre>
+      <h3 class="cmd-h">Every command</h3>
+      <dl class="ruled cmds">
+        <div class="row"><dt>xguard scan</dt><dd>Run every check once.</dd></div>
+        <div class="row"><dt>xguard findings</dt><dd>List what is open. Add <span class="mono">--all</span> to include what you dismissed or fixed.</dd></div>
+        <div class="row"><dt>xguard show &lt;id&gt;</dt><dd>The finding, the evidence, the explanation, and the actions you can approve.</dd></div>
+        <div class="row"><dt>xguard approve &lt;id&gt; &lt;action&gt;</dt><dd>Let xguard act. It asks for confirmation first.</dd></div>
+        <div class="row"><dt>xguard restore &lt;id&gt;</dt><dd>Undo an action: the file or startup item goes back where it was.</dd></div>
+        <div class="row"><dt>xguard dismiss &lt;id&gt;</dt><dd>It is expected. Stop reporting it unless it changes.</dd></div>
+        <div class="row"><dt>xguard log</dt><dd>Everything xguard detected and did, with timestamps.</dd></div>
+        <div class="row"><dt>xguard watch</dt><dd>Keep scanning in the foreground. Ctrl+C to stop.</dd></div>
+        <div class="row"><dt>xguard install-agent</dt><dd>Run in the background at login. <span class="mono">uninstall-agent</span> removes it.</dd></div>
+        <div class="row"><dt>xguard status</dt><dd>Last scan, open findings, whether Claude explanations and the background agent are on.</dd></div>
+      </dl>
     </div>
   </section>
 
   <section id="faq" class="sec" aria-labelledby="faq-h">
-    <div class="sec-rule"><span class="sec-no">09</span></div>
+    <div class="sec-rule"><span class="sec-no">07</span></div>
     <aside class="margin" aria-hidden="true">
-      <span class="eyebrow">09</span>
+      <span class="eyebrow">07</span>
       <span class="eyebrow">Questions</span>
     </aside>
     <div class="text">
       <h2 id="faq-h">Questions a careful person asks.</h2>
       <div class="faq">
-        <details class="faq-item"><summary>Does GUARDIAN need my seed phrase?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>No. It never asks and has no field for it. It reads the unsigned transaction your wallet is about to display and the public state of the chain.</p></div></details>
-        <details class="faq-item"><summary>Can it block a transaction without my consent?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>No. It shows a verdict with evidence; your wallet still asks you to sign. Blocked is advice, not a lock.</p></div></details>
-        <details class="faq-item"><summary>What happens if the service is down?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Fail-open is deliberate: your wallet behaves as before and shows an “unverified” state. Known-malicious matching keeps working from lists cached on your machine for 24 hours. You lose freshness, not your wallet.</p></div></details>
-        <details class="faq-item"><summary>Why a TEE?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>So the agent that sees your pending transactions cannot be modified silently, by anyone. Each release publishes an attestation you can verify against the binary.</p></div></details>
-        <details class="faq-item"><summary>What exactly is open source?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>The rule set and the decoder, under Apache-2.0 from Q3 2027. The intel feeds and the TEE build ship as attestation reports, not source, so an attacker cannot test against the exact matching logic.</p></div></details>
-        <details class="faq-item"><summary>What if GUARDIAN is wrong?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>You override with a one-line reason. The override is logged and becomes a test fixture, so the rule gets a counter-example and false positives go down for everyone.</p></div></details>
-        <details class="faq-item"><summary>Which wallets?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Phantom, Solflare and Backpack adapters ship in Q2 2027. Any wallet that exposes the unsigned transaction can be supported.</p></div></details>
-        <details class="faq-item"><summary>Does it slow down signing?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Simulation adds 180–400 ms in the beta build. The verdict renders before the wallet modal finishes animating.</p></div></details>
-        <details class="faq-item"><summary>Why 0.1 SOL and not dollars?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Because what you are protecting is denominated in SOL, and because a card form on a security product is a phishing vector GUARDIAN will not create. Billed on-chain from the protected wallet; cancel by not paying.</p></div></details>
-        <details class="faq-item"><summary>Is there a token?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>No. There will not be one. A security product that depends on its own token price has the wrong incentives.</p></div></details>
-      </div>
-    </div>
-  </section>
-
-  <section id="waitlist" class="sec" aria-labelledby="waitlist-h">
-    <div class="sec-rule"><span class="sec-no">10</span></div>
-    <aside class="margin" aria-hidden="true">
-      <span class="eyebrow">10</span>
-      <span class="eyebrow">Waitlist</span>
-    </aside>
-    <div class="text">
-      <div class="wl">
-        <h2 id="waitlist-h">Join the next hundred.</h2>
-        <p class="muted">We add wallets in batches of 100. Leave an address; we tell you when yours is up, and nothing else.</p>
-        <div class="form-wrap">
-          <form class="waitlist wl-form" method="post" action="/api/waitlist" novalidate>
-            <div class="fields">
-              <div class="field">
-                <label class="eyebrow" for="wl-email">Email</label>
-                <input class="input" id="wl-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@domain.sol" aria-describedby="wl-email-msg" required>
-              </div>
-              <div class="field">
-                <label class="eyebrow" for="wl-wallet">Wallet</label>
-                <div class="select-wrap">
-                  <select class="select" id="wl-wallet" name="wallet">
-                    <option value="phantom">Phantom</option>
-                    <option value="solflare">Solflare</option>
-                    <option value="backpack">Backpack</option>
-                    <option value="other">Other</option>
-                  </select>
-                  <svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg>
-                </div>
-              </div>
-            </div>
-            <label class="check"><input type="checkbox" id="team" name="team" value="1"> I’m asking for a team</label>
-            <div class="hp" aria-hidden="true"><label for="wl-hp">Leave this field empty</label><input id="wl-hp" name="hp_ref" type="text" tabindex="-1" autocomplete="off"></div>
-            <button class="btn" type="submit">Join the waitlist</button>
-            <p class="form-msg" id="wl-email-msg" role="alert"></p>
-          </form>
-          <div class="form-done" hidden tabindex="-1"><p>You’re on the list. We’ll write once.</p></div>
-        </div>
-        <p class="small privacy">One email when your batch opens. No newsletter. Addresses are deleted when you join or when you ask.</p>
+        <details class="faq-item"><summary>Does it need my password or admin rights?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>No. Every check runs as you. Fixes that need admin rights, like turning on FileVault, are printed as steps for you to run.</p></div></details>
+        <details class="faq-item"><summary>Does it send my data anywhere?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Without an Anthropic key, nothing: xguard makes no network requests. With a key, each new finding is sent once to the Claude API under your account, as a small JSON object with the file name, the label, the program path and the arguments. Never the contents of your files.</p></div></details>
+        <details class="faq-item"><summary>Is it an antivirus?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>No. It does not scan file contents for malware signatures. It watches the places where things go wrong on a Mac, notices change, and tells you. Keep macOS’s own protections on; xguard will tell you if they are off.</p></div></details>
+        <details class="faq-item"><summary>What if it is wrong about something?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Dismiss it. The finding stays dismissed unless the thing it describes changes. If an action was already approved, <span class="mono">xguard restore</span> puts the file or startup item back exactly where it was.</p></div></details>
+        <details class="faq-item"><summary>Why Claude, and why optional?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>The checks are code, and they decide what is reported. Claude only writes the explanation and suggests one of the actions already on the finding, so the list is just as complete without it. It is optional because it costs you money and sends a small amount of data off your Mac, and that should be your call.</p></div></details>
+        <details class="faq-item"><summary>How do I remove it?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Run <span class="mono">xguard uninstall-agent</span> if you installed the background agent, then <span class="mono">uv tool uninstall xguard</span>. Delete <span class="mono">~/.xguard</span> to remove the findings, the log and the quarantine. Nothing else was touched.</p></div></details>
+        <details class="faq-item"><summary>Which Macs?<svg class="caret" viewBox="0 0 16 12" width="14" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 10.5 8 2l6.5 8.5"/></svg></summary><div class="a"><p>Apple silicon and Intel, macOS 13 or later. Linux and Windows are not supported: the checks use macOS tools like codesign, spctl and launchctl.</p></div></details>
       </div>
     </div>
   </section>
@@ -2082,279 +864,87 @@ p + p { margin-top: var(--s-4); }
     <div class="footer-cols">
       <div>
         <div class="lockup-stack" aria-hidden="true">
-          <svg viewBox="0 0 64 64" fill="none"><path d="M40 12H18A6 6 0 0 0 12 18V46A6 6 0 0 0 18 52H46A6 6 0 0 0 52 46V36H34" stroke="currentColor" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter"/><rect x="48" y="8" width="8" height="8" fill="currentColor"/></svg>
-          <span class="wordmark">GUARDIAN</span>
+          <svg viewBox="0 0 64 64" fill="none"><path d="M12 12L52 52M12 52L34 30" stroke="currentColor" stroke-width="8" stroke-linecap="butt"/><rect x="44" y="12" width="8" height="8" fill="currentColor"/></svg>
+          <span class="wordmark">xguard</span>
         </div>
-        <p class="promise">Non-custodial. Not a wallet. Never your keys.</p>
+        <p class="promise">It watches. You decide. Free, with no account.</p>
       </div>
       <div>
-        <h2 class="eyebrow">Contact</h2>
+        <h2 class="eyebrow">Code</h2>
         <ul>
-          <li><a href="mailto:hello@guardian.example">hello@guardian.example</a></li>
-          <li><a href="mailto:security@guardian.example">security@guardian.example</a></li>
+          <li><a href="https://github.com/giupy997/xguard">github.com/giupy997/xguard</a></li>
+          <li><a href="https://github.com/giupy997/xguard/issues">Report a problem or a security issue</a></li>
         </ul>
       </div>
       <div>
-        <h2 class="eyebrow">Legal</h2>
+        <h2 class="eyebrow">Plainly</h2>
         <ul>
-          <li>A Clear verdict describes a payload, not an investment.</li>
-          <li>Privacy policy and terms publish with the public beta.</li>
+          <li>xguard is provided as is, without warranty.</li>
+          <li>It is not an antivirus and does not replace macOS’s own protections.</li>
         </ul>
       </div>
     </div>
-    <p class="notice">GUARDIAN never asks for a seed phrase or private key. If something claiming to be GUARDIAN does, it is not GUARDIAN.</p>
-    <p class="colophon">Set in Newsreader, Geist and Geist Mono. Rules under Apache-2.0. Rules v0.4 · 61 rules · slot 441,906,318 · Updated 2026-10-20. © 2026 GUARDIAN.</p>
+    <p class="notice">xguard never asks for your password, and never asks for an API key on a web page. Everything it needs is typed by you, in your own terminal, on your own Mac.</p>
+    <p class="colophon">Set in Newsreader, Geist and Geist Mono. v0.1.0 · macOS · Updated 2026-10-22.</p>
   </div>
 </footer>
 
 <script>
 (function () {
   'use strict';
-  const WAITLIST_ENDPOINT = "/api/waitlist"; // TODO: point WAITLIST_ENDPOINT at the real service
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* The Reading (BRIEF §10.3–§10.7): one setTimeout chain with token cancellation inside the page's
-     IIFE (no globals); the only rAF call is the one-frame transition reset on a case switch. */
-  const rd = $('#reading');
-  if (rd) {
-    const mq = matchMedia('(prefers-reduced-motion: reduce)');
-    const panel = $('.panel', rd), live = $('#verdict-live'), foot = $('.margin .footnote', rd);
-    const tabs = $$('[role="tab"]', rd), cases = $$('.case', panel);
-    const caseOf = tab => document.getElementById(tab.dataset.case);
-    const selected = () => tabs.find(t => t.getAttribute('aria-selected') === 'true') || tabs[0];
-    let reduced = mq.matches, token = 0, pending = 0, resumeT = 0, holdT = 0, liveT = 0, rzT = 0;
-    let paused = false, started = false, steps = [], stepIndex = 0, nextFn = null, io = null;
-    let cur = caseOf(selected()), curRow = null, lastW = innerWidth;
-
-    /* Cursor: a 1px rule at the top edge of the current row. Margin notes earlier in the DOM may
-       still be expanding (max-height), so their remaining growth is added to the row's offsetTop. */
-    const noteMax = () => parseFloat(getComputedStyle(panel).getPropertyValue('--note-max')) || 120;
-    function place(row) {
-      if (!row) return;
-      curRow = row;
-      let y = row.offsetTop;
-      $$('.rows > li.is-stat .margin-note', cur).forEach(n => {
-        if (!row.contains(n) && (n.compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING)) y += Math.min(n.scrollHeight, noteMax()) - n.offsetHeight;
-      });
-      $('.cursor', cur).style.setProperty('--y', y + 'px');
-    }
-
-    /* The page never changes height: the panel reserves the tallest case, measured in a canonical
-       state (every margin note expanded, every inset closed), with transitions off for the probe. */
-    function reserve() {
-      const open = $$('.inset:not([hidden])', panel);
-      open.forEach(n => { n.hidden = true; });
-      panel.classList.add('no-transition', 'measuring');
-      panel.style.minHeight = '0';
-      const frame = panel.offsetHeight - cur.offsetHeight, tall = Math.max(...cases.map(c => c.offsetHeight));
-      panel.classList.remove('measuring');
-      open.forEach(n => { n.hidden = false; });
-      panel.style.minHeight = frame + tall + 'px';
-      void panel.offsetHeight;
-      panel.classList.remove('no-transition');
-    }
-
-    /* Steps: {gap before fn, fn}. Row: move → 200 → arrival → 380 → status; then 300 → diff rows
-       one per 180 → 300 → verdict, announced once through the single live region. */
-    function build(c) {
-      const rows = $$('.rows > li', c), diffs = $$('.sim tbody tr', c), s = [];
-      s.push({ gap: 0, fn: () => { c.classList.add('is-live'); panel.dataset.state = 'reading'; place(rows[0]); } });
-      rows.forEach(r => {
-        s.push({ gap: 0, fn: () => place(r) });
-        s.push({ gap: 200, fn: () => r.classList.add('is-read') });
-        s.push({ gap: 380, fn: () => r.classList.add('is-stat') });
-      });
-      diffs.forEach((d, i) => s.push({ gap: i ? 180 : 300, fn: () => { c.classList.add('is-sim'); panel.dataset.state = 'simulating'; d.classList.add('is-in'); } }));
-      s.push({ gap: 300, fn: () => {
-        c.classList.add('is-done'); panel.dataset.state = 'done';
-        $$('.decide', c).forEach(b => { b.disabled = false; });
-        clearTimeout(liveT); live.textContent = '';
-        if (started) liveT = setTimeout(() => { live.textContent = $('.chip', c).textContent + '. ' + $('.v-say', c).textContent; }, 60);
-      } });
-      return s;
-    }
-
-    function toggleRow(b, open) {
-      b.setAttribute('aria-expanded', String(open));
-      document.getElementById(b.getAttribute('aria-controls')).hidden = !open;
-    }
-
-    function reset(c) {
-      panel.classList.add('no-transition');
-      c.classList.remove('is-live', 'is-sim', 'is-done');
-      $$('.is-read, .is-stat, .is-in', c).forEach(el => el.classList.remove('is-read', 'is-stat', 'is-in'));
-      $$('.decide', c).forEach(b => { b.disabled = true; holdEnd(b); });
-      $$('.rows [aria-expanded="true"]', c).forEach(b => toggleRow(b, false));
-      const n = $('.note', c); clearTimeout(n._t); n.textContent = '';
-      panel.dataset.state = 'idle';
-      void panel.offsetHeight; /* flush the idle state while transitions are off */
-      requestAnimationFrame(() => panel.classList.remove('no-transition'));
-    }
-
-    function cancel() { token++; clearTimeout(pending); clearTimeout(resumeT); pending = 0; paused = false; }
-
-    function run(c, delay) {
-      cancel();
+  /* ---- Recorded session: four tabs, lines appear one at a time ---- */
+  const stage = $('#reading .stage');
+  if (stage) {
+    const tabs = $$('[role="tab"]', stage), term = $('#term');
+    let token = 0;
+    const play = (pre) => {
       const my = ++token;
-      steps = build(c); stepIndex = 0;
-      nextFn = function next() {
-        if (my !== token || paused) return;
-        const s = steps[stepIndex];
-        if (!s) { pending = 0; return; }
-        pending = setTimeout(() => { if (my !== token) return; stepIndex++; s.fn(); next(); }, s.gap);
-      };
-      pending = setTimeout(nextFn, delay);
-      sync(1500);
-    }
-
-    function finish(c) { build(c).forEach(s => s.fn()); } /* reduced motion: final state at once */
-
-    /* Pause while a row is expanded, keyboard focus is inside the READ column, or the page is
-       hidden; resume `delay` ms after the last of those clears. */
-    function sync(delay) {
-      clearTimeout(resumeT);
-      const a = document.activeElement;
-      const stop = document.hidden || !!$('.rows [aria-expanded="true"]', cur) ||
-        (a && $('.read', cur).contains(a) && a.matches(':focus-visible'));
-      if (stop) { if (pending) { paused = true; clearTimeout(pending); pending = 0; } }
-      else if (paused) resumeT = setTimeout(() => { paused = false; nextFn(); }, delay);
-    }
-
-    function select(tab, delay) {
-      const c = caseOf(tab);
-      tabs.forEach(t => { const on = t === tab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; });
-      panel.setAttribute('aria-labelledby', tab.id);
-      cancel();
-      if (cur !== c) { reset(cur); cur.classList.remove('is-active'); }
-      reset(c); c.classList.add('is-active');
-      cur = c; curRow = null; started = true;
-      if (foot) foot.textContent = c.dataset.foot;
-      if (io) { io.disconnect(); io = null; }
-      if (reduced) finish(c); else run(c, delay);
-    }
-
-    function note(b, text) {
-      const n = $('.note', b.closest('.toolbar'));
-      clearTimeout(n._t);
-      n.textContent = text || b.dataset.note;
-      n._t = setTimeout(() => { n.textContent = ''; }, 4000);
-    }
-
-    /* Hold-to-sign: a continuous 1000ms press (pointer or Space/Enter) shows the note. */
-    function holdStart(b) {
-      if (b.disabled || holdT) return;
-      b.classList.add('is-holding');
-      holdT = setTimeout(() => { holdEnd(b); note(b); }, 1000);
-    }
-    function holdEnd(b) { if (b.classList.contains('is-holding')) { clearTimeout(holdT); holdT = 0; b.classList.remove('is-holding'); } }
-
-    rd.addEventListener('click', e => {
-      const t = e.target.closest('[role="tab"], .rows > li > button, .again, .decide');
-      if (!t) return;
-      if (t.getAttribute('role') === 'tab') select(t, 120);
-      else if (t.classList.contains('again')) select(selected(), 120);
-      else if (t.classList.contains('hold')) { if (e.detail === 0 && !holdT) note(t, 'Hold Space or Enter for one second to sign anyway.'); }
-      else if (t.classList.contains('decide')) note(t);
-      else { toggleRow(t, t.getAttribute('aria-expanded') !== 'true'); place(curRow); sync(1500); }
+      const lines = $$('.ln', pre);
+      if (reduce.matches) { lines.forEach(l => l.classList.add('is-in')); return; }
+      lines.forEach(l => l.classList.remove('is-in'));
+      lines.forEach((l, i) => setTimeout(() => { if (my === token) l.classList.add('is-in'); }, 120 + i * 70));
+    };
+    const select = (tab, focus) => {
+      tabs.forEach(t => { const on = t === tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+      term.setAttribute('aria-labelledby', tab.id);
+      $$('.case', term).forEach(c => { const on = c.id === tab.dataset.case; c.hidden = !on; c.classList.toggle('is-active', on); if (on) play(c); });
+      if (focus) tab.focus();
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', e => {
+        const n = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : null;
+        if (n === null) return;
+        e.preventDefault();
+        select(tabs[(n + tabs.length) % tabs.length], true);
+      });
     });
-
-    $('[role="tablist"]', rd).addEventListener('keydown', e => {
-      const i = tabs.indexOf(e.target);
-      const n = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
-      if (i < 0 || n === undefined) return;
-      e.preventDefault();
-      const t = tabs[(n + tabs.length) % tabs.length];
-      t.focus(); select(t, 120);
-    });
-
-    $$('.hold', rd).forEach(b => {
-      const key = e => e.key === ' ' || e.key === 'Enter';
-      b.addEventListener('pointerdown', e => { e.preventDefault(); holdStart(b); });
-      ['pointerup', 'pointerleave', 'pointercancel', 'blur'].forEach(t => b.addEventListener(t, () => holdEnd(b)));
-      b.addEventListener('keydown', e => { if (key(e)) { e.preventDefault(); if (!e.repeat) holdStart(b); } });
-      b.addEventListener('keyup', e => { if (key(e)) { e.preventDefault(); holdEnd(b); } });
-      b.addEventListener('contextmenu', e => e.preventDefault());
-    });
-
-    /* Start once, when 40% of the panel is visible (less while the panel is taller than the viewport). */
-    function observe() {
-      if (io) io.disconnect();
-      const thr = Math.min(.4, Math.max(.1, innerHeight * .5 / panel.offsetHeight));
-      io = new IntersectionObserver(es => {
-        if (!started && es[0].intersectionRatio >= thr) { started = true; io.disconnect(); io = null; run(cur, 600); }
-      }, { threshold: thr });
-      io.observe(panel);
+    // Start the first case when the stage scrolls into view (geometry, so it also works in hidden panes).
+    let started = false;
+    const start = () => {
+      if (started) return;
+      const r = stage.getBoundingClientRect();
+      if (r.top < innerHeight * 0.75 && r.bottom > 0) { started = true; play($('.case.is-active', term)); removeEventListener('scroll', start); }
+    };
+    if (reduce.matches) { started = true; play($('.case.is-active', term)); }
+    else {
+      addEventListener('scroll', start, { passive: true });
+      const poll = setInterval(() => { start(); if (started) clearInterval(poll); }, 400);
+      start();
     }
-
-    panel.addEventListener('focusin', () => sync(1500));
-    panel.addEventListener('focusout', () => setTimeout(sync, 0, 1500));
-    document.addEventListener('visibilitychange', () => sync(0));
-    addEventListener('resize', () => {           /* width changes only: iOS toolbar resizes are ignored */
-      if (innerWidth === lastW) return;
-      lastW = innerWidth; clearTimeout(rzT);
-      rzT = setTimeout(() => { reserve(); place(curRow); if (io) observe(); }, 150);
-    });
-    mq.addEventListener('change', e => {
-      reduced = e.matches;
-      if (reduced) { if (io) { io.disconnect(); io = null; } cancel(); finish(cur); }
-    });
-    reserve();
-    if (document.fonts) document.fonts.ready.then(() => { reserve(); place(curRow); });
-    if (reduced) finish(cur); else observe();
   }
 
-  /* ---- Forms (BRIEF §12): validate on submit only, never fake a success ---- */
-  const MAIL = 'hello@guardian.example';
-  const COPY = {
-    bad: "That doesn’t look like an email address. Check for a stray space.",
-    net: "Could not reach the waitlist. Nothing was saved. Try again, or write to "
-  };
-  function validEmail(v) {
-    const at = v.indexOf('@');
-    return at > 0 && !/\s/.test(v) && v.indexOf('.', at + 2) > at + 1 && v.indexOf('.') !== v.length - 1;
-  }
-  /* Messages are written on the next tick so a repeated identical alert is announced again. */
-  function say(msg, text, mail) {
-    msg.textContent = '';
-    setTimeout(() => {
-      msg.textContent = text;
-      if (!mail) return;
-      const a = document.createElement('a');
-      a.className = 'link'; a.href = 'mailto:' + MAIL; a.textContent = MAIL;
-      msg.append(a, '.');
-    }, 30);
-  }
-  $$('form.waitlist').forEach(form => {
-    const email = $('input[type="email"]', form), msg = $('.form-msg', form), btn = $('button[type="submit"]', form);
-    const wrap = form.closest('.form-wrap'), done = $('.form-done', wrap);
-    function succeed() {
-      wrap.style.minHeight = wrap.offsetHeight + 'px';
-      form.classList.add('is-out');
-      setTimeout(() => { form.hidden = true; done.hidden = false; done.focus(); }, 200);
-    }
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const v = email.value;
-      if (!validEmail(v)) { email.setAttribute('aria-invalid', 'true'); email.focus(); say(msg, COPY.bad); return; }
-      email.removeAttribute('aria-invalid'); msg.textContent = '';
-      const hp = form.elements.hp_ref ? form.elements.hp_ref.value : '';
-      if (hp) { succeed(); return; }
-      const body = JSON.stringify({ email: v, wallet: form.elements.wallet ? form.elements.wallet.value : '', team: !!(form.elements.team && form.elements.team.checked), source: 'site', hp });
-      const label = btn.textContent;
-      btn.style.minWidth = btn.offsetWidth + 'px'; /* the label swap never moves the input */
-      btn.disabled = true; btn.textContent = 'Sending…';
-      try {
-        const r = await fetch(WAITLIST_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
-        if (!r.ok) throw new Error(String(r.status));
-        succeed();
-      } catch (err) {
-        say(msg, COPY.net, true);
-      } finally {
-        btn.disabled = false; btn.textContent = label; btn.style.minWidth = '';
-      }
-    });
-  });
+  /* ---- Copy the install command ---- */
+  $$('[data-copy]').forEach(btn => btn.addEventListener('click', async () => {
+    const label = btn.textContent;
+    try { await navigator.clipboard.writeText(btn.dataset.copy); btn.textContent = 'Copied'; }
+    catch (e) { btn.textContent = 'Select and copy'; }
+    setTimeout(() => { btn.textContent = label; }, 1600);
+  }));
 
   /* ---- Mobile menu: closes on link click, Escape, or a click outside ---- */
   const menu = $('.menu');
@@ -2363,9 +953,6 @@ p + p { margin-top: var(--s-4); }
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && menu.open) { menu.open = false; $('summary', menu).focus(); } });
     document.addEventListener('click', e => { if (menu.open && !menu.contains(e.target)) menu.open = false; });
   }
-
-  /* ---- Pricing: the Team button pre-ticks the Team checkbox ---- */
-  $$('[data-team]').forEach(a => a.addEventListener('click', () => { const c = $('#team'); if (c) c.checked = true; }));
 })();
 </script>
 </body>
