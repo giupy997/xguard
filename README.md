@@ -6,7 +6,9 @@ An always-on security agent for your Mac. It watches continuously; you decide. F
 |---|---|
 | `agent/` | The xguard agent (Python, macOS). See [agent/README.md](agent/README.md). |
 | `index.html` | The website, one self-contained file: inline CSS and JS, Google Fonts only, no build step. |
-| `assets/`, `design/`, `brand.html` | Design tokens, the brief and the brand guidelines from the earlier GUARDIAN direction. The brand page still shows the old name and mark; it has not been redone for xguard yet. |
+| `brand.html` | The brand guidelines: the lifted x mark, lockups, misuse, color, typography, layout, motion, voice, components, assets. |
+| `assets/` | `logo-mark.svg`, `logo-lockup.svg`, `favicon.svg`. |
+| `design/` | Design tokens, plus the brief and addendum the first site was built from (they still describe the earlier GUARDIAN direction). |
 
 ## Install
 
